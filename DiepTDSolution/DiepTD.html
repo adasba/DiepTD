@@ -221,13 +221,13 @@
                         ctr2++
                     }
                     ctx.beginPath();
-                    ctx.fillStyle = "rgba(0, 60, 110, 0.08)";
+                    ctx.fillStyle = "rgba(0, 60, 110, 0.05)";
                     ctx.arc((xS[ctr] - x) + 512, (yS[ctr] - y) + 512, 200, 0, 2 * Math.PI)
                     ctx.fill();
                     ctx.closePath();
                     ctx.beginPath();
                     ctx.lineWidth = 5;
-                    ctx.strokeStyle = "rgba(0, 60, 110, 0.23)";
+                    ctx.strokeStyle = "rgba(0, 60, 110, 0.18)";
                     ctx.arc((xS[ctr] - x) + 512, (yS[ctr] - y) + 512, 197.5, 0, 2 * Math.PI)
                     ctx.stroke();
                     ctx.closePath();
@@ -271,14 +271,23 @@
             while (ctr < xE.length) {
                 if (tE[ctr] == 0) {
                     ctr2 = 0;
+                    cED = 120;
+                    while (ctr2 < xS) {
+                        if (Math.sqrt(Math.pow(xE[ctr2] - xS[ctr], 2) + Math.pow(yE[ctr2] - yS[ctr], 2)) < cED && Math.sqrt(Math.pow(xE[ctr2] - xS[ctr], 2) + Math.pow(yE[ctr2] - yS[ctr], 2)) < 120) {
+                            cEV = ctr2;
+                            dE[ctr] = Math.atan2(xE[ctr] - xS[cEV], (yE[ctr] - yS[cEV]) * -1);
+                            cED = Math.sqrt(Math.pow(xE[ctr2] - xS[ctr], 2) + Math.pow(yE[ctr2] - yS[ctr], 2));
+                        }
+                        ctr2++
+                    }
                     ctx.beginPath();
-                    ctx.fillStyle = "rgba(116, 0, 0, 0.08)";
+                    ctx.fillStyle = "rgba(116, 0, 0, 0.05)";
                     ctx.arc((xE[ctr] - x) + 512, (yE[ctr] - y) + 512, 120, 0, 2 * Math.PI)
                     ctx.fill();
                     ctx.closePath();
                     ctx.beginPath();
                     ctx.lineWidth = 5;
-                    ctx.strokeStyle = "rgba(116, 0, 0, 0.23)";
+                    ctx.strokeStyle = "rgba(116, 0, 0, 0.18)";
                     ctx.arc((xE[ctr] - x) + 512, (yE[ctr] - y) + 512, 117.5, 0, 2 * Math.PI)
                     ctx.stroke();
                     ctx.closePath();
