@@ -30,7 +30,7 @@
         var tP = [0, 1, 2];
         var hPP = [100, 200, 1000];
         var xE = [157];
-        var yE = [310];
+        var yE = [110];
         var tE = [0];
         var dE = [1];
         var hPE = [100];
@@ -42,7 +42,17 @@
         var teams = [];
         var vB = [];
         var cEV = 0;
+        var cEV2 = 0;
         var cED = 0;
+        var cED2 = 0;
+        var keys = [];
+        var keys2 = [];
+        while (ctr < 256) {
+            keys.push(0);
+            keys2.push(0);
+            ctr++;
+        }
+        ctr = 0;
         function getMousePos(canvas, evt) {
             var rect = canvas.getBoundingClientRect();
             mP = {x: evt.clientX - rect.left, y: evt.clientY - rect.top};
@@ -52,11 +62,23 @@
             }
         }
         function mouseDown(e) {
-            mID = 1
+            mID = 1;
         }
         function mouseUp(e) {
-            mID = 0
+            mID = 0;
         }
+        function keyDown(e) {
+            keys[e.keyCode] = true;
+            if (keys2[e.keyCode] == 0) {
+                keys2[e.keyCode] = 1;
+            }
+        }
+        function keyUp(e) {
+            keys[e.keyCode] = false;
+            keys2[e.keyCode] = 0;
+        }
+        window.addEventListener("keydown", keyDown, false);
+        window.addEventListener("keyup", keyUp, false);
         c.addEventListener('mousemove', function (evt) {
             pMX = mP.x;
             pMY = mP.y;
@@ -100,7 +122,19 @@
             teams.push(team);
             vB.push(vel);
         }
+        function summonTower(x, y, type) {
+            xS.push(x);
+            yS.push(y);
+            tS.push(type);
+            tMRS.push(0);
+            dS.push(0);
+            hPS.push(100);
+        }
         function loop() {
+            if (keys2[32] == 1) {
+                summonTower(x + mP.x - 512, y + mP.y - 512, 0);
+                keys2[32] = 2;
+            }
             ctx.fillStyle = "#CBCBCB";
             ctx.fillRect(0, 0, 1024, 1024);
             ctr = 0;
@@ -269,7 +303,7 @@
                             cEV = ctr2;
                             if (tMRS[ctr] > 60) {
                                 tMRS[ctr] = 0;
-                                summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 2, 100, 0, 10);
+                                summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 2, 49, 0, 10);
                             }
                         }
                         ctr2++
@@ -327,17 +361,28 @@
                 if (tE[ctr] == 0) {
                     ctr2 = 0;
                     cED = 120;
+                    cED2 = 99999;
                     while (ctr2 < xS) {
+                        if (Math.sqrt(Math.pow(xE[ctr2] - xS[ctr], 2) + Math.pow(yE[ctr2] - yS[ctr], 2)) < cED2) {
+                            cEV2 = ctr2;
+                            cED2 = Math.sqrt(Math.pow(xE[ctr2] - xS[ctr], 2) + Math.pow(yE[ctr2] - yS[ctr], 2));
+                            dE[ctr] = Math.atan2(xE[ctr] - xS[cEV2], (yE[ctr] - yS[cEV2]) * -1);
+                        }
                         if (Math.sqrt(Math.pow(xE[ctr2] - xS[ctr], 2) + Math.pow(yE[ctr2] - yS[ctr], 2)) < cED && Math.sqrt(Math.pow(xE[ctr2] - xS[ctr], 2) + Math.pow(yE[ctr2] - yS[ctr], 2)) < 120) {
                             cEV = ctr2;
-                            dE[ctr] = Math.atan2(xE[ctr] - xS[cEV], (yE[ctr] - yS[cEV]) * -1);
                             cED = Math.sqrt(Math.pow(xE[ctr2] - xS[ctr], 2) + Math.pow(yE[ctr2] - yS[ctr], 2));
-                            if (tMRE[ctr] > 90) {
-                                tMRE[ctr] = 0;
-                                summonBullet(xE[ctr], yE[ctr], dE[ctr] + Math.PI / 2, 50, 1, 10);
-                            }
                         }
                         ctr2++
+                    }
+                    if (Math.sqrt(Math.pow(xE[ctr] - xS[cEV2], 2) + Math.pow(yE[ctr] - yS[cEV2], 2)) > 100) {
+                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr] + Math.PI / 2);
+                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr] + Math.PI / 2);
+                    }
+                    if (cED < 120) {
+                        if (tMRE[ctr] > 90) {
+                            tMRE[ctr] = 0;
+                            summonBullet(xE[ctr], yE[ctr], dE[ctr] + Math.PI / 2, 25, 1, 10);
+                        }
                     }
                     ctx.beginPath();
                     ctx.fillStyle = "rgba(116, 0, 0, 0.05)";
@@ -368,7 +413,6 @@
             }
             ctx.font = "32px Comic Sans";
             //ctx.strokeText(pMX - mP.x, 50, 80);
-            xE[0] = lctr;
             //ctx.fillRect(xE[0] - x + 512, yE[0] - y + 512, 15, 15)
             setTimeout(loop, 10);
             lctr++;
