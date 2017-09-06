@@ -362,15 +362,15 @@
                     ctr2 = 0;
                     cED = 120;
                     cED2 = 99999;
-                    while (ctr2 < xS) {
-                        if (Math.sqrt(Math.pow(xE[ctr2] - xS[ctr], 2) + Math.pow(yE[ctr2] - yS[ctr], 2)) < cED2) {
+                    while (ctr2 < xS.length) {
+                        if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED2) {
                             cEV2 = ctr2;
-                            cED2 = Math.sqrt(Math.pow(xE[ctr2] - xS[ctr], 2) + Math.pow(yE[ctr2] - yS[ctr], 2));
+                            cED2 = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
                             dE[ctr] = Math.atan2(xE[ctr] - xS[cEV2], (yE[ctr] - yS[cEV2]) * -1);
                         }
-                        if (Math.sqrt(Math.pow(xE[ctr2] - xS[ctr], 2) + Math.pow(yE[ctr2] - yS[ctr], 2)) < cED && Math.sqrt(Math.pow(xE[ctr2] - xS[ctr], 2) + Math.pow(yE[ctr2] - yS[ctr], 2)) < 120) {
+                        if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED && Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < 120) {
                             cEV = ctr2;
-                            cED = Math.sqrt(Math.pow(xE[ctr2] - xS[ctr], 2) + Math.pow(yE[ctr2] - yS[ctr], 2));
+                            cED = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
                         }
                         ctr2++
                     }
