@@ -400,7 +400,7 @@
                     ctx.closePath();
                     ctx.beginPath();
                     ctx.lineWidth = 5
-                    ctx.strokeStyle = "rgba(106, " + (182 / mHPS[ctr]) * hPS[ctr] + ", " + (100 / mHPS[ctr]) * hPS[ctr] + ", 0.85)";
+                    ctx.strokeStyle = "rgba(106, " + Math.round((182 / mHPS[ctr]) * hPS[ctr]) + ", " + Math.round((100 / mHPS[ctr]) * hPS[ctr]) + ", 0.85)";
                     ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 0, ((Math.PI * 2) / mHPS[ctr]) * hPS[ctr]);
                     ctx.stroke();
                     ctx.closePath();
@@ -475,7 +475,7 @@
                     ctx.closePath();
                     ctx.beginPath();
                     ctx.lineWidth = 5
-                    ctx.strokeStyle = "rgba(106, " + (182 / mHPE[ctr]) * hPE[ctr] + ", " + (100 / mHPE[ctr]) * hPE[ctr] + ", 0.85)";
+                    ctx.strokeStyle = "rgba(106, " + Math.round((182 / mHPE[ctr]) * hPE[ctr]) + ", " + Math.round((100 / mHPE[ctr]) * hPE[ctr]) + ", 0.85)";
                     ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 40, 0, ((Math.PI * 2) / mHPE[ctr]) * hPE[ctr]);
                     ctx.stroke();
                     ctx.closePath();
