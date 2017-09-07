@@ -130,10 +130,22 @@
             dS.push(0);
             hPS.push(100);
         }
+        function summonEnemy(x, y, type) {
+            xE.push(x);
+            yE.push(y);
+            tE.push(type);
+            tMRE.push(0);
+            dE.push(0);
+            hPE.push(100);
+        }
         function loop() {
             if (keys2[32] == 1) {
                 summonTower(x + mP.x - 512, y + mP.y - 512, 0);
                 keys2[32] = 2;
+            }
+            if (keys2[65] == 1) {
+                summonEnemy(x + mP.x - 512, y + mP.y - 512, 0);
+                keys2[65] = 2;
             }
             ctx.fillStyle = "#CBCBCB";
             ctx.fillRect(0, 0, 1024, 1024);
@@ -296,29 +308,18 @@
                 if (tS[ctr] == 0) {
                     ctr2 = 0;
                     cED = 200;
-                    while (ctr2 < xE) {
+                    while (ctr2 < xE.length) {
                         if (Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < 200) {
+                            cEV = ctr2;
                             dS[ctr] = Math.atan2(xS[ctr] - xE[cEV], (yS[ctr] - yE[cEV]) * -1);
                             cED = Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2));
-                            cEV = ctr2;
-                            if (tMRS[ctr] > 60) {
-                                tMRS[ctr] = 0;
-                                summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 2, 49, 0, 10);
-                            }
                         }
                         ctr2++
                     }
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgba(0, 60, 110, 0.05)";
-                    ctx.arc((xS[ctr] - x) + 512, (yS[ctr] - y) + 512, 200, 0, 2 * Math.PI)
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.lineWidth = 5;
-                    ctx.strokeStyle = "rgba(0, 60, 110, 0.18)";
-                    ctx.arc((xS[ctr] - x) + 512, (yS[ctr] - y) + 512, 197.5, 0, 2 * Math.PI)
-                    ctx.stroke();
-                    ctx.closePath();
+                    if (tMRS[ctr] > 60 && cED < 200) {
+                        tMRS[ctr] = 0;
+                        summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 2, 49, 0, 10);
+                    }                    
                     renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
                     ctx.beginPath();
                     ctx.fillStyle = "rgb(110, 110, 110)";
@@ -410,6 +411,21 @@
                 }
                 tMRE[ctr]++
                 ctr++;
+            }
+            ctr = 0;
+            while (ctr < xS.length) {
+                ctx.beginPath();
+                ctx.fillStyle = "rgba(0, 60, 110, 0.05)";
+                ctx.arc((xS[ctr] - x) + 512, (yS[ctr] - y) + 512, 200, 0, 2 * Math.PI)
+                ctx.fill();
+                ctx.closePath();
+                ctx.beginPath();
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = "rgba(0, 60, 110, 0.18)";
+                ctx.arc((xS[ctr] - x) + 512, (yS[ctr] - y) + 512, 197.5, 0, 2 * Math.PI)
+                ctx.stroke();
+                ctx.closePath();
+                ctr++
             }
             ctx.font = "32px Comic Sans";
             //ctx.strokeText(pMX - mP.x, 50, 80);
