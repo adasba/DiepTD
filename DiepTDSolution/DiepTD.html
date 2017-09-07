@@ -507,8 +507,12 @@
                 ctx.closePath();
                 ctr++
             }
-            ctx.font = "32px Comic Sans";
-            //ctx.strokeText(pMX - mP.x, 50, 80);
+            ctx.fillStyle = "#555555";
+            ctx.font = "24px Consolas";
+            ctx.fillText("Drag mouse to move around.", 10, 24);
+            ctx.fillText("Press [SPACE] to spawn a tower.", 10, 48);
+            ctx.fillText("Press [A] to spawn an enemy tank.", 10, 72);
+            ctx.fillText("Made by adasba.", 10, 96);
             //ctx.fillRect(xE[0] - x + 512, yE[0] - y + 512, 15, 15)
             setTimeout(loop, 10);
             lctr++;
