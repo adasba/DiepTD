@@ -15,7 +15,8 @@
         var yS = [351];
         var tS = [0];
         //TODO: hit points
-        var hPS = [100];
+        var hPS = [150];
+        var mHPS = [150];
         var tMRS = [0];
         var dS = [1];
         var pMX = 0;
@@ -33,7 +34,8 @@
         var yE = [110];
         var tE = [0];
         var dE = [1];
-        var hPE = [100];
+        var hPE = [30];
+        var mHPE = [30];
         var tMRE = [0]
         var xB = [];
         var yB = [];
@@ -128,7 +130,8 @@
             tS.push(type);
             tMRS.push(0);
             dS.push(0);
-            hPS.push(100);
+            hPS.push(150);
+            mHPS.push(150);
         }
         function summonEnemy(x, y, type) {
             xE.push(x);
@@ -136,7 +139,8 @@
             tE.push(type);
             tMRE.push(0);
             dE.push(0);
-            hPE.push(100);
+            hPE.push(30);
+            mHPE.push(30);
         }
         function loop() {
             if (keys2[32] == 1) {
@@ -180,6 +184,11 @@
                 lTB[ctr]--;
                 if (teams[ctr] == 0) {
                     ctx.beginPath();
+                    ctx.fillStyle = "rgb(110, 110, 110)";
+                    ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 15, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.closePath();
+                    ctx.beginPath();
                     ctx.fillStyle = "#555555";
                     ctx.arc(xB[ctr] - x + 512, yB[ctr] - y + 512, 12, 0, Math.PI * 2);
                     ctx.fill();
@@ -189,7 +198,25 @@
                     ctx.arc(xB[ctr] - x + 512, yB[ctr] - y + 512, 9, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.closePath()
+                    ctr2 = 0
+                    while (ctr2 < xE.length) {
+                        if (Math.sqrt(Math.pow(xB[ctr] - xE[ctr2], 2) + Math.pow(yB[ctr] - yE[ctr2], 2)) < 10) {
+                            hPE[ctr2] = hPE[ctr2] - 10
+                            xB.splice(ctr, 1);
+                            yB.splice(ctr, 1);
+                            dB.splice(ctr, 1);
+                            teams.splice(ctr, 1);
+                            vB.splice(ctr, 1);
+                            lTB.splice(ctr, 1);
+                        }
+                        ctr2++;
+                    }
                 } else {
+                    ctx.beginPath();
+                    ctx.fillStyle = "rgb(110, 110, 110)";
+                    ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.closePath();
                     ctx.beginPath();
                     ctx.fillStyle = "#555555";
                     ctx.arc(xB[ctr] - x + 512, yB[ctr] - y + 512, 8, 0, Math.PI * 2);
@@ -200,6 +227,19 @@
                     ctx.arc(xB[ctr] - x + 512, yB[ctr] - y + 512, 5, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.closePath()
+                    ctr2 = 0
+                    while (ctr2 < xS.length) {
+                        if (Math.sqrt(Math.pow(xB[ctr] - xS[ctr2], 2) + Math.pow(yB[ctr] - yS[ctr2], 2)) < 20) {
+                            hPS[ctr2] = hPS[ctr2] - 10
+                            xB.splice(ctr, 1);
+                            yB.splice(ctr, 1);
+                            dB.splice(ctr, 1);
+                            teams.splice(ctr, 1);
+                            vB.splice(ctr, 1);
+                            lTB.splice(ctr, 1);
+                        }
+                        ctr2++;
+                    }
                 }
                 if (lTB[ctr] < 0) {
                     xB.splice(ctr, 1);
@@ -318,7 +358,7 @@
                     }
                     if (tMRS[ctr] > 60 && cED < 200) {
                         tMRS[ctr] = 0;
-                        summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 2, 49, 0, 10);
+                        summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 2, 90, 0, 5);
                     }                    
                     renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
                     ctx.beginPath();
@@ -351,8 +391,28 @@
                     ctx.fillStyle = "#00B2E1";
                     ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 19, 0, Math.PI * 2);
                     ctx.fill();
-                    ctx.closePath()
-
+                    ctx.closePath();
+                    ctx.beginPath();
+                    ctx.strokeStyle = "rgba(85, 85, 85, 0.3)";
+                    ctx.lineWidth = 11
+                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 0, Math.PI * 2)
+                    ctx.stroke();
+                    ctx.closePath();
+                    ctx.beginPath();
+                    ctx.lineWidth = 5
+                    ctx.strokeStyle = "rgba(106, " + (182 / mHPS[ctr]) * hPS[ctr] + ", " + (100 / mHPS[ctr]) * hPS[ctr] + ", 0.85)";
+                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 0, ((Math.PI * 2) / mHPS[ctr]) * hPS[ctr]);
+                    ctx.stroke();
+                    ctx.closePath();
+                    if (hPS[ctr] <= 0) {
+                        xS.splice(ctr, 1);
+                        yS.splice(ctr, 1);
+                        dS.splice(ctr, 1);
+                        hPS.splice(ctr, 1);
+                        mHPS.splice(ctr, 1);
+                        tMRS.splice(ctr, 1);
+                        tS.splice(ctr, 1);
+                    }
                 }
                 tMRS[ctr]++
                 ctr++;
@@ -382,7 +442,7 @@
                     if (cED < 120) {
                         if (tMRE[ctr] > 90) {
                             tMRE[ctr] = 0;
-                            summonBullet(xE[ctr], yE[ctr], dE[ctr] + Math.PI / 2, 25, 1, 10);
+                            summonBullet(xE[ctr], yE[ctr], dE[ctr] + Math.PI / 2, 50, 1, 5);
                         }
                     }
                     ctx.beginPath();
@@ -407,7 +467,27 @@
                     ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 12, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.closePath()
-
+                    ctx.beginPath();
+                    ctx.strokeStyle = "rgba(85, 85, 85, 0.3)";
+                    ctx.lineWidth = 11
+                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 40, 0, Math.PI * 2)
+                    ctx.stroke();
+                    ctx.closePath();
+                    ctx.beginPath();
+                    ctx.lineWidth = 5
+                    ctx.strokeStyle = "rgba(106, " + (182 / mHPE[ctr]) * hPE[ctr] + ", " + (100 / mHPE[ctr]) * hPE[ctr] + ", 0.85)";
+                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 40, 0, ((Math.PI * 2) / mHPE[ctr]) * hPE[ctr]);
+                    ctx.stroke();
+                    ctx.closePath();
+                    if (hPE[ctr] <= 0) {
+                        xE.splice(ctr, 1);
+                        yE.splice(ctr, 1);
+                        dE.splice(ctr, 1);
+                        hPE.splice(ctr, 1);
+                        mHPE.splice(ctr, 1);
+                        tMRE.splice(ctr, 1);
+                        tE.splice(ctr, 1);
+                    }
                 }
                 tMRE[ctr]++
                 ctr++;
