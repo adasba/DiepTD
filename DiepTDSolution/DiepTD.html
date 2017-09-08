@@ -57,7 +57,7 @@
         ctr = 0;
         function getMousePos(canvas, evt) {
             var rect = canvas.getBoundingClientRect();
-            mP = {x: evt.clientX - rect.left, y: evt.clientY - rect.top};
+            mP = { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
             if (mID == 1) {
                 x = x + (pMX - mP.x);
                 y = y + (pMY - mP.y);
@@ -356,10 +356,17 @@
                         }
                         ctr2++
                     }
-                    if (tMRS[ctr] > 60 && cED < 200) {
-                        tMRS[ctr] = 0;
-                        summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 2, 90, 0, 5);
-                    }                    
+                    ctx.beginPath();
+                    ctx.fillStyle = "rgba(0, 60, 110, 0.08)";
+                    ctx.arc((xS[ctr] - x) + 512, (yS[ctr] - y) + 512, 200, 0, 2 * Math.PI)
+                    ctx.fill();
+                    ctx.closePath();
+                    ctx.beginPath();
+                    ctx.lineWidth = 5;
+                    ctx.strokeStyle = "rgba(0, 60, 110, 0.23)";
+                    ctx.arc((xS[ctr] - x) + 512, (yS[ctr] - y) + 512, 197.5, 0, 2 * Math.PI)
+                    ctx.stroke();
+                    ctx.closePath();
                     renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
                     ctx.beginPath();
                     ctx.fillStyle = "rgb(110, 110, 110)";
