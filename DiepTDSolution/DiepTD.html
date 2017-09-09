@@ -143,11 +143,11 @@
                 hPE.push(30);
                 mHPE.push(30);
             } else if (type == 1) {
-                hPE.push(45);
-                mHPE.push(45);
+                hPE.push(40);
+                mHPE.push(40);
             } else if (type == 2) {
-                hPE.push(60);
-                mHPE.push(60);
+                hPE.push(50);
+                mHPE.push(50);
             }
         }
         function loop() {
@@ -360,10 +360,19 @@
                     ctx.closePath();
                 }
                 if (tE[ctr] == 1) {
-                    renderShadowBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 32, 12, 0, dE[ctr]);
+                    renderShadowBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 34, 14, 0, dE[ctr]);
                     ctx.beginPath();
                     ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.arc((xE[ctr] - x) * 1.1 + 512, (yE[ctr] - y) * 1.1 + 512, 17, 0, Math.PI * 2);
+                    ctx.arc((xE[ctr] - x) * 1.1 + 512, (yE[ctr] - y) * 1.1 + 512, 20, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.closePath();
+                }
+                if (tE[ctr] == 2) {
+                    renderShadowBarrel(xE[ctr] - x + Math.cos(dE[ctr]) * 9 + 512, yE[ctr] - y + Math.sin(dE[ctr]) * 9 + 512, 34, 14, 0, dE[ctr]);
+                    renderShadowBarrel(xE[ctr] - x - Math.cos(dE[ctr]) * 9 + 512, yE[ctr] - y - Math.sin(dE[ctr]) * 9 + 512, 34, 14, 0, dE[ctr]);
+                    ctx.beginPath();
+                    ctx.fillStyle = "rgb(110, 110, 110)";
+                    ctx.arc((xE[ctr] - x) * 1.1 + 512, (yE[ctr] - y) * 1.1 + 512, 20, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.closePath();
                 }
@@ -543,15 +552,15 @@
                     ctx.arc((xE[ctr] - x) + 512, (yE[ctr] - y) + 512, 197.5, 0, 2 * Math.PI)
                     ctx.stroke();
                     ctx.closePath();
-                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 32, 12, 0, dE[ctr]);
+                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 34, 14, 0, dE[ctr]);
                     ctx.beginPath();
                     ctx.fillStyle = "#555555";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 15, 0, Math.PI * 2);
+                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.closePath();
                     ctx.beginPath();
                     ctx.fillStyle = "#F14E54";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 12, 0, Math.PI * 2);
+                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 14, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.closePath()
                     ctx.beginPath();
@@ -589,11 +598,11 @@
                     }
                     if (cED < 120) {
                         if (tMRE[ctr] == 40) {
-                            summonBullet(xE[ctr] + Math.cos(dE[ctr]) * 7, yE[ctr] + Math.sin(dE[ctr]) * 7, dE[ctr] + Math.PI / 2, 50, 1, 5);
+                            summonBullet(xE[ctr] + Math.cos(dE[ctr]) * 8, yE[ctr] + Math.sin(dE[ctr]) * 8, dE[ctr] + Math.PI / 2, 50, 1, 5);
                         }
                         if (tMRE[ctr] > 80) {
                             tMRE[ctr] = 0;
-                            summonBullet(xE[ctr] - Math.cos(dE[ctr]) * 7, yE[ctr] - Math.sin(dE[ctr]) * 7, dE[ctr] + Math.PI / 2, 50, 1, 5);
+                            summonBullet(xE[ctr] - Math.cos(dE[ctr]) * 8, yE[ctr] - Math.sin(dE[ctr]) * 8, dE[ctr] + Math.PI / 2, 50, 1, 5);
                         }
                     }
                     ctx.beginPath();
@@ -607,16 +616,16 @@
                     ctx.arc((xE[ctr] - x) + 512, (yE[ctr] - y) + 512, 117.5, 0, 2 * Math.PI)
                     ctx.stroke();
                     ctx.closePath();
-                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 26, 12, 7, dE[ctr]);
-                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 26, 12, -7, dE[ctr]);
+                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 8, dE[ctr]);
+                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, -8, dE[ctr]);
                     ctx.beginPath();
                     ctx.fillStyle = "#555555";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 15, 0, Math.PI * 2);
+                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.closePath();
                     ctx.beginPath();
                     ctx.fillStyle = "#F14E54";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 12, 0, Math.PI * 2);
+                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 14, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.closePath()
                     ctx.beginPath();
