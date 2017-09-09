@@ -505,15 +505,6 @@
                     ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 40, 0, ((Math.PI * 2) / mHPE[ctr]) * hPE[ctr]);
                     ctx.stroke();
                     ctx.closePath();
-                    if (hPE[ctr] <= 0) {
-                        xE.splice(ctr, 1);
-                        yE.splice(ctr, 1);
-                        dE.splice(ctr, 1);
-                        hPE.splice(ctr, 1);
-                        mHPE.splice(ctr, 1);
-                        tMRE.splice(ctr, 1);
-                        tE.splice(ctr, 1);
-                    }
                 }
                 if (tE[ctr] == 1) {
                     ctr2 = 0;
@@ -532,8 +523,8 @@
                         ctr2++
                     }
                     if (Math.sqrt(Math.pow(xE[ctr] - xS[cEV2], 2) + Math.pow(yE[ctr] - yS[cEV2], 2)) > 180) {
-                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr] + Math.PI / 2);
-                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr] + Math.PI / 2);
+                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr] + Math.PI / 2) / 1.4;
+                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr] + Math.PI / 2) / 1.4;
                     }
                     if (cED < 200) {
                         if (tMRE[ctr] > 150) {
@@ -575,15 +566,6 @@
                     ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 40, 0, ((Math.PI * 2) / mHPE[ctr]) * hPE[ctr]);
                     ctx.stroke();
                     ctx.closePath();
-                    if (hPE[ctr] <= 0) {
-                        xE.splice(ctr, 1);
-                        yE.splice(ctr, 1);
-                        dE.splice(ctr, 1);
-                        hPE.splice(ctr, 1);
-                        mHPE.splice(ctr, 1);
-                        tMRE.splice(ctr, 1);
-                        tE.splice(ctr, 1);
-                    }
                 }
                 if (tE[ctr] == 2) {
                     ctr2 = 0;
@@ -602,13 +584,16 @@
                         ctr2++
                     }
                     if (Math.sqrt(Math.pow(xE[ctr] - xS[cEV2], 2) + Math.pow(yE[ctr] - yS[cEV2], 2)) > 100) {
-                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr] + Math.PI / 2);
-                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr] + Math.PI / 2);
+                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr] + Math.PI / 2) / 1.7;
+                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr] + Math.PI / 2) / 1.7;
                     }
                     if (cED < 120) {
-                        if (tMRE[ctr] > 40) {
+                        if (tMRE[ctr] == 40) {
+                            summonBullet(xE[ctr] + Math.cos(dE[ctr]) * 7, yE[ctr] + Math.sin(dE[ctr]) * 7, dE[ctr] + Math.PI / 2, 50, 1, 5);
+                        }
+                        if (tMRE[ctr] > 80) {
                             tMRE[ctr] = 0;
-                            summonBullet(xE[ctr], yE[ctr], dE[ctr] + Math.PI / 2, 50, 1, 5);
+                            summonBullet(xE[ctr] - Math.cos(dE[ctr]) * 7, yE[ctr] - Math.sin(dE[ctr]) * 7, dE[ctr] + Math.PI / 2, 50, 1, 5);
                         }
                     }
                     ctx.beginPath();
@@ -646,17 +631,17 @@
                     ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 40, 0, ((Math.PI * 2) / mHPE[ctr]) * hPE[ctr]);
                     ctx.stroke();
                     ctx.closePath();
-                    if (hPE[ctr] <= 0) {
-                        xE.splice(ctr, 1);
-                        yE.splice(ctr, 1);
-                        dE.splice(ctr, 1);
-                        hPE.splice(ctr, 1);
-                        mHPE.splice(ctr, 1);
-                        tMRE.splice(ctr, 1);
-                        tE.splice(ctr, 1);
-                    }
                 }
                 tMRE[ctr]++
+                if (hPE[ctr] <= 0) {
+                    xE.splice(ctr, 1);
+                    yE.splice(ctr, 1);
+                    dE.splice(ctr, 1);
+                    hPE.splice(ctr, 1);
+                    mHPE.splice(ctr, 1);
+                    tMRE.splice(ctr, 1);
+                    tE.splice(ctr, 1);
+                }
                 ctr++;
             }
             ctr = 0;
