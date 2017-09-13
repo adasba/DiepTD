@@ -286,6 +286,50 @@
                 ctr++;
             }
             ctr = 0;
+            while (ctr < xS.length) {
+                if (tS[ctr] == 0) {
+                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
+                    ctx.beginPath();
+                    ctx.fillStyle = "rgb(110, 110, 110)";
+                    ctx.moveTo((xS[ctr] - x) * 1.1 + 512 + 30, (yS[ctr] - y) * 1.1 + 512);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 3) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 3) * 30);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 1.5) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 1.5) * 30);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI) * 30);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(4 * Math.PI / 3) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(4 * Math.PI / 3) * 30);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(5 * Math.PI / 3) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(5 * Math.PI / 3) * 30);
+                    ctx.fill();
+                    ctx.closePath();
+                }
+                if (tS[ctr] == 1) {
+                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
+                    ctx.beginPath();
+                    ctx.fillStyle = "rgb(110, 110, 110)";
+                    ctx.moveTo((xS[ctr] - x) * 1.1 + 512 + 35, (yS[ctr] - y) * 1.1 + 512);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 3) * 35);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 1.5) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 1.5) * 35);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI) * 35);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(4 * Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(4 * Math.PI / 3) * 35);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(5 * Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(5 * Math.PI / 3) * 35);
+                    ctx.fill();
+                    ctx.closePath();
+                }
+                if (tS[ctr] == 2) {
+                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 14, dS[ctr]);
+                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, -14, dS[ctr]);
+                    ctx.beginPath();
+                    ctx.fillStyle = "rgb(110, 110, 110)";
+                    ctx.moveTo((xS[ctr] - x) * 1.1 + 512 + 35, (yS[ctr] - y) * 1.1 + 512);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 3) * 35);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 1.5) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 1.5) * 35);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI) * 35);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(4 * Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(4 * Math.PI / 3) * 35);
+                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(5 * Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(5 * Math.PI / 3) * 35);
+                    ctx.fill();
+                    ctx.closePath();
+                }
+                ctr++;
+            }
+            ctr = 0;
             while (ctr < xP.length) {
                 if (tP[ctr] == 0) {
                     ctx.beginPath();
@@ -413,17 +457,6 @@
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 2, 30, 0, 15);
                     }
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.moveTo((xS[ctr] - x) * 1.1 + 512 + 30, (yS[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 3) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 3) * 30);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 1.5) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 1.5) * 30);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI) * 30);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(4 * Math.PI / 3) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(4 * Math.PI / 3) * 30);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(5 * Math.PI / 3) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(5 * Math.PI / 3) * 30);
-                    ctx.fill();
-                    ctx.closePath();
                     ctx.beginPath();
                     ctx.fillStyle = "#555555";
                     ctx.moveTo((xS[ctr] - x) + 512 + 27, (yS[ctr] - y) + 512);
@@ -473,17 +506,6 @@
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 2, 30, 0, 15);
                     }
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.moveTo((xS[ctr] - x) * 1.1 + 512 + 35, (yS[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 3) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 1.5) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 1.5) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(4 * Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(4 * Math.PI / 3) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(5 * Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(5 * Math.PI / 3) * 35);
-                    ctx.fill();
-                    ctx.closePath();
                     ctx.beginPath();
                     ctx.fillStyle = "#555555";
                     ctx.moveTo((xS[ctr] - x) + 512 + 32, (yS[ctr] - y) + 512);
@@ -536,18 +558,6 @@
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr] - Math.cos(dS[ctr]) * 10, yS[ctr] - Math.sin(dS[ctr]) * 10, dS[ctr] + Math.PI / 2, 30, 0, 15);
                     }
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 14, dS[ctr]);
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, -14, dS[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.moveTo((xS[ctr] - x) * 1.1 + 512 + 35, (yS[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 3) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 1.5) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 1.5) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(4 * Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(4 * Math.PI / 3) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(5 * Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(5 * Math.PI / 3) * 35);
-                    ctx.fill();
-                    ctx.closePath();
                     ctx.beginPath();
                     ctx.fillStyle = "#555555";
                     ctx.moveTo((xS[ctr] - x) + 512 + 32, (yS[ctr] - y) + 512);
@@ -830,10 +840,12 @@
             ctx.font = "24px Consolas";
             ctx.fillText("Drag mouse to move around.", 10, 24);
             ctx.fillText("Press [SPACE] to spawn a tower.", 10, 48);
-            ctx.fillText("Press [A] to spawn an enemy tank.", 10, 72);
-            ctx.fillText("Press [D] to spawn an enemy sniper.", 10, 96);
-            ctx.fillText("Press [C] to spawn an enemy twin tank [WIP].", 10, 120);
-            ctx.fillText("Made by adasba.", 10, 144);
+            ctx.fillText("Press [B] to spawn a sniper tower.", 10, 72);
+            ctx.fillText("Press [E] to spawn a twin tower.", 10, 96);
+            ctx.fillText("Press [A] to spawn an enemy tank.", 10, 120);
+            ctx.fillText("Press [D] to spawn an enemy sniper.", 10, 144);
+            ctx.fillText("Press [C] to spawn an enemy twin tank [WIP].", 10, 168);
+            ctx.fillText("Made by adasba.", 10, 192);
             //ctx.fillRect(xE[0] - x + 512, yE[0] - y + 512, 15, 15)
             setTimeout(loop, 10);
             lctr++;
