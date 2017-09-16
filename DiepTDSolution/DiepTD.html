@@ -53,6 +53,9 @@
         var cED2 = 0;
         var keys = [];
         var keys2 = [];
+        var sT = 0;
+        var sT2 = 0;
+        var sTV = 0;
         while (ctr < 256) {
             keys.push(0);
             keys2.push(0);
@@ -65,10 +68,37 @@
             if (mID == 1) {
                 x = x + (pMX - mP.x);
                 y = y + (pMY - mP.y);
+                //ctr4 = 0;
+                //sT2 = 0;
+                //while (ctr4 < xS.length) {
+                //    if (Math.sqrt(Math.pow(xS[ctr4] - (mP.x + x - 512), 2) + Math.pow(yS[ctr4] - (mP.y + y - 512), 2)) < 10) {
+                //        sT = 1;
+                //        sT2 = 1;
+                //        sTV = ctr4;
+                //    } else if (Math.sqrt(Math.pow(xS[ctr4] - (mP.x + x - 512), 2) + Math.pow(yS[ctr4] - (mP.y + y - 512), 2)) > 10 && sT2 == 0) {
+                //        sT = 0;
+                //    }
+                //    ctr4++;
+                //}
             }
+            //if (mID == 1 && pMX - mP.x < 10 && pMY - mP.y < 10) {
+            //    ctx.fillRect(50, 50, 50, 50);
+            //}
         }
         function mouseDown(e) {
             mID = 1;
+            ctr4 = 0;
+            sT2 = 0;
+            while (ctr4 < xS.length) {
+                if (Math.sqrt(Math.pow(xS[ctr4] - (mP.x + x - 512), 2) + Math.pow(yS[ctr4] - (mP.y + y - 512), 2)) < 20) {
+                    sT = 1;
+                    sT2 = 1;
+                    sTV = ctr4;
+                } else if (Math.sqrt(Math.pow(xS[ctr4] - (mP.x + x - 512), 2) + Math.pow(yS[ctr4] - (mP.y + y - 512), 2)) > 20 && sT2 == 0) {
+                    sT = 0;
+                }
+                ctr4++;
+            }
         }
         function mouseUp(e) {
             mID = 0;
@@ -120,6 +150,34 @@
             ctx.fill();
             ctx.closePath();
         }
+        function renderTrapezoidBarrel(x, y, l, w, offset, dir, outerWidth) {
+            ctx.beginPath();
+            ctx.fillStyle = "#555555";
+            ctx.moveTo((offset + w / 2) * Math.cos(dir - Math.PI / 2) + x, (offset + w / 2) * Math.sin(dir - Math.PI / 2) + y);
+            ctx.lineTo((offset + outerWidth / 2) * Math.cos(dir - Math.PI / 2) - l * Math.sin(dir - Math.PI / 2) + x, (offset + outerWidth / 2) * Math.sin(dir - Math.PI / 2) + l * Math.cos(dir - Math.PI / 2) + y);
+            ctx.lineTo((offset + outerWidth / -2) * Math.cos(dir - Math.PI / 2) - l * Math.sin(dir - Math.PI / 2) + x, (offset + outerWidth / -2) * Math.sin(dir - Math.PI / 2) + l * Math.cos(dir - Math.PI / 2) + y);
+            ctx.lineTo((offset + w / -2) * Math.cos(dir - Math.PI / 2) + x, (offset + w / -2) * Math.sin(dir - Math.PI / 2) + y);
+            ctx.fill();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.fillStyle = "#999999";
+            ctx.moveTo(((offset - 3) + w / 2) * Math.cos(dir - Math.PI / 2) + x, ((offset - 3) + w / 2) * Math.sin(dir - Math.PI / 2) + y);
+            ctx.lineTo(((offset - 3) + outerWidth / 2) * Math.cos(dir - Math.PI / 2) - (l - 3) * Math.sin(dir - Math.PI / 2) + x, ((offset - 3) + outerWidth / 2) * Math.sin(dir - Math.PI / 2) + (l - 3) * Math.cos(dir - Math.PI / 2) + y);
+            ctx.lineTo(((offset + 3) + outerWidth / -2) * Math.cos(dir - Math.PI / 2) - (l - 3) * Math.sin(dir - Math.PI / 2) + x, ((offset + 3) + outerWidth / -2) * Math.sin(dir - Math.PI / 2) + (l - 3) * Math.cos(dir - Math.PI / 2) + y);
+            ctx.lineTo(((offset + 3) + w / -2) * Math.cos(dir - Math.PI / 2) + x, ((offset + 3) + w / -2) * Math.sin(dir - Math.PI / 2) + y);
+            ctx.fill();
+            ctx.closePath();
+        }
+        function renderTrapezoidShadowBarrel(x, y, l, w, offset, dir, outerWidth) {
+            ctx.beginPath();
+            ctx.fillStyle = "rgb(110, 110, 110)";
+            ctx.moveTo((offset + (w / 2) * 1.15) * Math.cos(dir - Math.PI / 2) + 512 + (x - 512) * 1.1, (offset + (w / 2) * 1.15) * Math.sin(dir - Math.PI / 2) + 512 + (y - 512) * 1.1);
+            ctx.lineTo((offset + (outerWidth / 2) * 1.15) * Math.cos(dir - Math.PI / 2) - (l * 1.15) * Math.sin(dir - Math.PI / 2) + 512 + (x - 512) * 1.1, (offset + (outerWidth / 2) * 1.1) * Math.sin(dir - Math.PI / 2) + (l * 1.15) * Math.cos(dir - Math.PI / 2) + 512 + (y - 512) * 1.1);
+            ctx.lineTo((offset + (outerWidth / -2) * 1.15) * Math.cos(dir - Math.PI / 2) - (l * 1.15) * Math.sin(dir - Math.PI / 2) + 512 + (x - 512) * 1.1, (offset + (outerWidth / -2) * 1.1) * Math.sin(dir - Math.PI / 2) + (l * 1.15) * Math.cos(dir - Math.PI / 2) + 512 + (y - 512) * 1.1);
+            ctx.lineTo((offset + (w / -2) * 1.15) * Math.cos(dir - Math.PI / 2) + 512 + (x - 512) * 1.1, (offset + (w / -2) * 1.15) * Math.sin(dir - Math.PI / 2) + 512 + (y - 512) * 1.1);
+            ctx.fill();
+            ctx.closePath();
+        }
         function summonBullet(x, y, dir, lifetime, team, vel) {
             xB.push(x);
             yB.push(y);
@@ -145,6 +203,10 @@
             if (type == 2) {
                 hPS.push(275);
                 mHPS.push(275);
+            }
+            if (type == 3) {
+                hPS.push(250);
+                mHPS.push(250);
             }
         }
         function summonEnemy(x, y, type) {
@@ -195,6 +257,10 @@
             if (keys2[87] == 1) {
                 summonEnemy(x + mP.x - 512, y + mP.y - 512, 3);
                 keys2[87] = 2;
+            }
+            if (keys2[83] == 1) {
+                summonTower(x + mP.x - 512, y + mP.y - 512, 3);
+                keys2[83] = 2;
             }
             ctx.fillStyle = "#CBCBCB";
             ctx.fillRect(0, 0, 1024, 1024);
@@ -604,6 +670,64 @@
                     ctx.stroke();
                     ctx.closePath();
                 }
+                if (tS[ctr] == 3) {
+                    ctr2 = 0;
+                    cED = 200;
+                    while (ctr2 < xE.length) {
+                        if (Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < 200) {
+                            cEV = ctr2;
+                            dS[ctr] = Math.atan2(yE[cEV] - yS[ctr], xE[cEV] - xS[ctr]);
+                            cED = Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2));
+                        }
+                        ctr2++
+                    }
+                    if (tMRS[ctr] == 16 && cED < 200) {
+                        summonBullet(xS[ctr] + Math.cos(dS[ctr]) * 10, yS[ctr] + Math.sin(dS[ctr]) * 10, dS[ctr] + 0.25, 30, 0, 15);
+                    }
+                    if (tMRS[ctr] == 32 && cED < 200) {
+                        summonBullet(xS[ctr] + Math.cos(dS[ctr]) * 10, yS[ctr] + Math.sin(dS[ctr]) * 10, dS[ctr], 30, 0, 15);
+                    }
+                    if (tMRS[ctr] == 48 && cED < 200) {
+                        summonBullet(xS[ctr] + Math.cos(dS[ctr]) * 10, yS[ctr] + Math.sin(dS[ctr]) * 10, dS[ctr] - 0.25, 30, 0, 15);
+                    }
+                    if (tMRS[ctr] > 64 && cED < 200) {
+                        tMRS[ctr] = 0;
+                        summonBullet(xS[ctr] - Math.cos(dS[ctr]) * 10, yS[ctr] - Math.sin(dS[ctr]) * 10, dS[ctr], 30, 0, 15);
+                    }
+                    ctx.beginPath();
+                    ctx.fillStyle = "#555555";
+                    ctx.moveTo((xS[ctr] - x) + 512 + 32, (yS[ctr] - y) + 512);
+                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI / 3) * 32, (yS[ctr] - y) + 512 + Math.sin(Math.PI / 3) * 32);
+                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI / 1.5) * 32, (yS[ctr] - y) + 512 + Math.sin(Math.PI / 1.5) * 32);
+                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI) * 32, (yS[ctr] - y) + 512 + Math.sin(Math.PI) * 32);
+                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(4 * Math.PI / 3) * 32, (yS[ctr] - y) + 512 + Math.sin(4 * Math.PI / 3) * 32);
+                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(5 * Math.PI / 3) * 32, (yS[ctr] - y) + 512 + Math.sin(5 * Math.PI / 3) * 32);
+                    ctx.fill();
+                    ctx.closePath();
+                    renderTrapezoidBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, 0, dS[ctr], 38);
+                    ctx.beginPath();
+                    ctx.fillStyle = "#555555";
+                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 25, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.closePath();
+                    ctx.beginPath();
+                    ctx.fillStyle = "#00B2E1";
+                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 22, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.closePath();
+                    ctx.beginPath();
+                    ctx.strokeStyle = "rgba(85, 85, 85, " + ((0.35 / mHPS[ctr]) * (mHPS[ctr] - hPS[ctr]) + 0.05) + ")";
+                    ctx.lineWidth = 11
+                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 0, Math.PI * 2)
+                    ctx.stroke();
+                    ctx.closePath();
+                    ctx.beginPath();
+                    ctx.lineWidth = 5
+                    ctx.strokeStyle = "rgba(106, " + Math.round((182 / mHPS[ctr]) * hPS[ctr]) + ", " + Math.round((100 / mHPS[ctr]) * hPS[ctr]) + ", " + ((0.875 / mHPS[ctr]) * (mHPS[ctr] - hPS[ctr]) + 0.125) + ")";
+                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 0, ((Math.PI * 2) / mHPS[ctr]) * hPS[ctr]);
+                    ctx.stroke();
+                    ctx.closePath();
+                }
                 tMRS[ctr]++
                 if (hPS[ctr] <= 0) {
                     xS.splice(ctr, 1);
@@ -914,7 +1038,7 @@
             }
             ctr = 0;
             while (ctr < xS.length) {
-                if (tS[ctr] == 0 || tS[ctr] == 2) {
+                if (tS[ctr] == 0 || tS[ctr] == 2 || tS[ctr] == 3) {
                     ctx.beginPath();
                     ctx.fillStyle = "rgba(0, 60, 110, 0.02)";
                     ctx.arc((xS[ctr] - x) + 512, (yS[ctr] - y) + 512, 200, 0, 2 * Math.PI)
@@ -952,12 +1076,72 @@
             ctx.fillText("Press [D] to spawn an enemy sniper.", 10, 144);
             ctx.fillText("Press [C] to spawn an enemy twin tank.", 10, 168);
             ctx.fillText("Press [W] to spawn an enemy flank guard [WIP].", 10, 192);
-            ctx.fillText("Made by adasba.", 10, 216);
+            ctx.fillText("Press [S] to spawn a machine gun tower [WIP].", 10, 216);
+            ctx.fillText("Click a tower, and press a number key to upgrade (only works with basic tank).", 10, 240);
+            ctx.fillText("Made by adasba.", 10, 264);
             //ctx.fillRect(xE[0] - x + 512, yE[0] - y + 512, 15, 15)
+            if (sT == 1) {
+                ctx.beginPath();
+                ctx.strokeStyle = "rgba(0, 60, 110, 0.4)";
+                ctx.lineWidth = 10;
+                ctx.arc(xS[sTV] - x + 512, yS[sTV] - y + 512, 40, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.closePath();
+                if (tS[sTV] == 0 || tS[sTV] == 2 || tS[sTV] == 3) {
+                    ctx.beginPath();
+                    ctx.fillStyle = "rgba(0, 60, 110, 0.10)";
+                    ctx.arc((xS[sTV] - x) + 512, (yS[sTV] - y) + 512, 200, 0, 2 * Math.PI)
+                    ctx.fill();
+                    ctx.closePath();
+                    ctx.beginPath();
+                    ctx.lineWidth = 5;
+                    ctx.strokeStyle = "rgba(0, 60, 110, 0.45)";
+                    ctx.arc((xS[sTV] - x) + 512, (yS[sTV] - y) + 512, 197.5, 0, 2 * Math.PI)
+                    ctx.stroke();
+                    ctx.closePath();
+                }
+                if (tS[sTV] == 1) {
+                    ctx.beginPath();
+                    ctx.fillStyle = "rgba(0, 60, 110, 0.10)";
+                    ctx.arc((xS[sTV] - x) + 512, (yS[sTV] - y) + 512, 350, 0, 2 * Math.PI)
+                    ctx.fill();
+                    ctx.closePath();
+                    ctx.beginPath();
+                    ctx.lineWidth = 5;
+                    ctx.strokeStyle = "rgba(0, 60, 110, 0.45)";
+                    ctx.arc((xS[sTV] - x) + 512, (yS[sTV] - y) + 512, 347.5, 0, 2 * Math.PI)
+                    ctx.stroke();
+                    ctx.closePath();
+                }
+                if (tS[sTV] == 0) {
+                    if (keys2[49] == 1) {
+                        mHPS[sTV] = mHPS[sTV] + 125;
+                        hPS[sTV] = hPS[sTV] + 125;
+                        tS[sTV] = 2;
+                        keys2[49] = 2;
+                    }
+                    if (keys2[50] == 1) {
+                        mHPS[sTV] = mHPS[sTV] + 100;
+                        hPS[sTV] = hPS[sTV] + 100;
+                        tS[sTV] = 3;
+                        keys2[50] = 2;
+                    }
+                    if (keys2[51] == 1) {
+                        mHPS[sTV] = mHPS[sTV] + 75;
+                        hPS[sTV] = hPS[sTV] + 75;
+                        tS[sTV] = 1;
+                        keys2[51] = 2;
+                    }
+                }
+            }
             setTimeout(loop, 10);
             lctr++;
         }
         loop();
+        //Changelog:
+        //Update 0.1.1: Added the ability to upgrade tanks by clicking on them and pressing a number key.
+        //Added blue machine gun.
+        //Update 0.1: Started recording updates in a changelog!
     </script>
 </body>
 </html>
