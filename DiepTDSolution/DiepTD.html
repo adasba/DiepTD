@@ -29,6 +29,7 @@
         var ctr3 = 0;
         var ctr4 = 0;
         var ctr5 = 0;
+        var ctr6 = 0;
         var xP = [0, 240, -320];
         var yP = [0, -564, 123];
         var tP = [0, 1, 2];
@@ -229,6 +230,18 @@
                 mHPE.push(45);
             }
         }
+        function polygon(x, y, sides, size, dir, color) {
+            ctr6 = 0;
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            ctx.moveTo(x + Math.cos(dir) * size, y + Math.sin(dir) * size);
+            while (ctr6 < sides) {
+                ctx.lineTo(x + Math.cos(dir + ctr6 * (2 * Math.PI) / sides) * size, y + Math.sin(dir + ctr6 * (2 * Math.PI) / sides) * size);
+                ctr6++;
+            }
+            ctx.fill();
+            ctx.closePath();
+        }
         function loop() {
             if (keys2[32] == 1) {
                 summonTower(x + mP.x - 512, y + mP.y - 512, 0);
@@ -366,73 +379,53 @@
             while (ctr < xS.length) {
                 if (tS[ctr] == 0) {
                     renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.moveTo((xS[ctr] - x) * 1.1 + 512 + 30, (yS[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 3) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 3) * 30);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 1.5) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 1.5) * 30);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI) * 30);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(4 * Math.PI / 3) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(4 * Math.PI / 3) * 30);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(5 * Math.PI / 3) * 30, (yS[ctr] - y) * 1.1 + 512 + Math.sin(5 * Math.PI / 3) * 30);
-                    ctx.fill();
-                    ctx.closePath();
+                    polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 30, 0, "rgb(110, 110, 110)");
                 }
                 if (tS[ctr] == 1) {
                     renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.moveTo((xS[ctr] - x) * 1.1 + 512 + 35, (yS[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 3) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 1.5) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 1.5) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(4 * Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(4 * Math.PI / 3) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(5 * Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(5 * Math.PI / 3) * 35);
-                    ctx.fill();
-                    ctx.closePath();
+                    polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 35, 0, "rgb(110, 110, 110)");
                 }
                 if (tS[ctr] == 2) {
                     renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 14, dS[ctr]);
                     renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, -14, dS[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.moveTo((xS[ctr] - x) * 1.1 + 512 + 35, (yS[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 3) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI / 1.5) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI / 1.5) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(Math.PI) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(Math.PI) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(4 * Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(4 * Math.PI / 3) * 35);
-                    ctx.lineTo((xS[ctr] - x) * 1.1 + 512 + Math.cos(5 * Math.PI / 3) * 35, (yS[ctr] - y) * 1.1 + 512 + Math.sin(5 * Math.PI / 3) * 35);
-                    ctx.fill();
-                    ctx.closePath();
+                    polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 35, 0, "rgb(110, 110, 110)");
+                }
+                if (tS[ctr] == 3) {
+                    renderTrapezoidShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 48, 24, 0, dS[ctr], 42);
+                    polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 35, 0, "rgb(110, 110, 110)");
                 }
                 ctr++;
             }
             ctr = 0;
             while (ctr < xP.length) {
                 if (tP[ctr] == 0) {
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.moveTo(28 * Math.cos(lctr / 100) + (xP[ctr] - x) * 1.1 + 512, 28 * Math.sin(lctr / 100) + (yP[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo(28 * Math.cos(lctr / 100 + Math.PI / 2) + (xP[ctr] - x) * 1.1 + 512, 28 * Math.sin(lctr / 100 + Math.PI / 2) + (yP[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo(28 * Math.cos(lctr / 100 + Math.PI) + (xP[ctr] - x) * 1.1 + 512, 28 * Math.sin(lctr / 100 + Math.PI) + (yP[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo(28 * Math.cos(lctr / 100 + 3 * Math.PI / 2) + (xP[ctr] - x) * 1.1 + 512, 28 * Math.sin(lctr / 100 + 3 * Math.PI / 2) + (yP[ctr] - y) * 1.1 + 512);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.moveTo(24 * Math.cos(lctr / 100) + xP[ctr] - x + 512, 24 * Math.sin(lctr / 100) + yP[ctr] - y + 512);
-                    ctx.lineTo(24 * Math.cos(lctr / 100 + Math.PI / 2) + xP[ctr] - x + 512, 24 * Math.sin(lctr / 100 + Math.PI / 2) + yP[ctr] - y + 512);
-                    ctx.lineTo(24 * Math.cos(lctr / 100 + Math.PI) + xP[ctr] - x + 512, 24 * Math.sin(lctr / 100 + Math.PI) + yP[ctr] - y + 512);
-                    ctx.lineTo(24 * Math.cos(lctr / 100 + 3 * Math.PI / 2) + xP[ctr] - x + 512, 24 * Math.sin(lctr / 100 + 3 * Math.PI / 2) + yP[ctr] - y + 512);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#FFE95E";
-                    ctx.moveTo(20 * Math.cos(lctr / 100) + xP[ctr] - x + 512, 20 * Math.sin(lctr / 100) + yP[ctr] - y + 512);
-                    ctx.lineTo(20 * Math.cos(lctr / 100 + Math.PI / 2) + xP[ctr] - x + 512, 20 * Math.sin(lctr / 100 + Math.PI / 2) + yP[ctr] - y + 512);
-                    ctx.lineTo(20 * Math.cos(lctr / 100 + Math.PI) + xP[ctr] - x + 512, 20 * Math.sin(lctr / 100 + Math.PI) + yP[ctr] - y + 512);
-                    ctx.lineTo(20 * Math.cos(lctr / 100 + 3 * Math.PI / 2) + xP[ctr] - x + 512, 20 * Math.sin(lctr / 100 + 3 * Math.PI / 2) + yP[ctr] - y + 512);
-                    ctx.fill();
-                    ctx.closePath();
+                    //ctx.beginPath();
+                    //ctx.fillStyle = "rgb(110, 110, 110)";
+                    //ctx.moveTo(28 * Math.cos(lctr / 100) + (xP[ctr] - x) * 1.1 + 512, 28 * Math.sin(lctr / 100) + (yP[ctr] - y) * 1.1 + 512);
+                    //ctx.lineTo(28 * Math.cos(lctr / 100 + Math.PI / 2) + (xP[ctr] - x) * 1.1 + 512, 28 * Math.sin(lctr / 100 + Math.PI / 2) + (yP[ctr] - y) * 1.1 + 512);
+                    //ctx.lineTo(28 * Math.cos(lctr / 100 + Math.PI) + (xP[ctr] - x) * 1.1 + 512, 28 * Math.sin(lctr / 100 + Math.PI) + (yP[ctr] - y) * 1.1 + 512);
+                    //ctx.lineTo(28 * Math.cos(lctr / 100 + 3 * Math.PI / 2) + (xP[ctr] - x) * 1.1 + 512, 28 * Math.sin(lctr / 100 + 3 * Math.PI / 2) + (yP[ctr] - y) * 1.1 + 512);
+                    //ctx.fill();
+                    //ctx.closePath();
+                    polygon((xP[ctr] - x) * 1.1 + 512, (yP[ctr] - y) * 1.1 + 512, 4, 28, lctr / 100, "rgb(110, 110, 110)");
+                    //ctx.beginPath();
+                    //ctx.fillStyle = "#555555";
+                    //ctx.moveTo(24 * Math.cos(lctr / 100) + xP[ctr] - x + 512, 24 * Math.sin(lctr / 100) + yP[ctr] - y + 512);
+                    //ctx.lineTo(24 * Math.cos(lctr / 100 + Math.PI / 2) + xP[ctr] - x + 512, 24 * Math.sin(lctr / 100 + Math.PI / 2) + yP[ctr] - y + 512);
+                    //ctx.lineTo(24 * Math.cos(lctr / 100 + Math.PI) + xP[ctr] - x + 512, 24 * Math.sin(lctr / 100 + Math.PI) + yP[ctr] - y + 512);
+                    //ctx.lineTo(24 * Math.cos(lctr / 100 + 3 * Math.PI / 2) + xP[ctr] - x + 512, 24 * Math.sin(lctr / 100 + 3 * Math.PI / 2) + yP[ctr] - y + 512);
+                    //ctx.fill();
+                    //ctx.closePath();
+                    polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 4, 24, lctr / 100, "#555555");
+                    //ctx.beginPath();
+                    //ctx.fillStyle = "#FFE95E";
+                    //ctx.moveTo(20 * Math.cos(lctr / 100) + xP[ctr] - x + 512, 20 * Math.sin(lctr / 100) + yP[ctr] - y + 512);
+                    //ctx.lineTo(20 * Math.cos(lctr / 100 + Math.PI / 2) + xP[ctr] - x + 512, 20 * Math.sin(lctr / 100 + Math.PI / 2) + yP[ctr] - y + 512);
+                    //ctx.lineTo(20 * Math.cos(lctr / 100 + Math.PI) + xP[ctr] - x + 512, 20 * Math.sin(lctr / 100 + Math.PI) + yP[ctr] - y + 512);
+                    //ctx.lineTo(20 * Math.cos(lctr / 100 + 3 * Math.PI / 2) + xP[ctr] - x + 512, 20 * Math.sin(lctr / 100 + 3 * Math.PI / 2) + yP[ctr] - y + 512);
+                    //ctx.fill();
+                    //ctx.closePath();
+                    polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 4, 20, lctr / 100, "#FFE95E");
                 }
                 if (tP[ctr] == 1) {
                     ctx.beginPath();
@@ -534,16 +527,7 @@
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 0, 15);
                     }
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.moveTo((xS[ctr] - x) + 512 + 27, (yS[ctr] - y) + 512);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI / 3) * 27, (yS[ctr] - y) + 512 + Math.sin(Math.PI / 3) * 27);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI / 1.5) * 27, (yS[ctr] - y) + 512 + Math.sin(Math.PI / 1.5) * 27);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI) * 27, (yS[ctr] - y) + 512 + Math.sin(Math.PI) * 27);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(4 * Math.PI / 3) * 27, (yS[ctr] - y) + 512 + Math.sin(4 * Math.PI / 3) * 27);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(5 * Math.PI / 3) * 27, (yS[ctr] - y) + 512 + Math.sin(5 * Math.PI / 3) * 27);
-                    ctx.fill();
-                    ctx.closePath();
+                    polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 27, 0, "#555555");
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
                     ctx.beginPath();
                     ctx.fillStyle = "#555555";
@@ -583,16 +567,7 @@
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 0, 15);
                     }
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.moveTo((xS[ctr] - x) + 512 + 32, (yS[ctr] - y) + 512);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI / 3) * 32, (yS[ctr] - y) + 512 + Math.sin(Math.PI / 3) * 32);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI / 1.5) * 32, (yS[ctr] - y) + 512 + Math.sin(Math.PI / 1.5) * 32);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI) * 32, (yS[ctr] - y) + 512 + Math.sin(Math.PI) * 32);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(4 * Math.PI / 3) * 32, (yS[ctr] - y) + 512 + Math.sin(4 * Math.PI / 3) * 32);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(5 * Math.PI / 3) * 32 , (yS[ctr] - y) + 512 + Math.sin(5 * Math.PI / 3) * 32);
-                    ctx.fill();
-                    ctx.closePath();
+                    polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 21, 0, dS[ctr]);
                     ctx.beginPath();
                     ctx.fillStyle = "#555555";
@@ -635,16 +610,7 @@
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr] - Math.cos(dS[ctr]) * 10, yS[ctr] - Math.sin(dS[ctr]) * 10, dS[ctr], 30, 0, 15);
                     }
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.moveTo((xS[ctr] - x) + 512 + 32, (yS[ctr] - y) + 512);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI / 3) * 32, (yS[ctr] - y) + 512 + Math.sin(Math.PI / 3) * 32);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI / 1.5) * 32, (yS[ctr] - y) + 512 + Math.sin(Math.PI / 1.5) * 32);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI) * 32, (yS[ctr] - y) + 512 + Math.sin(Math.PI) * 32);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(4 * Math.PI / 3) * 32, (yS[ctr] - y) + 512 + Math.sin(4 * Math.PI / 3) * 32);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(5 * Math.PI / 3) * 32, (yS[ctr] - y) + 512 + Math.sin(5 * Math.PI / 3) * 32);
-                    ctx.fill();
-                    ctx.closePath();
+                    polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, 12, dS[ctr]);
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, -12, dS[ctr]);
                     ctx.beginPath();
@@ -694,16 +660,7 @@
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr] - Math.cos(dS[ctr]) * 10, yS[ctr] - Math.sin(dS[ctr]) * 10, dS[ctr], 30, 0, 15);
                     }
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.moveTo((xS[ctr] - x) + 512 + 32, (yS[ctr] - y) + 512);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI / 3) * 32, (yS[ctr] - y) + 512 + Math.sin(Math.PI / 3) * 32);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI / 1.5) * 32, (yS[ctr] - y) + 512 + Math.sin(Math.PI / 1.5) * 32);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(Math.PI) * 32, (yS[ctr] - y) + 512 + Math.sin(Math.PI) * 32);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(4 * Math.PI / 3) * 32, (yS[ctr] - y) + 512 + Math.sin(4 * Math.PI / 3) * 32);
-                    ctx.lineTo((xS[ctr] - x) + 512 + Math.cos(5 * Math.PI / 3) * 32, (yS[ctr] - y) + 512 + Math.sin(5 * Math.PI / 3) * 32);
-                    ctx.fill();
-                    ctx.closePath();
+                    polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
                     renderTrapezoidBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, 0, dS[ctr], 38);
                     ctx.beginPath();
                     ctx.fillStyle = "#555555";
@@ -1134,14 +1091,46 @@
                     }
                 }
             }
+            ctx.beginPath();
+            ctx.fillStyle = "#75C6C3";
+            ctx.lineWidth = 7;
+            ctx.fillRect(50, 820, 150, 85);
+            ctx.fill();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.fillStyle = "#60A2A0";
+            ctx.lineWidth = 7;
+            ctx.fillRect(50, 905, 150, 65);
+            ctx.fill();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.strokeStyle = "#555555";
+            ctx.lineWidth = 7;
+            ctx.strokeRect(50, 820, 150, 150);
+            ctx.stroke();
+            ctx.closePath();
+            polygon(125, 895, 6, 40, 0, "#555555");
+            renderBarrel(125, 895, 56.25, 26.25, 15, lctr / 100);
+            renderBarrel(125, 895, 56.25, 26.25, -15, lctr / 100);
+            ctx.beginPath();
+            ctx.fillStyle = "#555555";
+            ctx.arc(125, 895, 31.25, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.fillStyle = "#00B2E1";
+            ctx.arc(125, 895, 28.25, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.closePath();
             setTimeout(loop, 10);
             lctr++;
         }
         loop();
         //Changelog:
+        //Update 0.1.1.1: Working on upgrade graphics, several graphical changes, and condensing code.
         //Update 0.1.1: Added the ability to upgrade tanks by clicking on them and pressing a number key.
         //Added blue machine gun.
-        //Update 0.1: Started recording updates in a changelog!
+        //Update 0.1: Started recording updates in a changelog.
     </script>
 </body>
 </html>
