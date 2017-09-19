@@ -242,6 +242,32 @@
             ctx.fill();
             ctx.closePath();
         }
+        function healthBar(x, y, hp, maxHp, radius) {
+            ctx.beginPath();
+            ctx.strokeStyle = "rgba(85, 85, 85, " + ((0.35 / maxHp) * (maxHp - hp) + 0.05) + ")";
+            ctx.lineWidth = 11
+            ctx.arc(x, y, radius, 0, Math.PI * 2)
+            ctx.stroke();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.lineWidth = 5
+            ctx.strokeStyle = "rgba(106, " + Math.round((182 / maxHp) * hp) + ", " + Math.round((100 / maxHp) * hp) + ", " + ((0.875 / maxHp) * (maxHp - hp) + 0.125) + ")";
+            ctx.arc(x, y, radius, 0, ((Math.PI * 2) / maxHp) * hp);
+            ctx.stroke();
+            ctx.closePath();
+        }
+        function diepCircle(x, y, radius, color) {
+            ctx.beginPath();
+            ctx.fillStyle = "#555555";
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            ctx.arc(x, y, radius - 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.closePath();
+        }
         function loop() {
             if (keys2[32] == 1) {
                 summonTower(x + mP.x - 512, y + mP.y - 512, 0);
@@ -312,16 +338,7 @@
                     ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 15, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.arc(xB[ctr] - x + 512, yB[ctr] - y + 512, 12, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#00B2E1";
-                    ctx.arc(xB[ctr] - x + 512, yB[ctr] - y + 512, 9, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath()
+                    diepCircle(xB[ctr] - x + 512, yB[ctr] - y + 512, 12, "#00B2E1");
                     ctr2 = 0
                     while (ctr2 < xE.length) {
                         if (Math.sqrt(Math.pow(xB[ctr] - xE[ctr2], 2) + Math.pow(yB[ctr] - yE[ctr2], 2)) < 15) {
@@ -341,16 +358,7 @@
                     ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 10, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.arc(xB[ctr] - x + 512, yB[ctr] - y + 512, 8, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#F14E54";
-                    ctx.arc(xB[ctr] - x + 512, yB[ctr] - y + 512, 5, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath()
+                    diepCircle(xB[ctr] - x + 512, yB[ctr] - y + 512, 8, "#F14E54");
                     ctr2 = 0
                     while (ctr2 < xS.length) {
                         if (Math.sqrt(Math.pow(xB[ctr] - xS[ctr2], 2) + Math.pow(yB[ctr] - yS[ctr2], 2)) < 20) {
@@ -399,85 +407,19 @@
             ctr = 0;
             while (ctr < xP.length) {
                 if (tP[ctr] == 0) {
-                    //ctx.beginPath();
-                    //ctx.fillStyle = "rgb(110, 110, 110)";
-                    //ctx.moveTo(28 * Math.cos(lctr / 100) + (xP[ctr] - x) * 1.1 + 512, 28 * Math.sin(lctr / 100) + (yP[ctr] - y) * 1.1 + 512);
-                    //ctx.lineTo(28 * Math.cos(lctr / 100 + Math.PI / 2) + (xP[ctr] - x) * 1.1 + 512, 28 * Math.sin(lctr / 100 + Math.PI / 2) + (yP[ctr] - y) * 1.1 + 512);
-                    //ctx.lineTo(28 * Math.cos(lctr / 100 + Math.PI) + (xP[ctr] - x) * 1.1 + 512, 28 * Math.sin(lctr / 100 + Math.PI) + (yP[ctr] - y) * 1.1 + 512);
-                    //ctx.lineTo(28 * Math.cos(lctr / 100 + 3 * Math.PI / 2) + (xP[ctr] - x) * 1.1 + 512, 28 * Math.sin(lctr / 100 + 3 * Math.PI / 2) + (yP[ctr] - y) * 1.1 + 512);
-                    //ctx.fill();
-                    //ctx.closePath();
                     polygon((xP[ctr] - x) * 1.1 + 512, (yP[ctr] - y) * 1.1 + 512, 4, 28, lctr / 100, "rgb(110, 110, 110)");
-                    //ctx.beginPath();
-                    //ctx.fillStyle = "#555555";
-                    //ctx.moveTo(24 * Math.cos(lctr / 100) + xP[ctr] - x + 512, 24 * Math.sin(lctr / 100) + yP[ctr] - y + 512);
-                    //ctx.lineTo(24 * Math.cos(lctr / 100 + Math.PI / 2) + xP[ctr] - x + 512, 24 * Math.sin(lctr / 100 + Math.PI / 2) + yP[ctr] - y + 512);
-                    //ctx.lineTo(24 * Math.cos(lctr / 100 + Math.PI) + xP[ctr] - x + 512, 24 * Math.sin(lctr / 100 + Math.PI) + yP[ctr] - y + 512);
-                    //ctx.lineTo(24 * Math.cos(lctr / 100 + 3 * Math.PI / 2) + xP[ctr] - x + 512, 24 * Math.sin(lctr / 100 + 3 * Math.PI / 2) + yP[ctr] - y + 512);
-                    //ctx.fill();
-                    //ctx.closePath();
                     polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 4, 24, lctr / 100, "#555555");
-                    //ctx.beginPath();
-                    //ctx.fillStyle = "#FFE95E";
-                    //ctx.moveTo(20 * Math.cos(lctr / 100) + xP[ctr] - x + 512, 20 * Math.sin(lctr / 100) + yP[ctr] - y + 512);
-                    //ctx.lineTo(20 * Math.cos(lctr / 100 + Math.PI / 2) + xP[ctr] - x + 512, 20 * Math.sin(lctr / 100 + Math.PI / 2) + yP[ctr] - y + 512);
-                    //ctx.lineTo(20 * Math.cos(lctr / 100 + Math.PI) + xP[ctr] - x + 512, 20 * Math.sin(lctr / 100 + Math.PI) + yP[ctr] - y + 512);
-                    //ctx.lineTo(20 * Math.cos(lctr / 100 + 3 * Math.PI / 2) + xP[ctr] - x + 512, 20 * Math.sin(lctr / 100 + 3 * Math.PI / 2) + yP[ctr] - y + 512);
-                    //ctx.fill();
-                    //ctx.closePath();
                     polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 4, 20, lctr / 100, "#FFE95E");
                 }
                 if (tP[ctr] == 1) {
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.moveTo(26 * Math.cos(lctr / 100) + (xP[ctr] - x) * 1.1 + 512, 26 * Math.sin(lctr / 100) + (yP[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo(26 * Math.cos(lctr / 100 + Math.PI / 1.5) + (xP[ctr] - x) * 1.1 + 512, 26 * Math.sin(lctr / 100 + Math.PI / 1.5) + (yP[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo(26 * Math.cos(lctr / 100 + Math.PI / 0.75) + (xP[ctr] - x) * 1.1 + 512, 26 * Math.sin(lctr / 100 + Math.PI / 0.75) + (yP[ctr] - y) * 1.1 + 512);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.moveTo(22 * Math.cos(lctr / 100) + xP[ctr] - x + 512, 22 * Math.sin(lctr / 100) + yP[ctr] - y + 512);
-                    ctx.lineTo(22 * Math.cos(lctr / 100 + Math.PI / 1.5) + xP[ctr] - x + 512, 22 * Math.sin(lctr / 100 + Math.PI / 1.5) + yP[ctr] - y + 512);
-                    ctx.lineTo(22 * Math.cos(lctr / 100 + Math.PI / 0.75) + xP[ctr] - x + 512, 22 * Math.sin(lctr / 100 + Math.PI / 0.75) + yP[ctr] - y + 512);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#FC7677";
-                    ctx.moveTo(17 * Math.cos(lctr / 100) + xP[ctr] - x + 512, 17 * Math.sin(lctr / 100) + yP[ctr] - y + 512);
-                    ctx.lineTo(17 * Math.cos(lctr / 100 + Math.PI / 1.5) + xP[ctr] - x + 512, 17 * Math.sin(lctr / 100 + Math.PI / 1.5) + yP[ctr] - y + 512);
-                    ctx.lineTo(17 * Math.cos(lctr / 100 + Math.PI / 0.75) + xP[ctr] - x + 512, 17 * Math.sin(lctr / 100 + Math.PI / 0.75) + yP[ctr] - y + 512);
-                    ctx.fill();
-                    ctx.closePath();
+                    polygon((xP[ctr] - x) * 1.1 + 512, (yP[ctr] - y) * 1.1 + 512, 3, 26, lctr / 100, "rgb(110, 110, 110)");
+                    polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 3, 22, lctr / 100, "#555555");
+                    polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 3, 17, lctr / 100, "#FC7677");
                 }
                 if (tP[ctr] == 2) {
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.moveTo(35 * Math.cos(lctr / 100) + (xP[ctr] - x) * 1.1 + 512, 35 * Math.sin(lctr / 100) + (yP[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo(35 * Math.cos(lctr / 100 + Math.PI / 2.5) + (xP[ctr] - x) * 1.1 + 512, 35 * Math.sin(lctr / 100 + Math.PI / 2.5) + (yP[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo(35 * Math.cos(lctr / 100 + Math.PI / 1.25) + (xP[ctr] - x) * 1.1 + 512, 35 * Math.sin(lctr / 100 + Math.PI / 1.25) + (yP[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo(35 * Math.cos(lctr / 100 + 6 * Math.PI / 5) + (xP[ctr] - x) * 1.1 + 512, 35 * Math.sin(lctr / 100 + 6 * Math.PI / 5) + (yP[ctr] - y) * 1.1 + 512);
-                    ctx.lineTo(35 * Math.cos(lctr / 100 + Math.PI / 0.625) + (xP[ctr] - x) * 1.1 + 512, 35 * Math.sin(lctr / 100 + Math.PI / 0.625) + (yP[ctr] - y) * 1.1 + 512);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.moveTo(31 * Math.cos(lctr / 100) + xP[ctr] - x + 512, 31 * Math.sin(lctr / 100) + yP[ctr] - y + 512);
-                    ctx.lineTo(31 * Math.cos(lctr / 100 + Math.PI / 2.5) + xP[ctr] - x + 512, 31 * Math.sin(lctr / 100 + Math.PI / 2.5) + yP[ctr] - y + 512);
-                    ctx.lineTo(31 * Math.cos(lctr / 100 + Math.PI / 1.25) + xP[ctr] - x + 512, 31 * Math.sin(lctr / 100 + Math.PI / 1.25) + yP[ctr] - y + 512);
-                    ctx.lineTo(31 * Math.cos(lctr / 100 + 6 * Math.PI / 5) + xP[ctr] - x + 512, 31 * Math.sin(lctr / 100 + 6 * Math.PI / 5) + yP[ctr] - y + 512);
-                    ctx.lineTo(31 * Math.cos(lctr / 100 + Math.PI / 0.625) + xP[ctr] - x + 512, 31 * Math.sin(lctr / 100 + Math.PI / 0.625) + yP[ctr] - y + 512);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#768DFC";
-                    ctx.moveTo(27 * Math.cos(lctr / 100) + xP[ctr] - x + 512, 27 * Math.sin(lctr / 100) + yP[ctr] - y + 512);
-                    ctx.lineTo(27 * Math.cos(lctr / 100 + Math.PI / 2.5) + xP[ctr] - x + 512, 27 * Math.sin(lctr / 100 + Math.PI / 2.5) + yP[ctr] - y + 512);
-                    ctx.lineTo(27 * Math.cos(lctr / 100 + Math.PI / 1.25) + xP[ctr] - x + 512, 27 * Math.sin(lctr / 100 + Math.PI / 1.25) + yP[ctr] - y + 512);
-                    ctx.lineTo(27 * Math.cos(lctr / 100 + 6 * Math.PI / 5) + xP[ctr] - x + 512, 27 * Math.sin(lctr / 100 + 6 * Math.PI / 5) + yP[ctr] - y + 512);
-                    ctx.lineTo(27 * Math.cos(lctr / 100 + Math.PI / 0.625) + xP[ctr] - x + 512, 27 * Math.sin(lctr / 100 + Math.PI / 0.625) + yP[ctr] - y + 512);
-                    ctx.fill();
-                    ctx.closePath();
+                    polygon((xP[ctr] - x) * 1.1 + 512, (yP[ctr] - y) * 1.1 + 512, 5, 35, lctr / 100, "rgb(110, 110, 110)");
+                    polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 5, 31, lctr / 100, "#555555");
+                    polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 5, 27, lctr / 100, "#768DFC");
                 }
                 ctr++;
             }
@@ -529,28 +471,8 @@
                     }
                     polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 27, 0, "#555555");
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 22, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#00B2E1";
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 19, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.strokeStyle = "rgba(85, 85, 85, " + ((0.35 / mHPS[ctr]) * (mHPS[ctr] - hPS[ctr]) + 0.05) + ")";
-                    ctx.lineWidth = 11
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 0, Math.PI * 2)
-                    ctx.stroke();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.lineWidth = 5
-                    ctx.strokeStyle = "rgba(106, " + Math.round((182 / mHPS[ctr]) * hPS[ctr]) + ", " + Math.round((100 / mHPS[ctr]) * hPS[ctr]) + ", " + ((0.875 / mHPS[ctr]) * (mHPS[ctr] - hPS[ctr]) + 0.125) + ")";
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 0, ((Math.PI * 2) / mHPS[ctr]) * hPS[ctr]);
-                    ctx.stroke();
-                    ctx.closePath();
+                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 22, "#00B2E1");
+                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
                 }
                 if (tS[ctr] == 1) {
                     ctr2 = 0;
@@ -569,28 +491,8 @@
                     }
                     polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 21, 0, dS[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 25, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#00B2E1";
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 22, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.strokeStyle = "rgba(85, 85, 85, " + ((0.35 / mHPS[ctr]) * (mHPS[ctr] - hPS[ctr]) + 0.05) + ")";
-                    ctx.lineWidth = 11
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 0, Math.PI * 2)
-                    ctx.stroke();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.lineWidth = 5
-                    ctx.strokeStyle = "rgba(106, " + Math.round((182 / mHPS[ctr]) * hPS[ctr]) + ", " + Math.round((100 / mHPS[ctr]) * hPS[ctr]) + ", " + ((0.875 / mHPS[ctr]) * (mHPS[ctr] - hPS[ctr]) + 0.125) + ")";
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 0, ((Math.PI * 2) / mHPS[ctr]) * hPS[ctr]);
-                    ctx.stroke();
-                    ctx.closePath();
+                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 25, "#00B2E1");
+                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
                 }
                 if (tS[ctr] == 2) {
                     ctr2 = 0;
@@ -613,28 +515,8 @@
                     polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, 12, dS[ctr]);
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, -12, dS[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 25, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#00B2E1";
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 22, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.strokeStyle = "rgba(85, 85, 85, " + ((0.35 / mHPS[ctr]) * (mHPS[ctr] - hPS[ctr]) + 0.05) + ")";
-                    ctx.lineWidth = 11
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 0, Math.PI * 2)
-                    ctx.stroke();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.lineWidth = 5
-                    ctx.strokeStyle = "rgba(106, " + Math.round((182 / mHPS[ctr]) * hPS[ctr]) + ", " + Math.round((100 / mHPS[ctr]) * hPS[ctr]) + ", " + ((0.875 / mHPS[ctr]) * (mHPS[ctr] - hPS[ctr]) + 0.125) + ")";
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 0, ((Math.PI * 2) / mHPS[ctr]) * hPS[ctr]);
-                    ctx.stroke();
-                    ctx.closePath();
+                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 25, "#00B2E1");
+                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
                 }
                 if (tS[ctr] == 3) {
                     ctr2 = 0;
@@ -662,28 +544,8 @@
                     }
                     polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
                     renderTrapezoidBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, 0, dS[ctr], 38);
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 25, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#00B2E1";
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 22, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.strokeStyle = "rgba(85, 85, 85, " + ((0.35 / mHPS[ctr]) * (mHPS[ctr] - hPS[ctr]) + 0.05) + ")";
-                    ctx.lineWidth = 11
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 0, Math.PI * 2)
-                    ctx.stroke();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.lineWidth = 5
-                    ctx.strokeStyle = "rgba(106, " + Math.round((182 / mHPS[ctr]) * hPS[ctr]) + ", " + Math.round((100 / mHPS[ctr]) * hPS[ctr]) + ", " + ((0.875 / mHPS[ctr]) * (mHPS[ctr] - hPS[ctr]) + 0.125) + ")";
-                    ctx.arc(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 0, ((Math.PI * 2) / mHPS[ctr]) * hPS[ctr]);
-                    ctx.stroke();
-                    ctx.closePath();
+                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 25, "#00B2E1");
+                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
                 }
                 tMRS[ctr]++
                 if (hPS[ctr] <= 0) {
@@ -737,28 +599,8 @@
                     ctx.stroke();
                     ctx.closePath();
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 26, 12, 0, dE[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 15, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#F14E54";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 12, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath()
-                    ctx.beginPath();
-                    ctx.strokeStyle = "rgba(85, 85, 85, " + ((0.35 / mHPE[ctr]) * (mHPE[ctr] - hPE[ctr]) + 0.05) + ")";
-                    ctx.lineWidth = 11
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 40, 0, Math.PI * 2)
-                    ctx.stroke();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.lineWidth = 5
-                    ctx.strokeStyle = "rgba(106, " + Math.round((182 / mHPE[ctr]) * hPE[ctr]) + ", " + Math.round((100 / mHPE[ctr]) * hPE[ctr]) + ", " + ((0.875 / mHPE[ctr]) * (mHPE[ctr] - hPE[ctr]) + 0.125) + ")";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 40, 0, ((Math.PI * 2) / mHPE[ctr]) * hPE[ctr]);
-                    ctx.stroke();
-                    ctx.closePath();
+                    diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 15, "#F14E54");
+                    healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
                 }
                 if (tE[ctr] == 1) {
                     ctr2 = 0;
@@ -798,28 +640,8 @@
                     ctx.stroke();
                     ctx.closePath();
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 34, 14, 0, dE[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#F14E54";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 14, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath()
-                    ctx.beginPath();
-                    ctx.strokeStyle = "rgba(85, 85, 85, " + ((0.35 / mHPE[ctr]) * (mHPE[ctr] - hPE[ctr]) + 0.05) + ")";
-                    ctx.lineWidth = 11
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 40, 0, Math.PI * 2)
-                    ctx.stroke();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.lineWidth = 5
-                    ctx.strokeStyle = "rgba(106, " + Math.round((182 / mHPE[ctr]) * hPE[ctr]) + ", " + Math.round((100 / mHPE[ctr]) * hPE[ctr]) + ", " + ((0.875 / mHPE[ctr]) * (mHPE[ctr] - hPE[ctr]) + 0.125) + ")";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 40, 0, ((Math.PI * 2) / mHPE[ctr]) * hPE[ctr]);
-                    ctx.stroke();
-                    ctx.closePath();
+                    diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
+                    healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
                 }
                 if (tE[ctr] == 2) {
                     ctr2 = 0;
@@ -863,28 +685,8 @@
                     ctx.closePath();
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 8, dE[ctr]);
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, -8, dE[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#F14E54";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 14, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath()
-                    ctx.beginPath();
-                    ctx.strokeStyle = "rgba(85, 85, 85, " + ((0.35 / mHPE[ctr]) * (mHPE[ctr] - hPE[ctr]) + 0.05) + ")";
-                    ctx.lineWidth = 11
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 40, 0, Math.PI * 2)
-                    ctx.stroke();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.lineWidth = 5
-                    ctx.strokeStyle = "rgba(106, " + Math.round((182 / mHPE[ctr]) * hPE[ctr]) + ", " + Math.round((100 / mHPE[ctr]) * hPE[ctr]) + ", " + ((0.875 / mHPE[ctr]) * (mHPE[ctr] - hPE[ctr]) + 0.125) + ")";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 40, 0, ((Math.PI * 2) / mHPE[ctr]) * hPE[ctr]);
-                    ctx.stroke();
-                    ctx.closePath();
+                    diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
+                    healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
                 }
                 if (tE[ctr] == 3) {
                     ctr2 = 0;
@@ -958,28 +760,8 @@
                     ctx.closePath();
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 0, dE[ctr]);
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 0, dE[ctr] + Math.PI);
-                    ctx.beginPath();
-                    ctx.fillStyle = "#555555";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.fillStyle = "#F14E54";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 14, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath()
-                    ctx.beginPath();
-                    ctx.strokeStyle = "rgba(85, 85, 85, " + ((0.35 / mHPE[ctr]) * (mHPE[ctr] - hPE[ctr]) + 0.05) + ")";
-                    ctx.lineWidth = 11
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 40, 0, Math.PI * 2)
-                    ctx.stroke();
-                    ctx.closePath();
-                    ctx.beginPath();
-                    ctx.lineWidth = 5
-                    ctx.strokeStyle = "rgba(106, " + Math.round((182 / mHPE[ctr]) * hPE[ctr]) + ", " + Math.round((100 / mHPE[ctr]) * hPE[ctr]) + ", " + ((0.875 / mHPE[ctr]) * (mHPE[ctr] - hPE[ctr]) + 0.125) + ")";
-                    ctx.arc(xE[ctr] - x + 512, yE[ctr] - y + 512, 40, 0, ((Math.PI * 2) / mHPE[ctr]) * hPE[ctr]);
-                    ctx.stroke();
-                    ctx.closePath();
+                    diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
+                    healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
                 }
                 tMRE[ctr]++
                 if (hPE[ctr] <= 0) {
@@ -1127,8 +909,9 @@
         }
         loop();
         //Changelog:
-        //Update 0.1.1.1: Working on upgrade graphics, several graphical changes, and condensing code..
-        //Update 0.1.1: Added the ability to upgrade tanks by clicking on them and pressing a number key....
+        //Update 0.1.1.2: Much more code condensing, the game is down to 919 lines.
+        //Update 0.1.1.1: Working on upgrade graphics, several graphical changes, and condensing code.
+        //Update 0.1.1: Added the ability to upgrade tanks by clicking on them and pressing a number key.
         //Added blue machine gun.
         //Update 0.1: Started recording updates in a changelog.
     </script>
