@@ -2,6 +2,13 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet'>
+    <style>
+        body {
+            font-family: 'Ubuntu';
+            font-size: 22px;
+        }
+    </style>
     <title></title>
 </head>
 <body>
@@ -30,6 +37,8 @@
         var ctr4 = 0;
         var ctr5 = 0;
         var ctr6 = 0;
+        var ctrS = [0];
+        var aN = 0;
         var xP = [0, 240, -320];
         var yP = [0, -564, 123];
         var tP = [0, 1, 2];
@@ -40,7 +49,8 @@
         var dE = [1];
         var hPE = [30];
         var mHPE = [30];
-        var tMRE = [0]
+        var tMRE = [0];
+        var tMRE2 = [0];
         var xB = [];
         var yB = [];
         var dB = [];
@@ -215,6 +225,7 @@
             yE.push(y);
             tE.push(type);
             tMRE.push(0);
+            tMRE2.push(0);
             dE.push(0);
             if (type == 0) {
                 hPE.push(30);
@@ -226,8 +237,11 @@
                 hPE.push(50);
                 mHPE.push(50);
             } else if (type == 3) {
-                hPE.push(45);
-                mHPE.push(45);
+                hPE.push(35);
+                mHPE.push(35);
+            } else if (type == 4) {
+                hPE.push(55);
+                mHPE.push(55);
             }
         }
         function polygon(x, y, sides, size, dir, color) {
@@ -281,6 +295,26 @@
             ctx.stroke();
             ctx.closePath();
         }
+        function tankIcon(x, y, color1, color2) {
+            ctx.beginPath();
+            ctx.fillStyle = color1;
+            ctx.lineWidth = 7;
+            ctx.fillRect(x, y, 150, 85);
+            ctx.fill();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.fillStyle = color2;
+            ctx.lineWidth = 7;
+            ctx.fillRect(x, y + 85, 150, 65);
+            ctx.fill();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.strokeStyle = "#555555";
+            ctx.lineWidth = 7;
+            ctx.strokeRect(x, y, 150, 150);
+            ctx.stroke();
+            ctx.closePath();
+        }
         function loop() {
             if (keys2[32] == 1) {
                 summonTower(x + mP.x - 512, y + mP.y - 512, 0);
@@ -313,6 +347,10 @@
             if (keys2[83] == 1) {
                 summonTower(x + mP.x - 512, y + mP.y - 512, 3);
                 keys2[83] = 2;
+            }
+            if (keys2[81] == 1) {
+                summonEnemy(x + mP.x - 512, y + mP.y - 512, 4);
+                keys2[81] = 2;
             }
             ctx.fillStyle = "#CBCBCB";
             ctx.fillRect(0, 0, 1024, 1024);
@@ -699,8 +737,8 @@
                     }
                     dE[ctr] = Math.atan2((yS[cEV2] + yS[cEV3]) / 2 - yE[ctr], (xS[cEV2] + xS[cEV3]) / 2 - xE[ctr]);
                     if (Math.sqrt(Math.pow(xE[ctr] - (xS[cEV2] + xS[cEV3]) / 2, 2) + Math.pow(yE[ctr] - (yS[cEV2] + yS[cEV3]) / 2, 2)) > 5) {
-                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) / 0.7;
-                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) / 0.7;
+                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr]);
+                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr]);
                     } else {
                         dE[ctr] = Math.atan2(yS[cEV2] - yE[ctr], xS[cEV2] - xE[ctr]);
                     }
@@ -721,7 +759,51 @@
                     diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
                     healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
                 }
+                if (tE[ctr] == 4) {
+                    ctr2 = 0;
+                    cED = 120;
+                    cED2 = 99999;
+                    while (ctr2 < xS.length) {
+                        if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED2) {
+                            cEV2 = ctr2;
+                            cED2 = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
+                            dE[ctr] = Math.atan2(yS[cEV2] - yE[ctr], xS[cEV2] - xE[ctr]);
+                        }
+                        if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED && Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < 120) {
+                            cEV = ctr2;
+                            cED = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
+                        }
+                        ctr2++
+                    }
+                    if (Math.sqrt(Math.pow(xE[ctr] - xS[cEV2], 2) + Math.pow(yE[ctr] - yS[cEV2], 2)) > 100) {
+                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) * 2;
+                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) * 2;
+                    }
+                    if (cED < 120) {
+                        if (tMRE[ctr] > 70) {
+                            tMRE[ctr] = 0;
+                            summonBullet(xE[ctr] - Math.cos(dE[ctr]) * 8, yE[ctr] - Math.sin(dE[ctr]) * 8, dE[ctr], 50, 1, 5);
+                        }
+                    } else {
+                        if (tMRE2[ctr] > 90) {
+                            tMRE2[ctr] = 0;
+                            summonBullet(xE[ctr] - Math.cos(dE[ctr] + Math.PI * (7 / 6)) * 8, yE[ctr] - Math.sin(dE[ctr] + Math.PI * (7 / 6)) * 8, dE[ctr] + Math.PI * (7 / 6), 50, 1, 5);
+                            summonBullet(xE[ctr] - Math.cos(dE[ctr] + Math.PI * (5 / 6)) * 8, yE[ctr] - Math.sin(dE[ctr] + Math.PI * (5 / 6)) * 8, dE[ctr] + Math.PI * (5 / 6), 50, 1, 5);
+                        }
+                        if (tMRE2[ctr] < 15) {
+                            xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) * (3 - tMRE2[ctr] / 5);
+                            yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) * (3 - tMRE2[ctr] / 5);
+                        }
+                    }
+                    FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 0, dE[ctr]);
+                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 25, 14, 0, dE[ctr] + Math.PI * (7 / 6));
+                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 25, 14, 0, dE[ctr] + Math.PI * (5 / 6));
+                    diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
+                    healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
+                }
                 tMRE[ctr]++
+                tMRE2[ctr]++
                 if (hPE[ctr] <= 0) {
                     xE.splice(ctr, 1);
                     yE.splice(ctr, 1);
@@ -729,6 +811,7 @@
                     hPE.splice(ctr, 1);
                     mHPE.splice(ctr, 1);
                     tMRE.splice(ctr, 1);
+                    tMRE2.splice(ctr, 1);
                     tE.splice(ctr, 1);
                 }
                 ctr++;
@@ -744,7 +827,9 @@
                 ctr++
             }
             ctx.fillStyle = "#555555";
-            ctx.font = "24px Consolas";
+            //ctx.font = "24px Consolas";
+            ctx.font = "24px Ubuntu";
+            ctx.textAlign = "left";
             ctx.fillText("Drag mouse to move around.", 10, 24);
             ctx.fillText("Press [SPACE] to spawn a tower.", 10, 48);
             ctx.fillText("Press [B] to spawn a sniper tower.", 10, 72);
@@ -752,10 +837,11 @@
             ctx.fillText("Press [A] to spawn an enemy tank.", 10, 120);
             ctx.fillText("Press [D] to spawn an enemy sniper.", 10, 144);
             ctx.fillText("Press [C] to spawn an enemy twin tank.", 10, 168);
-            ctx.fillText("Press [W] to spawn an enemy flank guard [WIP].", 10, 192);
+            ctx.fillText("Press [W] to spawn an enemy flank guard.", 10, 192);
             ctx.fillText("Press [S] to spawn a machine gun tower [WIP].", 10, 216);
-            ctx.fillText("Click a tower, and press a number key to upgrade (only works with basic tank).", 10, 240);
-            ctx.fillText("Made by adasba.", 10, 264);
+            ctx.fillText("Press [Q] to spawn an enemy tri-angle. [WIP].", 10, 240);
+            ctx.fillText("Click a tower, and press a number key to upgrade (only works with basic tank).", 10, 264);
+            ctx.fillText("Made by adasba.", 10, 288);
             //ctx.fillRect(xE[0] - x + 512, yE[0] - y + 512, 15, 15)
             if (sT == 1) {
                 ctx.beginPath();
@@ -791,33 +877,52 @@
                     }
                 }
             }
-            ctx.beginPath();
-            ctx.fillStyle = "#75C6C3";
-            ctx.lineWidth = 7;
-            ctx.fillRect(50, 820, 150, 85);
-            ctx.fill();
-            ctx.closePath();
-            ctx.beginPath();
-            ctx.fillStyle = "#60A2A0";
-            ctx.lineWidth = 7;
-            ctx.fillRect(50, 905, 150, 65);
-            ctx.fill();
-            ctx.closePath();
-            ctx.beginPath();
-            ctx.strokeStyle = "#555555";
-            ctx.lineWidth = 7;
-            ctx.strokeRect(50, 820, 150, 150);
-            ctx.stroke();
-            ctx.closePath();
-            polygon(125, 895, 6, 40, 0, "#555555");
-            renderBarrel(125, 895, 56.25, 26.25, 15, lctr / 100);
-            renderBarrel(125, 895, 56.25, 26.25, -15, lctr / 100);
-            diepCircle(125, 895, 31.25, "#00B2E1");
+            aN = 300 / (ctrS[0] + 1);
+            ctx.textAlign = "center";
+            tankIcon(50, 824 + aN, "#75C6C3", "#60A2A0");
+            polygon(125, 899 + aN, 6, 40, 0, "#555555");
+            renderBarrel(125, 899 + aN, 56.25, 26.25, 15, lctr / 100);
+            renderBarrel(125, 899 + aN, 56.25, 26.25, -15, lctr / 100);
+            diepCircle(125, 899 + aN, 31.25, "#00B2E1");
+            tankIcon(250, 824 + aN, "#8BCA7A", "#72A466");
+            polygon(325, 899 + aN, 6, 40, 0, "#555555");
+            renderTrapezoidBarrel(325, 899 + aN, 56.25, 26.25, 0, lctr / 100, 47.5);
+            diepCircle(325, 899 + aN, 31.25, "#00B2E1");
+            tankIcon(450, 824 + aN, "#CA7676", "#A56262");
+            polygon(525, 899 + aN, 6, 40, 0, "#555555");
+            renderBarrel(525, 899 + aN, 62.5, 26.25, 0, lctr / 100);
+            diepCircle(525, 899 + aN, 31.25, "#00B2E1");
+            ctx.fillStyle = "White";
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = "rgb(40, 40, 40)";
+            ctx.font = "Bold 18px Ubuntu";
+            ctx.strokeText("Twin", 125, 960 + aN);
+            ctx.fillText("Twin", 125, 960 + aN);
+            ctx.strokeText("Machine Gun", 325, 960 + aN);
+            ctx.fillText("Machine Gun", 325, 960 + aN);
+            ctx.strokeText("Sniper", 525, 960 + aN);
+            ctx.fillText("Sniper", 525, 960 + aN);
+            ctx.strokeText("[1]", 125, 853 + aN);
+            ctx.fillText("[1]", 125, 853 + aN);
+            ctx.strokeText("[2]", 325, 853 + aN);
+            ctx.fillText("[2]", 325, 853 + aN);
+            ctx.strokeText("[3]", 525, 853 + aN);
+            ctx.fillText("[3]", 525, 853 + aN);
+            if (ctrS[0] < 60 && sT == 1) {
+                ctrS[0]++;
+                if (tS[sTV] != 0 && ctrS[0] > 0) {
+                    ctrS[0] = ctrS[0] - 2;
+                }
+            }
+            if (ctrS[0] > 0 && sT == 0) {
+                ctrS[0]--;
+            }
             setTimeout(loop, 10);
             lctr++;
         }
         loop();
         //Changelog:
+        //Update 0.1.2: Tri-Angle added, upgrade icons are complete for now.
         //Update 0.1.1.2: Much more code condensing, the game is down to 828 lines, it was at around 1200 before.
         //Update 0.1.1.1: Working on upgrade graphics, several graphical changes, and condensing code.
         //Update 0.1.1: Added the ability to upgrade tanks by clicking on them and pressing a number key.
