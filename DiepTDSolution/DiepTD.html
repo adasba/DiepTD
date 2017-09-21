@@ -79,22 +79,7 @@
             if (mID == 1) {
                 x = x + (pMX - mP.x);
                 y = y + (pMY - mP.y);
-                //ctr4 = 0;
-                //sT2 = 0;
-                //while (ctr4 < xS.length) {
-                //    if (Math.sqrt(Math.pow(xS[ctr4] - (mP.x + x - 512), 2) + Math.pow(yS[ctr4] - (mP.y + y - 512), 2)) < 10) {
-                //        sT = 1;
-                //        sT2 = 1;
-                //        sTV = ctr4;
-                //    } else if (Math.sqrt(Math.pow(xS[ctr4] - (mP.x + x - 512), 2) + Math.pow(yS[ctr4] - (mP.y + y - 512), 2)) > 10 && sT2 == 0) {
-                //        sT = 0;
-                //    }
-                //    ctr4++;
-                //}
             }
-            //if (mID == 1 && pMX - mP.x < 10 && pMY - mP.y < 10) {
-            //    ctx.fillRect(50, 50, 50, 50);
-            //}
         }
         function mouseDown(e) {
             mID = 1;
@@ -105,10 +90,28 @@
                     sT = 1;
                     sT2 = 1;
                     sTV = ctr4;
-                } else if (Math.sqrt(Math.pow(xS[ctr4] - (mP.x + x - 512), 2) + Math.pow(yS[ctr4] - (mP.y + y - 512), 2)) > 20 && sT2 == 0) {
-                    sT = 0;
                 }
+                //} else if (Math.sqrt(Math.pow(xS[ctr4] - (mP.x + x - 512), 2) + Math.pow(yS[ctr4] - (mP.y + y - 512), 2)) > 20 && sT2 == 0) {
+                //    sT = 0;
+                //}
                 ctr4++;
+            }
+            if (sT == 1) {
+                if (mP.x > 50 && mP.y > 824 && mP.x < 200 && mP.y < 974) {
+                    if (tS[sTV] == 0) {
+                        tS[sTV] = 2;
+                    }
+                }
+                if (mP.x > 250 && mP.y > 824 && mP.x < 400 && mP.y < 974) {
+                    if (tS[sTV] == 0) {
+                        tS[sTV] = 3;
+                    }
+                }
+                if (mP.x > 450 && mP.y > 824 && mP.x < 600 && mP.y < 974) {
+                    if (tS[sTV] == 0) {
+                        tS[sTV] = 1;
+                    }
+                }
             }
         }
         function mouseUp(e) {
@@ -351,6 +354,11 @@
             if (keys2[81] == 1) {
                 summonEnemy(x + mP.x - 512, y + mP.y - 512, 4);
                 keys2[81] = 2;
+            }
+            if (keys2[88] == 1 || keys2[27] == 1) {
+                sT = 0;
+                keys2[88] = 2;
+                keys2[27] = 2;
             }
             ctx.fillStyle = "#CBCBCB";
             ctx.fillRect(0, 0, 1024, 1024);
@@ -877,44 +885,46 @@
                     }
                 }
             }
-            aN = 300 / (ctrS[0] + 1);
-            ctx.textAlign = "center";
-            tankIcon(50, 824 + aN, "#75C6C3", "#60A2A0");
-            polygon(125, 899 + aN, 6, 40, 0, "#555555");
-            renderBarrel(125, 899 + aN, 56.25, 26.25, 15, lctr / 100);
-            renderBarrel(125, 899 + aN, 56.25, 26.25, -15, lctr / 100);
-            diepCircle(125, 899 + aN, 31.25, "#00B2E1");
-            tankIcon(250, 824 + aN, "#8BCA7A", "#72A466");
-            polygon(325, 899 + aN, 6, 40, 0, "#555555");
-            renderTrapezoidBarrel(325, 899 + aN, 56.25, 26.25, 0, lctr / 100, 47.5);
-            diepCircle(325, 899 + aN, 31.25, "#00B2E1");
-            tankIcon(450, 824 + aN, "#CA7676", "#A56262");
-            polygon(525, 899 + aN, 6, 40, 0, "#555555");
-            renderBarrel(525, 899 + aN, 62.5, 26.25, 0, lctr / 100);
-            diepCircle(525, 899 + aN, 31.25, "#00B2E1");
-            ctx.fillStyle = "White";
-            ctx.lineWidth = 6;
-            ctx.strokeStyle = "rgb(40, 40, 40)";
-            ctx.font = "Bold 18px Ubuntu";
-            ctx.strokeText("Twin", 125, 960 + aN);
-            ctx.fillText("Twin", 125, 960 + aN);
-            ctx.strokeText("Machine Gun", 325, 960 + aN);
-            ctx.fillText("Machine Gun", 325, 960 + aN);
-            ctx.strokeText("Sniper", 525, 960 + aN);
-            ctx.fillText("Sniper", 525, 960 + aN);
-            ctx.strokeText("[1]", 125, 853 + aN);
-            ctx.fillText("[1]", 125, 853 + aN);
-            ctx.strokeText("[2]", 325, 853 + aN);
-            ctx.fillText("[2]", 325, 853 + aN);
-            ctx.strokeText("[3]", 525, 853 + aN);
-            ctx.fillText("[3]", 525, 853 + aN);
-            if (ctrS[0] < 60 && sT == 1) {
-                ctrS[0]++;
-                if (tS[sTV] != 0 && ctrS[0] > 0) {
-                    ctrS[0] = ctrS[0] - 2;
-                }
+            if (ctrS[0] > 0) {
+                aN = 300 / (ctrS[0] + 1);
+                ctx.textAlign = "center";
+                tankIcon(50, 824 + aN, "#75C6C3", "#60A2A0");
+                polygon(125, 899 + aN, 6, 40, 0, "#555555");
+                renderBarrel(125, 899 + aN, 56.25, 26.25, 15, lctr / 100);
+                renderBarrel(125, 899 + aN, 56.25, 26.25, -15, lctr / 100);
+                diepCircle(125, 899 + aN, 31.25, "#00B2E1");
+                tankIcon(250, 824 + aN, "#8BCA7A", "#72A466");
+                polygon(325, 899 + aN, 6, 40, 0, "#555555");
+                renderTrapezoidBarrel(325, 899 + aN, 56.25, 26.25, 0, lctr / 100, 47.5);
+                diepCircle(325, 899 + aN, 31.25, "#00B2E1");
+                tankIcon(450, 824 + aN, "#CA7676", "#A56262");
+                polygon(525, 899 + aN, 6, 40, 0, "#555555");
+                renderBarrel(525, 899 + aN, 62.5, 26.25, 0, lctr / 100);
+                diepCircle(525, 899 + aN, 31.25, "#00B2E1");
+                ctx.fillStyle = "White";
+                ctx.lineWidth = 6;
+                ctx.strokeStyle = "rgb(40, 40, 40)";
+                ctx.font = "Bold 18px Ubuntu";
+                ctx.strokeText("Twin", 125, 960 + aN);
+                ctx.fillText("Twin", 125, 960 + aN);
+                ctx.strokeText("Machine Gun", 325, 960 + aN);
+                ctx.fillText("Machine Gun", 325, 960 + aN);
+                ctx.strokeText("Sniper", 525, 960 + aN);
+                ctx.fillText("Sniper", 525, 960 + aN);
+                ctx.strokeText("[1]", 125, 853 + aN);
+                ctx.fillText("[1]", 125, 853 + aN);
+                ctx.strokeText("[2]", 325, 853 + aN);
+                ctx.fillText("[2]", 325, 853 + aN);
+                ctx.strokeText("[3]", 525, 853 + aN);
+                ctx.fillText("[3]", 525, 853 + aN);
             }
-            if (ctrS[0] > 0 && sT == 0) {
+            if (ctrS[0] < 60 && sT == 1 && tS[sTV] == 0) {
+                ctrS[0]++;
+            }
+            if (tS[sTV] != 0 && ctrS[0] > 0) {
+                ctrS[0]--;
+            }
+            if (ctrS[0] > 0 && sT == 0 && tS[sTV] == 0) {
                 ctrS[0]--;
             }
             setTimeout(loop, 10);
@@ -922,6 +932,9 @@
         }
         loop();
         //Changelog:
+        //Update 0.1.2.1: Upgrade icons can now be clicked on, and their animations were slightly modified.
+        //Tank selection settings changed, now they don't de-select when you click somewhere else.
+        //Press X or Escape to exit from the tank upgrade screen.
         //Update 0.1.2: Tri-Angle added, upgrade icons are complete for now.
         //Update 0.1.1.2: Much more code condensing, the game is down to 828 lines, it was at around 1200 before.
         //Update 0.1.1.1: Working on upgrade graphics, several graphical changes, and condensing code.
