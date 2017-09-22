@@ -25,6 +25,7 @@
         var hPS = [150];
         var mHPS = [150];
         var tMRS = [0];
+        var tMRS2 = [0];
         var dS = [1];
         var pMX = 0;
         var pMY = 0;
@@ -42,7 +43,8 @@
         var xP = [0, 240, -320];
         var yP = [0, -564, 123];
         var tP = [0, 1, 2];
-        var hPP = [100, 200, 1000];
+        var hPP = [1000, 2000, 10000];
+        var mHPP = [1000, 2000, 10000]
         var xE = [157];
         var yE = [110];
         var tE = [0];
@@ -67,6 +69,8 @@
         var sT = 0;
         var sT2 = 0;
         var sTV = 0;
+        var cash = 100;
+        var pT = 0;
         while (ctr < 256) {
             keys.push(0);
             keys2.push(0);
@@ -83,6 +87,11 @@
         }
         function mouseDown(e) {
             mID = 1;
+            if (pT == 1) {
+                summonTower(x + mP.x - 512, y + mP.y - 512, 0);
+                cash = cash - 30;
+                pT = 0;
+            }
             ctr4 = 0;
             sT2 = 0;
             while (ctr4 < xS.length) {
@@ -99,16 +108,19 @@
             if (sT == 1) {
                 if (mP.x > 50 && mP.y > 824 && mP.x < 200 && mP.y < 974) {
                     if (tS[sTV] == 0) {
+                        cash = cash - 60;
                         tS[sTV] = 2;
                     }
                 }
                 if (mP.x > 250 && mP.y > 824 && mP.x < 400 && mP.y < 974) {
                     if (tS[sTV] == 0) {
+                        cash = cash - 50;
                         tS[sTV] = 3;
                     }
                 }
                 if (mP.x > 450 && mP.y > 824 && mP.x < 600 && mP.y < 974) {
                     if (tS[sTV] == 0) {
+                        cash = cash - 40;
                         tS[sTV] = 1;
                     }
                 }
@@ -205,6 +217,7 @@
             yS.push(y);
             tS.push(type);
             tMRS.push(0);
+            tMRS2.push(0);
             dS.push(0);
             if (type == 0) {
                 hPS.push(150);
@@ -221,6 +234,10 @@
             if (type == 3) {
                 hPS.push(250);
                 mHPS.push(250);
+            }
+            if (type == 4) {
+                hPS.push(80);
+                mHPS.push(80);
             }
         }
         function summonEnemy(x, y, type) {
@@ -320,8 +337,8 @@
         }
         function loop() {
             if (keys2[32] == 1) {
-                summonTower(x + mP.x - 512, y + mP.y - 512, 0);
-                keys2[32] = 2;
+                pT = 1
+                keys2[32] == 2;
             }
             if (keys2[65] == 1) {
                 summonEnemy(x + mP.x - 512, y + mP.y - 512, 0);
@@ -336,7 +353,7 @@
                 keys2[67] = 2;
             }
             if (keys2[66] == 1) {
-                summonTower(x + mP.x - 512, y + mP.y - 512, 1);
+                summonTower(x + mP.x - 512, y + mP.y - 512, 4);
                 keys2[66] = 2;
             }
             if (keys2[69] == 1) {
@@ -411,7 +428,7 @@
                         }
                         ctr2++;
                     }
-                } else {
+                } else if (teams[ctr] == 1) {
                     ctx.beginPath();
                     ctx.fillStyle = "rgb(110, 110, 110)";
                     ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 10, 0, Math.PI * 2);
@@ -422,6 +439,27 @@
                     while (ctr2 < xS.length) {
                         if (Math.sqrt(Math.pow(xB[ctr] - xS[ctr2], 2) + Math.pow(yB[ctr] - yS[ctr2], 2)) < 20) {
                             hPS[ctr2] = hPS[ctr2] - 10
+                            xB.splice(ctr, 1);
+                            yB.splice(ctr, 1);
+                            dB.splice(ctr, 1);
+                            teams.splice(ctr, 1);
+                            vB.splice(ctr, 1);
+                            lTB.splice(ctr, 1);
+                        }
+                        ctr2++;
+                    }
+                } else if (teams[ctr] == 2) {
+                    ctx.beginPath();
+                    ctx.fillStyle = "rgb(110, 110, 110)";
+                    ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.closePath();
+                    diepCircle(xB[ctr] - x + 512, yB[ctr] - y + 512, 8, "#999999");
+                    ctr2 = 0
+                    while (ctr2 < xP.length) {
+                        if (Math.sqrt(Math.pow(xB[ctr] - xP[ctr2], 2) + Math.pow(yB[ctr] - yP[ctr2], 2)) < 20) {
+                            hPP[ctr2]--;
+                            cash++;
                             xB.splice(ctr, 1);
                             yB.splice(ctr, 1);
                             dB.splice(ctr, 1);
@@ -469,16 +507,26 @@
                     polygon((xP[ctr] - x) * 1.1 + 512, (yP[ctr] - y) * 1.1 + 512, 4, 28, lctr / 100, "rgb(110, 110, 110)");
                     polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 4, 24, lctr / 100, "#555555");
                     polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 4, 20, lctr / 100, "#FFE95E");
+                    healthBar(xP[ctr] - x + 512, yP[ctr] - y + 512, hPP[ctr], mHPP[ctr], 40);
                 }
                 if (tP[ctr] == 1) {
                     polygon((xP[ctr] - x) * 1.1 + 512, (yP[ctr] - y) * 1.1 + 512, 3, 26, lctr / 100, "rgb(110, 110, 110)");
                     polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 3, 22, lctr / 100, "#555555");
                     polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 3, 17, lctr / 100, "#FC7677");
+                    healthBar(xP[ctr] - x + 512, yP[ctr] - y + 512, hPP[ctr], mHPP[ctr], 40);
                 }
                 if (tP[ctr] == 2) {
                     polygon((xP[ctr] - x) * 1.1 + 512, (yP[ctr] - y) * 1.1 + 512, 5, 35, lctr / 100, "rgb(110, 110, 110)");
                     polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 5, 31, lctr / 100, "#555555");
                     polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 5, 27, lctr / 100, "#768DFC");
+                    healthBar(xP[ctr] - x + 512, yP[ctr] - y + 512, hPP[ctr], mHPP[ctr], 50);
+                }
+                if (hPP[ctr] < 0) {
+                    xP.splice(ctr, 1);
+                    yP.splice(ctr, 1);
+                    hPP.splice(ctr, 1);
+                    mHPP.splice(ctr, 1);
+                    tP.splice(ctr, 1);
                 }
                 ctr++;
             }
@@ -606,7 +654,31 @@
                     diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 25, "#00B2E1");
                     healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
                 }
+                if (tS[ctr] == 4) {
+                    ctr2 = 0;
+                    cED = 240;
+                    while (ctr2 < xP.length) {
+                        if (Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2)) < 240) {
+                            cEV = ctr2;
+                            dS[ctr] = Math.atan2(yP[cEV] - yS[ctr], xP[cEV] - xS[ctr]);
+                            cED = Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2));
+                        }
+                        ctr2++
+                    }
+                    if (tMRS[ctr] > 18 && cED < 240) {
+                        tMRS[ctr] = 0;
+                        summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 2, 25);
+                    }
+                    polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 3, 50, 0, "#555555");
+                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
+                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 22, "#999999");
+                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
+                }
+                if (hPS[ctr] < mHPS[ctr] && tMRS2[ctr] % 50 == 0) {
+                    hPS[ctr] = hPS[ctr] + mHPS[ctr] / 100;
+                }
                 tMRS[ctr]++
+                tMRS2[ctr]++
                 if (hPS[ctr] <= 0) {
                     xS.splice(ctr, 1);
                     yS.splice(ctr, 1);
@@ -614,6 +686,7 @@
                     hPS.splice(ctr, 1);
                     mHPS.splice(ctr, 1);
                     tMRS.splice(ctr, 1);
+                    tMRS2.splice(ctr, 1);
                     tS.splice(ctr, 1);
                 }
                 ctr++;
@@ -784,8 +857,8 @@
                         ctr2++
                     }
                     if (Math.sqrt(Math.pow(xE[ctr] - xS[cEV2], 2) + Math.pow(yE[ctr] - yS[cEV2], 2)) > 100) {
-                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) * 2;
-                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) * 2;
+                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) * 1.5;
+                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) * 1.5;
                     }
                     if (cED < 120) {
                         if (tMRE[ctr] > 70) {
@@ -798,9 +871,9 @@
                             summonBullet(xE[ctr] - Math.cos(dE[ctr] + Math.PI * (7 / 6)) * 8, yE[ctr] - Math.sin(dE[ctr] + Math.PI * (7 / 6)) * 8, dE[ctr] + Math.PI * (7 / 6), 50, 1, 5);
                             summonBullet(xE[ctr] - Math.cos(dE[ctr] + Math.PI * (5 / 6)) * 8, yE[ctr] - Math.sin(dE[ctr] + Math.PI * (5 / 6)) * 8, dE[ctr] + Math.PI * (5 / 6), 50, 1, 5);
                         }
-                        if (tMRE2[ctr] < 15) {
-                            xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) * (3 - tMRE2[ctr] / 5);
-                            yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) * (3 - tMRE2[ctr] / 5);
+                        if (tMRE2[ctr] < 30) {
+                            xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) * (6 - tMRE2[ctr] / 5);
+                            yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) * (6 - tMRE2[ctr] / 5);
                         }
                     }
                     FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
@@ -832,6 +905,9 @@
                 if (tS[ctr] == 1) {
                     FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 350, "rgba(0, 60, 110, 0.02)", "rgba(0, 60, 110, 0.09)");
                 }
+                if (tS[ctr] == 4) {
+                    FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 240, "rgba(110, 110, 110, 0.02)", "rgba(110, 110, 110, 0.09)");
+                }
                 ctr++
             }
             ctx.fillStyle = "#555555";
@@ -840,7 +916,7 @@
             ctx.textAlign = "left";
             ctx.fillText("Drag mouse to move around.", 10, 24);
             ctx.fillText("Press [SPACE] to spawn a tower.", 10, 48);
-            ctx.fillText("Press [B] to spawn a sniper tower.", 10, 72);
+            ctx.fillText("Press [B] to spawn a polygon miner tower [WIP]. (Temporary Change)", 10, 72);
             ctx.fillText("Press [E] to spawn a twin tower.", 10, 96);
             ctx.fillText("Press [A] to spawn an enemy tank.", 10, 120);
             ctx.fillText("Press [D] to spawn an enemy sniper.", 10, 144);
@@ -849,7 +925,8 @@
             ctx.fillText("Press [S] to spawn a machine gun tower [WIP].", 10, 216);
             ctx.fillText("Press [Q] to spawn an enemy tri-angle. [WIP].", 10, 240);
             ctx.fillText("Click a tower, and press a number key to upgrade (only works with basic tank).", 10, 264);
-            ctx.fillText("Made by adasba.", 10, 288);
+            ctx.fillText("Sniper can still be spawned from upgrade menu.", 10, 288);
+            ctx.fillText("Made by adasba.", 10, 312);
             //ctx.fillRect(xE[0] - x + 512, yE[0] - y + 512, 15, 15)
             if (sT == 1) {
                 ctx.beginPath();
@@ -866,18 +943,21 @@
                 }
                 if (tS[sTV] == 0) {
                     if (keys2[49] == 1) {
+                        cash = cash - 60;
                         mHPS[sTV] = mHPS[sTV] + 125;
                         hPS[sTV] = hPS[sTV] + 125;
                         tS[sTV] = 2;
                         keys2[49] = 2;
                     }
                     if (keys2[50] == 1) {
+                        cash = cash - 50;
                         mHPS[sTV] = mHPS[sTV] + 100;
                         hPS[sTV] = hPS[sTV] + 100;
                         tS[sTV] = 3;
                         keys2[50] = 2;
                     }
                     if (keys2[51] == 1) {
+                        cash = cash - 40;
                         mHPS[sTV] = mHPS[sTV] + 75;
                         hPS[sTV] = hPS[sTV] + 75;
                         tS[sTV] = 1;
@@ -905,12 +985,12 @@
                 ctx.lineWidth = 6;
                 ctx.strokeStyle = "rgb(40, 40, 40)";
                 ctx.font = "Bold 18px Ubuntu";
-                ctx.strokeText("Twin", 125, 960 + aN);
-                ctx.fillText("Twin", 125, 960 + aN);
-                ctx.strokeText("Machine Gun", 325, 960 + aN);
-                ctx.fillText("Machine Gun", 325, 960 + aN);
-                ctx.strokeText("Sniper", 525, 960 + aN);
-                ctx.fillText("Sniper", 525, 960 + aN);
+                ctx.strokeText("Twin - 60", 125, 960 + aN);
+                ctx.fillText("Twin - 60", 125, 960 + aN);
+                ctx.strokeText("Machine Gun - 50", 325, 960 + aN);
+                ctx.fillText("Machine Gun - 50", 325, 960 + aN);
+                ctx.strokeText("Sniper - 40", 525, 960 + aN);
+                ctx.fillText("Sniper - 40", 525, 960 + aN);
                 ctx.strokeText("[1]", 125, 853 + aN);
                 ctx.fillText("[1]", 125, 853 + aN);
                 ctx.strokeText("[2]", 325, 853 + aN);
@@ -918,6 +998,13 @@
                 ctx.strokeText("[3]", 525, 853 + aN);
                 ctx.fillText("[3]", 525, 853 + aN);
             }
+            ctx.lineWidth = 6;
+            ctx.fillStyle = "White";
+            ctx.strokeStyle = "rgb(40, 40, 40)";
+            ctx.textAlign = "right";
+            ctx.font = "Bold 36px Ubuntu";
+            ctx.strokeText("Resources: " + cash, 1020, 36);
+            ctx.fillText("Resources: " + cash, 1020, 36);
             if (ctrS[0] < 60 && sT == 1 && tS[sTV] == 0) {
                 ctrS[0]++;
             }
@@ -927,11 +1014,23 @@
             if (ctrS[0] > 0 && sT == 0 && tS[sTV] == 0) {
                 ctrS[0]--;
             }
+            if (pT == 1) {
+                polygon(mP.x, mP.y, 6, 27, 0, "#555555");
+                renderBarrel(mP.x, mP.y, 43, 21, 0, 0);
+                diepCircle(mP.x, mP.y, 22, "#00B2E1");
+                healthBar(mP.x, mP.y, 1, 1, 55);
+                FOV(mP.x, mP.y, 200, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
+            }
             setTimeout(loop, 10);
             lctr++;
         }
         loop();
         //Changelog:
+        //Update 0.1.3: Currency added to the game, called "Resources".
+        //Some changes to upgrade icons and tank spawning.
+        //New polygon miner tank to mine resources from shapes.
+        //Shapes have health and can be damaged.
+        //Tanks regenerate.
         //Update 0.1.2.1: Upgrade icons can now be clicked on, and their animations were slightly modified.
         //Tank selection settings changed, now they don't de-select when you click somewhere else.
         //Press X or Escape to exit from the tank upgrade screen.
