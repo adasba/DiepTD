@@ -669,7 +669,7 @@
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 2, 25);
                     }
-                    polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 3, 50, 0, "#555555");
+                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 28, "#555555");
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
                     diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 22, "#999999");
                     healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
@@ -720,7 +720,7 @@
                         }
                     }
                     FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
-                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 26, 12, 0, dE[ctr]);
+                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 20, 9, 0, dE[ctr]);
                     diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 15, "#F14E54");
                     healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
                 }
@@ -1026,6 +1026,7 @@
         }
         loop();
         //Changelog:
+        //Update 0.1.3.1: Graphical changes to polygon miner.
         //Update 0.1.3: Currency added to the game, called "Resources".
         //Some changes to upgrade icons and tank spawning.
         //New polygon miner tank to mine resources from shapes.
