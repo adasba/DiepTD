@@ -18,15 +18,16 @@
         var ctx = c.getContext("2d");
         var x = 0;
         var y = 0;
-        var xS = [123];
-        var yS = [351];
-        var tS = [0];
+        var xS = [123, 100];
+        var yS = [351, 0];
+        var tS = [7, 8];
         //TODO: hit points
-        var hPS = [150];
-        var mHPS = [150];
-        var tMRS = [0];
-        var tMRS2 = [0];
-        var dS = [1];
+        var hPS = [50, 750];
+        var mHPS = [50, 750];
+        var tMRS = [0, 0];
+        var tMRS2 = [0, 0];
+        var dS = [1, 1];
+        var pW = [1, 0];
         var pMX = 0;
         var pMY = 0;
         var mP = {};
@@ -38,8 +39,10 @@
         var ctr4 = 0;
         var ctr5 = 0;
         var ctr6 = 0;
+        var ctr7 = 0;
         var ctrS = [0, 0, 0, 0, 0];
         var aN = 0;
+        var aN2 = [];
         var xP = [0, 240, -320];
         var yP = [0, -564, 123];
         var tP = [0, 1, 2];
@@ -59,6 +62,7 @@
         var lTB = [];
         var teams = [];
         var vB = [];
+        var tB = [];
         var cEV = 0;
         var cEV2 = 0;
         var cEV3 = 0;
@@ -70,8 +74,14 @@
         var sT2 = 0;
         var sTV = 0;
         var cash = 100;
+        var power = 0;
+        var mPower = 0;
         var pT = 0;
         var aRCV = 0;
+        var iR = 0;
+        var pWC = 0;
+        var pWL = [];
+        var totalPower = 0;
         while (ctr < 256) {
             keys.push(0);
             keys2.push(0);
@@ -88,15 +98,22 @@
         }
         function mouseDown(e) {
             mID = 1;
-            if (pT == 1) {
-                summonTower(x + mP.x - 512, y + mP.y - 512, 0);
-                cash = cash - 30;
-                pT = 0;
-            }
-            if (pT == 2) {
-                summonTower(x + mP.x - 512, y + mP.y - 512, 4);
-                cash = cash - 20;
-                pT = 0;
+            if (iR == 1) {
+                if (pT == 1) {
+                    summonTower(x + mP.x - 512, y + mP.y - 512, 0);
+                    cash = cash - 30;
+                    pT = 0;
+                }
+                if (pT == 2) {
+                    summonTower(x + mP.x - 512, y + mP.y - 512, 4);
+                    cash = cash - 20;
+                    pT = 0;
+                }
+                if (pT == 3) {
+                    summonTower(x + mP.x - 512, y + mP.y - 512, 7);
+                    cash = cash - 10;
+                    pT = 0;
+                }
             }
             ctr4 = 0;
             sT2 = 0;
@@ -117,6 +134,9 @@
             if (mP.x > 824 && mP.y > 914 && mP.x < 974 && mP.y < 944) {
                 pT = 2
             }
+            if (mP.x > 824 && mP.y > 874 && mP.x < 974 && mP.y < 904) {
+                pT = 3
+            }
             if (sT == 1) {
                 if (mP.x > 50 && mP.y > 824 && mP.x < 200 && mP.y < 974) {
                     if (tS[sTV] == 0) {
@@ -131,6 +151,14 @@
                         mHPS[sTV] = mHPS[sTV] + 75;
                         hPS[sTV] = hPS[sTV] + 75;
                         tS[sTV] = 5;
+                        aRCV = 1;
+                    }
+                    if (tS[sTV] == 5 && aRCV == 0) {
+                        cash = cash - 250;
+                        mHPS[sTV] = mHPS[sTV] + 150;
+                        hPS[sTV] = hPS[sTV] + 150;
+                        tS[sTV] = 6;
+                        aRCV = 1;
                     }
                 }
                 if (mP.x > 250 && mP.y > 824 && mP.x < 400 && mP.y < 974) {
@@ -230,13 +258,14 @@
             ctx.fill();
             ctx.closePath();
         }
-        function summonBullet(x, y, dir, lifetime, team, vel) {
+        function summonBullet(x, y, dir, lifetime, team, vel, tank) {
             xB.push(x);
             yB.push(y);
             dB.push(dir);
             lTB.push(lifetime);
             teams.push(team);
             vB.push(vel);
+            tB.push(tank);
         }
         function summonTower(x, y, type) {
             xS.push(x);
@@ -245,6 +274,11 @@
             tMRS.push(0);
             tMRS2.push(0);
             dS.push(0);
+            if (type == 8) {
+                pW.push(0);
+            } else {
+                pW.push(new Array());
+            }
             if (type == 0) {
                 hPS.push(150);
                 mHPS.push(150);
@@ -272,6 +306,14 @@
             if (type == 6) {
                 hPS.push(500);
                 mHPS.push(500);
+            }
+            if (type == 7) {
+                hPS.push(50);
+                mHPS.push(50);
+            }
+            if (type == 8) {
+                hPS.push(750);
+                mHPS.push(750);
             }
         }
         function summonEnemy(x, y, type) {
@@ -336,6 +378,13 @@
             ctx.fill();
             ctx.closePath();
         }
+        function diepCircle2(x, y, radius, color) {
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.closePath();
+        }
         function FOV(x, y, radius, color, color2) {
             ctx.beginPath();
             ctx.fillStyle = color;
@@ -389,7 +438,50 @@
             ctx.stroke();
             ctx.closePath();
         }
+        function powerTank(tank, power1) {
+            ctr7 = 0;
+            aN = 0;
+            aN2 = [];
+            while (pW[tank].length > ctr7) {
+                if (pW[pW[tank][ctr7]] >= power1 / (pW[tank].length - aN)) {
+                    aN2.push(pW[tank][ctr7]);
+                } else {
+                    aN++;
+                }
+                ctr7++;
+            }
+            ctr7 = 0;
+            while (aN2.length > ctr7) {
+                pW[aN2[ctr7]] = pW[aN2[ctr7]] - (power1 / (pW[tank].length - aN));
+                ctr7++;
+            }
+        }
+        function usableTankPower(tank) {
+            aN = 0;
+            ctr7 = 0;
+            while (pW[tank].length > ctr7) {
+                aN = aN + pW[pW[tank][ctr7]]
+                ctr7++;
+            }
+            return aN;
+        }
         function loop() {
+            mPower = 0;
+            iR = 0;
+            ctr6 = 0;
+            while (ctr6 < xS.length) {
+                if (Math.sqrt(Math.pow((x + mP.x - 512) - xS[ctr6], 2) + Math.pow((y + mP.y - 512) - yS[ctr6], 2)) < 175 && tS[ctr6] == 7) {
+                    iR = 1;
+                }
+                ctr6++;
+            }
+            ctr6 = 0;
+            while (ctr6 < xS.length && iR == 1) {
+                if (Math.sqrt(Math.pow((x + mP.x - 512) - xS[ctr6], 2) + Math.pow((y + mP.y - 512) - yS[ctr6], 2)) < 40) {
+                    iR = 0;
+                }
+                ctr6++;
+            }
             if (keys2[32] == 1) {
                 pT = 1;
                 keys2[32] == 2;
@@ -402,16 +494,16 @@
                 summonEnemy(x + mP.x - 512, y + mP.y - 512, 1);
                 keys2[68] = 2;
             }
-            if (keys2[67] == 1) {
-                summonEnemy(x + mP.x - 512, y + mP.y - 512, 2);
-                keys2[67] = 2;
-            }
+            //if (keys2[67] == 1) {
+            //    summonEnemy(x + mP.x - 512, y + mP.y - 512, 2);
+            //    keys2[67] = 2;
+            //}
             if (keys2[77] == 1) {
                 pT = 2;
                 keys2[77] = 2;
             }
             if (keys2[69] == 1) {
-                summonTower(x + mP.x - 512, y + mP.y - 512, 6);
+                summonTower(x + mP.x - 512, y + mP.y - 512, 8);
                 keys2[69] = 2;
             }
             if (keys2[87] == 1) {
@@ -419,12 +511,16 @@
                 keys2[87] = 2;
             }
             if (keys2[83] == 1) {
-                summonTower(x + mP.x - 512, y + mP.y - 512, 3);
+                summonTower(x + mP.x - 512, y + mP.y - 512, 7);
                 keys2[83] = 2;
             }
             if (keys2[81] == 1) {
                 summonEnemy(x + mP.x - 512, y + mP.y - 512, 4);
                 keys2[81] = 2;
+            }
+            if (keys2[67] == 1) {
+                pT = 3;
+                keys2[67] = 2
             }
             if (keys2[82] == 1 && sT == 1) {
                 xS.splice(sTV, 1);
@@ -435,6 +531,7 @@
                 tMRS.splice(sTV, 1);
                 tMRS2.splice(sTV, 1);
                 tS.splice(sTV, 1);
+                pW.splice(sTV, 1);
                 sT = 0;
                 keys2[82] = 2;
             }
@@ -470,6 +567,13 @@
             }
             ctx.stroke();
             ctx.closePath();
+            ctr = 0;
+            while (pT != 0 && ctr < xS.length) {
+                if (tS[ctr] == 7) {
+                    FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(0, 60, 0, 0.14)", "rgba(0, 110, 60, 0.63)");
+                }
+                ctr++;
+            }
             ctr = 0;
             while (ctr < xB.length) {
                 xB[ctr] = xB[ctr] + Math.cos(dB[ctr]) * vB[ctr];
@@ -512,6 +616,7 @@
                             teams.splice(ctr, 1);
                             vB.splice(ctr, 1);
                             lTB.splice(ctr, 1);
+                            tB.splice(ctr, 1);
                         }
                         ctr2++;
                     }
@@ -533,6 +638,28 @@
                             teams.splice(ctr, 1);
                             vB.splice(ctr, 1);
                             lTB.splice(ctr, 1);
+                            tB.splice(ctr, 1);
+                        }
+                        ctr2++;
+                    }
+                } else if (teams[ctr] == 3) {
+                    ctx.beginPath();
+                    ctx.fillStyle = "rgb(110, 110, 110)";
+                    ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.closePath();
+                    diepCircle(xB[ctr] - x + 512, yB[ctr] - y + 512, 14, "#00E16E");
+                    ctr2 = 0
+                    while (ctr2 < xP.length) {
+                        if (Math.sqrt(Math.pow(xB[ctr] - xP[ctr2], 2) + Math.pow(yB[ctr] - yP[ctr2], 2)) < 20) {
+                            //pW[tB[ctr]]++;
+                            xB.splice(ctr, 1);
+                            yB.splice(ctr, 1);
+                            dB.splice(ctr, 1);
+                            teams.splice(ctr, 1);
+                            vB.splice(ctr, 1);
+                            lTB.splice(ctr, 1);
+                            tB.splice(ctr, 1);
                         }
                         ctr2++;
                     }
@@ -544,11 +671,18 @@
                     vB.splice(ctr, 1);
                     teams.splice(ctr, 1);
                     lTB.splice(ctr, 1);
+                    tB.splice(ctr, 1);
                 }
                 ctr++;
             }
             ctr = 0;
             while (ctr < xS.length) {
+                if (tS[ctr] == 8) {
+                    pWL.push(ctr);
+                    if (pW[ctr] > 10) {
+                        pW[ctr] = 10;
+                    }
+                }
                 if (tS[ctr] == 0) {
                     renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
                     polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 30, 0, "rgb(110, 110, 110)");
@@ -565,6 +699,31 @@
                 if (tS[ctr] == 3) {
                     renderTrapezoidShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 48, 24, 0, dS[ctr], 42);
                     polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 35, 0, "rgb(110, 110, 110)");
+                }
+                if (tS[ctr] == 4) {
+                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 44, 21, 0, dS[ctr]);
+                    diepCircle2((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 34, "rgb(110, 110, 110)");
+                }
+                if (tS[ctr] == 5) {
+                    polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 42, 0, "rgb(110, 110, 110)");
+                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 56, 27, 0, dS[ctr]);
+                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 56, 27, 0, dS[ctr] + Math.PI / 4);
+                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 56, 27, 0, dS[ctr] - Math.PI / 4);
+                }
+                if (tS[ctr] == 6) {
+                    polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 45, 0, "#555555");
+                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 29, 0, dS[ctr] + Math.PI / 4);
+                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 29, 0, dS[ctr] - Math.PI / 4);
+                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 66, 29, 0, dS[ctr] + Math.PI / 8);
+                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 66, 29, 0, dS[ctr] - Math.PI / 8);
+                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 77, 29, 0, dS[ctr]);
+                }
+                if (tS[ctr] == 7) { 
+                    polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 5, 23, lctr / 30, "rgb(110, 110, 110)");
+                }
+                if (tS[ctr] == 8) {
+                    diepCircle2((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 45, "rgb(110, 110, 110)");
+                    renderBarrel((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 55, 28, 0, dS[ctr]);
                 }
                 ctr++;
             }
@@ -639,9 +798,10 @@
                         }
                         ctr2++
                     }
-                    if (tMRS[ctr] > 60 && cED < 200) {
+                    if (tMRS[ctr] > 60 && cED < 200 && usableTankPower(ctr) > 0.2) {
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 0, 15);
+                        powerTank(ctr, 0.2);
                     }
                     polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 27, 0, "#555555");
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
@@ -659,9 +819,10 @@
                         }
                         ctr2++
                     }
-                    if (tMRS[ctr] > 100 && cED < 350) {
+                    if (tMRS[ctr] > 100 && cED < 350 && usableTankPower(ctr) > 0.2) {
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 0, 15);
+                        powerTank(ctr, 0.2);
                     }
                     polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 21, 0, dS[ctr]);
@@ -679,12 +840,14 @@
                         }
                         ctr2++
                     }
-                    if (tMRS[ctr] == 27 && cED < 200) {
+                    if (tMRS[ctr] == 27 && cED < 200 && usableTankPower(ctr) > 0.15) {
                         summonBullet(xS[ctr] + Math.cos(dS[ctr]) * 10, yS[ctr] + Math.sin(dS[ctr]) * 10, dS[ctr], 30, 0, 15);
+                        powerTank(ctr, 0.15);
                     }
-                    if (tMRS[ctr] > 54 && cED < 200) {
+                    if (tMRS[ctr] > 54 && cED < 200 && usableTankPower(ctr) > 0.15) {
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr] - Math.cos(dS[ctr]) * 10, yS[ctr] - Math.sin(dS[ctr]) * 10, dS[ctr], 30, 0, 15);
+                        powerTank(ctr, 0.15);
                     }
                     polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, 12, dS[ctr]);
@@ -703,18 +866,22 @@
                         }
                         ctr2++
                     }
-                    if (tMRS[ctr] == 16 && cED < 200) {
+                    if (tMRS[ctr] == 16 && cED < 200 && usableTankPower(ctr) > 0.15) {
                         summonBullet(xS[ctr] + Math.cos(dS[ctr]) * 10, yS[ctr] + Math.sin(dS[ctr]) * 10, dS[ctr] + 0.25, 30, 0, 15);
+                        powerTank(ctr, 0.15);
                     }
-                    if (tMRS[ctr] == 32 && cED < 200) {
+                    if (tMRS[ctr] == 32 && cED < 200 && usableTankPower(ctr) > 0.15) {
                         summonBullet(xS[ctr] + Math.cos(dS[ctr]) * 10, yS[ctr] + Math.sin(dS[ctr]) * 10, dS[ctr], 30, 0, 15);
+                        powerTank(ctr, 0.15);
                     }
-                    if (tMRS[ctr] == 48 && cED < 200) {
+                    if (tMRS[ctr] == 48 && cED < 200 && usableTankPower(ctr) > 0.15) {
                         summonBullet(xS[ctr] + Math.cos(dS[ctr]) * 10, yS[ctr] + Math.sin(dS[ctr]) * 10, dS[ctr] - 0.25, 30, 0, 15);
+                        powerTank(ctr, 0.15);
                     }
-                    if (tMRS[ctr] > 64 && cED < 200) {
+                    if (tMRS[ctr] > 64 && cED < 200 && usableTankPower(ctr) > 0.15) {
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr] - Math.cos(dS[ctr]) * 10, yS[ctr] - Math.sin(dS[ctr]) * 10, dS[ctr], 30, 0, 15);
+                        powerTank(ctr, 0.15);
                     }
                     polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
                     renderTrapezoidBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, 0, dS[ctr], 38);
@@ -732,9 +899,10 @@
                         }
                         ctr2++
                     }
-                    if (tMRS[ctr] > 18 && cED < 240) {
+                    if (tMRS[ctr] > 40 && cED < 240 && usableTankPower(ctr) > 0.02) {
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 2, 25);
+                        powerTank(ctr, 0.02);
                     }
                     diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 30, "#555555");
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 39, 18, 0, dS[ctr]);
@@ -752,11 +920,12 @@
                         }
                         ctr2++
                     }
-                    if (tMRS[ctr] > 50 && cED < 200) {
+                    if (tMRS[ctr] > 50 && cED < 200 && usableTankPower(ctr) > 0.45) {
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 0, 15);
                         summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 4, 30, 0, 15);
                         summonBullet(xS[ctr], yS[ctr], dS[ctr] - Math.PI / 4, 30, 0, 15);
+                        powerTank(ctr, 0.45);
                     }
                     polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 35, 0, "#555555");
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 24, 0, dS[ctr]);
@@ -776,17 +945,20 @@
                         }
                         ctr2++
                     }
-                    if (tMRS[ctr] == 15 && cED < 200) {
+                    if (tMRS[ctr] == 15 && cED < 200 && usableTankPower(ctr) > 0.1) {
                         summonBullet(xS[ctr], yS[ctr], dS[ctr], 75, 0, 5);
+                        powerTank(ctr, 0.1);
                     }
-                    if (tMRS[ctr] == 30 && cED < 200) {
+                    if (tMRS[ctr] == 30 && cED < 200 && usableTankPower(ctr) > 0.2) {
                         summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 8, 75, 0, 5);
                         summonBullet(xS[ctr], yS[ctr], dS[ctr] - Math.PI / 8, 75, 0, 5);
+                        powerTank(ctr, 0.2);
                     }
-                    if (tMRS[ctr] > 45 && cED < 200) {
+                    if (tMRS[ctr] > 45 && cED < 200 && usableTankPower(ctr) > 0.2) {
                         tMRS[ctr] = 0;
                         summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 4, 75, 0, 5);
                         summonBullet(xS[ctr], yS[ctr], dS[ctr] - Math.PI / 4, 75, 0, 5);
+                        powerTank(ctr, 0.2);
                     }
                     polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 39, 0, "#555555");
                     renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 26, 0, dS[ctr] + Math.PI / 4);
@@ -797,8 +969,90 @@
                     diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 30, "#00B2E1");
                     healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 70);
                 }
-                if (hPS[ctr] < mHPS[ctr] && tMRS2[ctr] % 50 == 0) {
+                if (tS[ctr] == 7) {
+                    ctr6 = 0;
+                    ctx.strokeStyle = "rgba(0, 60, 110, 0.25)";
+                    ctx.lineWidth = 5;
+                    while (ctr6 < xS.length) {
+                        if (Math.sqrt(Math.pow(xS[ctr] - xS[ctr6], 2) + Math.pow(yS[ctr] - yS[ctr6], 2)) < 175 && ctr != ctr6) {
+                            if (tS[ctr6] == 7) {
+                                if (ctr6 > ctr) {
+                                    ctx.beginPath();
+                                    ctx.moveTo(xS[ctr] - x + 512, yS[ctr] - y + 512);
+                                    ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
+                                    ctx.stroke();
+                                    ctx.closePath();
+                                }
+                            } else {
+                                ctx.beginPath();
+                                ctx.moveTo(xS[ctr] - x + 512, yS[ctr] - y + 512);
+                                ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
+                                ctx.stroke();
+                                ctx.closePath();
+                            }
+                        }
+                        ctr6++
+                    }
+                    polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 5, 20, lctr / 30, "#555555");
+                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 12, "#999999");
+                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 30);
+                }
+                if (tS[ctr] == 8) {
+                    mPower = mPower + 10;
+                    ctr2 = 0;
+                    cED = 240;
+                    while (ctr2 < xP.length) {
+                        if (Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2)) < 240) {
+                            cEV = ctr2;
+                            dS[ctr] = Math.atan2(yP[cEV] - yS[ctr], xP[cEV] - xS[ctr]);
+                            cED = Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2));
+                        }
+                        ctr2++
+                    }
+                    if (tMRS[ctr] > 100 && cED < 240) {
+                        tMRS[ctr] = 0;
+                        pW[ctr]++;
+                        summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 3, 25, ctr);
+                    }
+                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 40, "#555555");
+                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 25, 0, dS[ctr]);
+                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 32, "#00E16E");
+                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
+                    ctx.fillStyle = "White";
+                    ctx.strokeStyle = "rgb(40, 40, 40)";
+                    ctx.font = "Bold 18px Ubuntu";
+                    ctx.textAlign = "center";
+                    ctx.strokeText(Math.round(pW[ctr] * 100) / 100 + "/" + 10, xS[ctr] - x + 512, yS[ctr] - y + 518);
+                    ctx.fillText(Math.round(pW[ctr] * 100) / 100 + "/" + 10, xS[ctr] - x + 512, yS[ctr] - y + 518);
+                }
+                ctr6 = 0;
+                ctr5 = 0;
+                if (tS[ctr] != 8) {
+                    pW[ctr] = [];
+                    while (ctr5 < pWL.length) {
+                        pWC = 0;
+                        ctr6 = 0;
+                        while (ctr6 < xS.length) {
+                            if (Math.sqrt(Math.pow(xS[ctr] - xS[ctr6], 2) + Math.pow(yS[ctr] - yS[ctr6], 2)) < 175 && tS[ctr6] == 7 && pW[ctr6].indexOf(pWL[ctr5]) != -1) {
+                                pWC = 1;
+                            }
+                            if (ctr6 == pWL[ctr5] && Math.sqrt(Math.pow(xS[ctr] - xS[ctr6], 2) + Math.pow(yS[ctr] - yS[ctr6], 2)) < 175 && tS[ctr6] == 8) {
+                                pWC = 1;
+                            }
+                            ctr6++;
+                        }
+                        if (pWC == 1) {
+                            pW[ctr].push(pWL[ctr5]);
+                        }
+                        ctr5++;
+                    }
+                }
+                if (hPS[ctr] < mHPS[ctr] && tMRS2[ctr] % 50 == 0 && usableTankPower(ctr) > mHPS[ctr] / 10000 && tS[ctr] != 8) {
                     hPS[ctr] = hPS[ctr] + mHPS[ctr] / 100;
+                    powerTank(ctr, mHPS[ctr] / 10000);
+                }
+                if (tS[ctr] == 8 && hPS[ctr] < mHPS[ctr] && tMRS2[ctr] % 50 == 0) {
+                    hPS[ctr] = hPS[ctr] + mHPS[ctr] / 200;
                 }
                 tMRS[ctr]++
                 tMRS2[ctr]++
@@ -811,6 +1065,7 @@
                     tMRS.splice(ctr, 1);
                     tMRS2.splice(ctr, 1);
                     tS.splice(ctr, 1);
+                    pW.splice(ctr, 1);
                 }
                 ctr++;
             }
@@ -1022,7 +1277,7 @@
             }
             ctr = 0;
             while (ctr < xS.length) {
-                if (tS[ctr] == 0 || tS[ctr] == 2 || tS[ctr] == 3) {
+                if (tS[ctr] == 0 || tS[ctr] == 2 || tS[ctr] == 3 || tS[ctr] == 6) {
                     FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 200, "rgba(0, 60, 110, 0.02)", "rgba(0, 60, 110, 0.09)");
                 }
                 if (tS[ctr] == 1) {
@@ -1030,6 +1285,9 @@
                 }
                 if (tS[ctr] == 4) {
                     FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 240, "rgba(110, 110, 110, 0.02)", "rgba(110, 110, 110, 0.09)");
+                }
+                if (tS[ctr] == 7) {
+                    FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(110, 110, 110, 0.02)", "rgba(110, 110, 110, 0.09)");
                 }
                 ctr++
             }
@@ -1070,6 +1328,9 @@
                 }
                 if (tS[sTV] == 4) {
                     FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 240, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                }
+                if (tS[sTV] == 7) {
+                    FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 175, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
                 }
                 if (tS[sTV] == 0) {
                     if (keys2[49] == 1) {
@@ -1155,6 +1416,37 @@
                 ctx.strokeText("[1]", 125, 853 + aN);
                 ctx.fillText("[1]", 125, 853 + aN);
             }
+            if (ctrS[2] > 0) {
+                aN = 300 / (ctrS[2] + 1);
+                ctx.textAlign = "center";
+                tankIcon(50, 824 + aN, "#75C6C3", "#60A2A0");
+                //polygon(125, 899 + aN, 6, 43.75, 0, "#555555");
+                //renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100);
+                //renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100 + Math.PI / 4);
+                //renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100 - Math.PI / 4);
+                //diepCircle(125, 899 + aN, 33.75, "#00B2E1");
+                polygon(125, 899 + aN, 6, 39, 0, "#555555");
+                renderBarrel(125, 899 + aN, 50, 26, 0, Math.PI / 4 + lctr / 100);
+                renderBarrel(125, 899 + aN, 50, 26, 0, Math.PI / -4 + lctr / 100);
+                renderBarrel(125, 899 + aN, 60, 26, 0, Math.PI / 8 + lctr / 100);
+                renderBarrel(125, 899 + aN, 60, 26, 0, Math.PI / -8 + lctr / 100);
+                renderBarrel(125, 899 + aN, 70, 26, 0, lctr / 100);
+                diepCircle(125, 899 + aN, 30, "#00B2E1");
+                ctx.fillStyle = "White";
+                ctx.lineWidth = 6;
+                ctx.strokeStyle = "rgb(40, 40, 40)";
+                ctx.font = "Bold 18px Ubuntu";
+                ctx.strokeText("Penta Shot - 250", 125, 960 + aN);
+                ctx.fillText("Penta Shot - 250", 125, 960 + aN);
+                ctx.strokeText("[1]", 125, 853 + aN);
+                ctx.fillText("[1]", 125, 853 + aN);
+            }
+            ctr7 = 0;
+            totalPower = 0;
+            while (ctr7 < pWL.length) {
+                totalPower = totalPower + pW[pWL[ctr7]];
+                ctr7++
+            }
             ctx.lineWidth = 6;
             ctx.fillStyle = "White";
             ctx.strokeStyle = "rgb(40, 40, 40)";
@@ -1162,6 +1454,8 @@
             ctx.font = "Bold 36px Ubuntu";
             ctx.strokeText("Resources: " + cash, 1020, 36);
             ctx.fillText("Resources: " + cash, 1020, 36);
+            ctx.strokeText("Power: " + Math.round(100 * totalPower) / 100 + " / " + pWL.length * 10, 1020, 72);
+            ctx.fillText("Power: " + Math.round(100 * totalPower) / 100 + " / " + pWL.length * 10, 1020, 72);
             if (ctrS[0] < 40 && sT == 1 && tS[sTV] == 0) {
                 ctrS[0]++;
             }
@@ -1180,22 +1474,90 @@
             if (ctrS[1] > 0 && sT == 0 && tS[sTV] == 2) {
                 ctrS[1]--;
             }
+            if (ctrS[2] < 40 && sT == 1 && tS[sTV] == 5) {
+                ctrS[2]++;
+            }
+            if (tS[sTV] != 5 && ctrS[2] > 0) {
+                ctrS[2]--;
+            }
+            if (ctrS[2] > 0 && sT == 0 && tS[sTV] == 5) {
+                ctrS[2]--;
+            }
             if (pT == 1) {
                 polygon(mP.x, mP.y, 6, 27, 0, "#555555");
                 renderBarrel(mP.x, mP.y, 43, 21, 0, 0);
                 diepCircle(mP.x, mP.y, 22, "#00B2E1");
                 healthBar(mP.x, mP.y, 1, 1, 55);
-                FOV(mP.x, mP.y, 200, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
+                if (iR == 1) {
+                    FOV(mP.x, mP.y, 200, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
+                } else {
+                    FOV(mP.x, mP.y, 200, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
+                }
+                ctr6 = 0;
+                ctx.strokeStyle = "rgba(0, 60, 110, 0.5)";
+                ctx.lineWidth = 5;
+                while (ctr6 < xS.length) {
+                    if (Math.sqrt(Math.pow(mP.x + x - 512 - xS[ctr6], 2) + Math.pow(mP.y + y - 512 - yS[ctr6], 2)) < 175 && tS[ctr6] == 7) {
+                        ctx.beginPath();
+                        ctx.moveTo(mP.x, mP.y);
+                        ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+                    ctr6++
+                }
             }
             if (pT == 2) {
                 diepCircle(mP.x, mP.y, 30, "#555555");
                 renderBarrel(mP.x, mP.y, 39, 18, 0, 0);
                 diepCircle(mP.x, mP.y, 22, "#999999");
                 healthBar(mP.x, mP.y, 1, 1, 55);
-                FOV(mP.x, mP.y, 240, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                if (iR == 1) {
+                    FOV(mP.x, mP.y, 240, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                } else {
+                    FOV(mP.x, mP.y, 240, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
+                }
+                ctr6 = 0;
+                ctx.strokeStyle = "rgba(0, 60, 110, 0.5)";
+                ctx.lineWidth = 5;
+                while (ctr6 < xS.length) {
+                    if (Math.sqrt(Math.pow(mP.x + x - 512 - xS[ctr6], 2) + Math.pow(mP.y + y - 512 - yS[ctr6], 2)) < 175 && tS[ctr6] == 7) {
+                        ctx.beginPath();
+                        ctx.moveTo(mP.x, mP.y);
+                        ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+                    ctr6++
+                }
+            }
+            if (pT == 3) {
+                polygon(mP.x, mP.y, 5, 20, lctr / 30, "#555555");
+                diepCircle(mP.x, mP.y, 12, "#999999");
+                healthBar(mP.x, mP.y, 1, 1, 30);
+                if (iR == 1) {
+                    FOV(mP.x, mP.y, 175, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                } else {
+                    FOV(mP.x, mP.y, 175, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
+                }
+                ctr6 = 0;
+                ctx.strokeStyle = "rgba(0, 60, 110, 0.5)";
+                ctx.lineWidth = 5;
+                while (ctr6 < xS.length) {
+                    if (Math.sqrt(Math.pow(mP.x + x - 512 - xS[ctr6], 2) + Math.pow(mP.y + y - 512 - yS[ctr6], 2)) < 175) {
+                        ctx.beginPath();
+                        ctx.moveTo(mP.x, mP.y);
+                        ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+                    ctr6++
+                }
             }
             tankIcon2(824, 954, "#75C6C3", "#60A2A0");
             tankIcon2(824, 914, "#A5A5A5", "#808080");
+            tankIcon2(824, 874, "#777777", "#444444");
+            tankIcon2(824, 834, "#8BCA7A", "#72A466");
             ctx.fillStyle = "White";
             ctx.lineWidth = 6;
             ctx.strokeStyle = "rgb(40, 40, 40)";
@@ -1205,11 +1567,27 @@
             ctx.fillText("Tank - 30 [SPACE]", 899, 975);
             ctx.strokeText("Miner - 20 [M]", 899, 935);
             ctx.fillText("Miner - 20 [M]", 899, 935);
+            ctx.strokeText("Connector - 10 [C]", 899, 895);
+            ctx.fillText("Connector - 10 [C]", 899, 895);
+            ctx.strokeText("Extractor - 50 [E]", 899, 855);
+            ctx.fillText("Extractor - 50 [E]", 899, 855);
+            //ctx.strokeText(pW.toString(), 512, 800);
+            //ctx.fillText(pW.toString(), 512, 800);
+            pWL = [];
             setTimeout(loop, 10);
             lctr++;
         }
         loop();
         //Changelog:
+        //Update 0.1.5: HUGE UPDATE! New Extractor tank, it extracts power from polygons to generate electricty and power the other tanks.
+        //Extractor tank still work in progress, selection stuff isn't done.
+        //Tank connectors completed.
+        //Power system completed (Comment from developer (adasba): Huge pain in the ass, took me HOURS!)
+        //Graphical changes
+        //When placing a tank, all connectors turn green so you know where you can place it.
+        //Bug fixes.
+        //Tank placement is now restricted to areas close to connectors.
+        //Update 0.1.4.2: Tank connectors, they connect stuff.
         //Update 0.1.4.1: Instructions changed, "E" now spawns a penta shot.
         //Update 0.1.4: Pentashot tank added, by far the most powerful one.
         //New icons for spawning tanks and miners.
@@ -1230,6 +1608,7 @@
         //Update 0.1.1: Added the ability to upgrade tanks by clicking on them and pressing a number key.
         //Added blue machine gun.
         //Update 0.1: Started recording updates in a changelog.
+        //Update idk: why are you reading this, go away
     </script>
 </body>
 </html>
