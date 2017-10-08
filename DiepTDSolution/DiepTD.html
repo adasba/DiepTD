@@ -82,6 +82,7 @@
         var pWC = 0;
         var pWL = [];
         var totalPower = 0;
+        var FOVStyle = 1;
         while (ctr < 256) {
             keys.push(0);
             keys2.push(0);
@@ -202,6 +203,12 @@
         }, false);
         c.addEventListener("mousedown", mouseDown, false);
         c.addEventListener("mouseup", mouseUp, false);
+        function changeFOVStyle() {
+            FOVStyle++
+            if (FOVStyle > 1) {
+                FOVStyle = 0;
+            }
+        }
         function renderBarrel(x, y, l, w, offset, dir) {
             ctx.beginPath();
             ctx.fillStyle = "#555555";
@@ -391,12 +398,15 @@
             ctx.arc(x, y, radius, 0, 2 * Math.PI);
             ctx.fill();
             ctx.closePath();
-            ctx.beginPath();
-            ctx.lineWidth = 5;
-            ctx.strokeStyle = color2;
-            ctx.arc(x, y, radius - 2.5, 0, 2 * Math.PI);
-            ctx.stroke();
-            ctx.closePath();
+            if (FOVStyle == 0) {
+                ctx.beginPath();
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = color2;
+                ctx.arc(x, y, radius - 2.5, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.closePath();
+            }
+
         }
         function tankIcon(x, y, color1, color2) {
             ctx.beginPath();
@@ -570,7 +580,11 @@
             ctr = 0;
             while (pT != 0 && ctr < xS.length) {
                 if (tS[ctr] == 7) {
-                    FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(0, 60, 0, 0.14)", "rgba(0, 110, 60, 0.63)");
+                    if (FOVStyle == 0) {
+                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(0, 60, 0, 0.14)", "rgba(0, 110, 60, 0.63)");
+                    } else if (FOVStyle == 1) {
+                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(0, 60, 0, 0.3)", "rgba(0, 110, 60, 0.63)");
+                    }
                 }
                 ctr++;
             }
@@ -724,6 +738,33 @@
                 if (tS[ctr] == 8) {
                     diepCircle2((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 45, "rgb(110, 110, 110)");
                     renderBarrel((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 55, 28, 0, dS[ctr]);
+                }
+                if (FOVStyle == 0) {
+                    if (tS[ctr] == 0 || tS[ctr] == 2 || tS[ctr] == 3 || tS[ctr] == 6) {
+                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 200, "rgba(0, 60, 110, 0.02)", "rgba(0, 60, 110, 0.09)");
+                    }
+                    if (tS[ctr] == 1) {
+                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 350, "rgba(0, 60, 110, 0.02)", "rgba(0, 60, 110, 0.09)");
+                    }
+                    if (tS[ctr] == 4) {
+                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 240, "rgba(110, 110, 110, 0.02)", "rgba(110, 110, 110, 0.09)");
+                    }
+                    if (tS[ctr] == 7) {
+                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(110, 110, 110, 0.02)", "rgba(110, 110, 110, 0.09)");
+                    }
+                } else if (FOVStyle == 1) {
+                    if (tS[ctr] == 0 || tS[ctr] == 2 || tS[ctr] == 3 || tS[ctr] == 6) {
+                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 200, "rgba(0, 60, 110, 0.07)", "rgba(0, 60, 110, 0.45)");
+                    }
+                    if (tS[ctr] == 1) {
+                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 350, "rgba(0, 60, 110, 0.07)", "rgba(0, 60, 110, 0.45)");
+                    }
+                    if (tS[ctr] == 4) {
+                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 240, "rgba(110, 110, 110, 0.07)", "rgba(110, 110, 110, 0.45)");
+                    }
+                    if (tS[ctr] == 7) {
+                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(110, 110, 110, 0.07)", "rgba(110, 110, 110, 0.45)");
+                    }
                 }
                 ctr++;
             }
@@ -1097,7 +1138,11 @@
                             summonBullet(xE[ctr], yE[ctr], dE[ctr], 50, 1, 5);
                         }
                     }
-                    FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                    if (FOVStyle == 0) {
+                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                    } else if (FOVStyle == 1) {
+                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
+                    }
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 26, 12, 0, dE[ctr]);
                     diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 15, "#F14E54");
                     healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
@@ -1128,7 +1173,11 @@
                             summonBullet(xE[ctr], yE[ctr], dE[ctr], 50, 1, 15);
                         }
                     }
-                    FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 200, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                    if (FOVStyle == 0) {
+                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 200, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                    } else if (FOVStyle == 1) {
+                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 200, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
+                    }
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 34, 14, 0, dE[ctr]);
                     diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
                     healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
@@ -1162,7 +1211,11 @@
                             summonBullet(xE[ctr] - Math.cos(dE[ctr]) * 8, yE[ctr] - Math.sin(dE[ctr]) * 8, dE[ctr], 50, 1, 5);
                         }
                     }
-                    FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                    if (FOVStyle == 0) {
+                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                    } else if (FOVStyle == 1) {
+                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
+                    }
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 8, dE[ctr]);
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, -8, dE[ctr]);
                     diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
@@ -1212,7 +1265,11 @@
                             summonBullet(xE[ctr], yE[ctr], dE[ctr], 50, 1, 5);
                         }
                     }
-                    FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                    if (FOVStyle == 0) {
+                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                    } else if (FOVStyle == 1) {
+                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
+                    }
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 0, dE[ctr]);
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 0, dE[ctr] + Math.PI);
                     diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
@@ -1254,7 +1311,11 @@
                             yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) * (6 - tMRE2[ctr] / 5);
                         }
                     }
-                    FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                    if (FOVStyle == 0) {
+                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                    } else if (FOVStyle == 1) {
+                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
+                    }
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 0, dE[ctr]);
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 25, 14, 0, dE[ctr] + Math.PI * (7 / 6));
                     renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 25, 14, 0, dE[ctr] + Math.PI * (5 / 6));
@@ -1275,22 +1336,11 @@
                 }
                 ctr++;
             }
-            ctr = 0;
-            while (ctr < xS.length) {
-                if (tS[ctr] == 0 || tS[ctr] == 2 || tS[ctr] == 3 || tS[ctr] == 6) {
-                    FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 200, "rgba(0, 60, 110, 0.02)", "rgba(0, 60, 110, 0.09)");
-                }
-                if (tS[ctr] == 1) {
-                    FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 350, "rgba(0, 60, 110, 0.02)", "rgba(0, 60, 110, 0.09)");
-                }
-                if (tS[ctr] == 4) {
-                    FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 240, "rgba(110, 110, 110, 0.02)", "rgba(110, 110, 110, 0.09)");
-                }
-                if (tS[ctr] == 7) {
-                    FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(110, 110, 110, 0.02)", "rgba(110, 110, 110, 0.09)");
-                }
-                ctr++
-            }
+            //ctr = 0;
+            //while (ctr < xS.length) {
+                //fov stuff was here before
+            //    ctr++
+            //}
             ctx.fillStyle = "#555555";
             //ctx.font = "24px Consolas";
             ctx.font = "24px Ubuntu";
@@ -1320,17 +1370,32 @@
                 ctx.arc(xS[sTV] - x + 512, yS[sTV] - y + 512, 40, 0, Math.PI * 2);
                 ctx.stroke();
                 ctx.closePath();
-                if (tS[sTV] == 0 || tS[sTV] == 2 || tS[sTV] == 3) {
-                    FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 200, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
-                }
-                if (tS[sTV] == 1) {
-                    FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 350, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
-                }
-                if (tS[sTV] == 4) {
-                    FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 240, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
-                }
-                if (tS[sTV] == 7) {
-                    FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 175, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                if (FOVStyle == 0) {
+                    if (tS[sTV] == 0 || tS[sTV] == 2 || tS[sTV] == 3 || tS[sTV] == 6) {
+                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 200, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
+                    }
+                    if (tS[sTV] == 1) {
+                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 350, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
+                    }
+                    if (tS[sTV] == 4) {
+                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 240, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                    }
+                    if (tS[sTV] == 7) {
+                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 175, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                    }
+                } else if (FOVStyle == 1) {
+                    if (tS[sTV] == 0 || tS[sTV] == 2 || tS[sTV] == 3 || tS[sTV] == 6) {
+                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 200, "rgba(0, 60, 110, 0.20)", "rgba(0, 60, 110, 0.45)");
+                    }
+                    if (tS[sTV] == 1) {
+                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 350, "rgba(0, 60, 110, 0.20)", "rgba(0, 60, 110, 0.45)");
+                    }
+                    if (tS[sTV] == 4) {
+                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 240, "rgba(110, 110, 110, 0.20)", "rgba(110, 110, 110, 0.45)");
+                    }
+                    if (tS[sTV] == 7) {
+                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 175, "rgba(110, 110, 110, 0.20)", "rgba(110, 110, 110, 0.45)");
+                    }
                 }
                 if (tS[sTV] == 0) {
                     if (keys2[49] == 1) {
@@ -1489,9 +1554,17 @@
                 diepCircle(mP.x, mP.y, 22, "#00B2E1");
                 healthBar(mP.x, mP.y, 1, 1, 55);
                 if (iR == 1) {
-                    FOV(mP.x, mP.y, 200, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
+                    if (FOVStyle == 0) {
+                        FOV(mP.x, mP.y, 200, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
+                    } else if (FOVStyle == 1) {
+                        FOV(mP.x, mP.y, 200, "rgba(0, 60, 110, 0.20)", "rgba(0, 60, 110, 0.45)");
+                    } 
                 } else {
-                    FOV(mP.x, mP.y, 200, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
+                    if (FOVStyle == 0) {
+                        FOV(mP.x, mP.y, 200, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
+                    } else if (FOVStyle == 1) {
+                        FOV(mP.x, mP.y, 200, "rgba(116, 0, 0, 0.20)", "rgba(116, 0, 0, 0.45)");
+                    } 
                 }
                 ctr6 = 0;
                 ctx.strokeStyle = "rgba(0, 60, 110, 0.5)";
@@ -1513,9 +1586,17 @@
                 diepCircle(mP.x, mP.y, 22, "#999999");
                 healthBar(mP.x, mP.y, 1, 1, 55);
                 if (iR == 1) {
-                    FOV(mP.x, mP.y, 240, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                    if (FOVStyle == 0) {
+                        FOV(mP.x, mP.y, 240, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                    } else if (FOVStyle == 1) {
+                        FOV(mP.x, mP.y, 240, "rgba(110, 110, 110, 0.20)", "rgba(110, 110, 110, 0.45)");
+                    } 
                 } else {
-                    FOV(mP.x, mP.y, 240, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
+                    if (FOVStyle == 0) {
+                        FOV(mP.x, mP.y, 240, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
+                    } else if (FOVStyle == 1) {
+                        FOV(mP.x, mP.y, 240, "rgba(116, 0, 0, 0.20)", "rgba(116, 0, 0, 0.45)");
+                    }
                 }
                 ctr6 = 0;
                 ctx.strokeStyle = "rgba(0, 60, 110, 0.5)";
@@ -1536,9 +1617,17 @@
                 diepCircle(mP.x, mP.y, 12, "#999999");
                 healthBar(mP.x, mP.y, 1, 1, 30);
                 if (iR == 1) {
-                    FOV(mP.x, mP.y, 175, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                    if (FOVStyle == 0) {
+                        FOV(mP.x, mP.y, 175, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                    } else if (FOVStyle == 1) {
+                        FOV(mP.x, mP.y, 175, "rgba(110, 110, 110, 0.20)", "rgba(110, 110, 110, 0.45)");
+                    } 
                 } else {
-                    FOV(mP.x, mP.y, 175, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
+                    if (FOVStyle == 0) {
+                        FOV(mP.x, mP.y, 175, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
+                    } else if (FOVStyle == 1) {
+                        FOV(mP.x, mP.y, 175, "rgba(116, 0, 0, 0.20)", "rgba(116, 0, 0, 0.45)");
+                    } 
                 }
                 ctr6 = 0;
                 ctx.strokeStyle = "rgba(0, 60, 110, 0.5)";
@@ -1579,6 +1668,7 @@
         }
         loop();
         //Changelog:
+        //Update 0.1.5.1: Changed the graphics of tank FOV. You can change the FOV to the original if you want.
         //Update 0.1.5: HUGE UPDATE! New Extractor tank, it extracts power from polygons to generate electricty and power the other tanks.
         //Extractor tank still work in progress, selection stuff isn't done.
         //Tank connectors completed.
@@ -1610,5 +1700,6 @@
         //Update 0.1: Started recording updates in a changelog.
         //Update idk: why are you reading this, go away
     </script>
+    <button onclick="changeFOVStyle()">Change FOV Style</button>
 </body>
 </html>
