@@ -14,24 +14,29 @@
 <body>
     <canvas id="myCanvas" width="1024" height="1024"></canvas>
     <script>
+        //context and canvas
         var c = document.getElementById("myCanvas");
         var ctx = c.getContext("2d");
+        //x and y position
         var x = 0;
         var y = 0;
+        //tank variables
         var xS = [123, 100];
         var yS = [351, 0];
         var tS = [7, 8];
-        //TODO: hit points
         var hPS = [50, 750];
         var mHPS = [50, 750];
         var tMRS = [0, 0];
         var tMRS2 = [0, 0];
         var dS = [1, 1];
         var pW = [1, 0];
+        var pW2 = [0, 0];
+        //some mouse crap
         var pMX = 0;
         var pMY = 0;
         var mP = {};
         var mID = 0;
+        //"counter" variables that count stuff
         var lctr = 0;
         var ctr = 0;
         var ctr2 = 0;
@@ -41,13 +46,16 @@
         var ctr6 = 0;
         var ctr7 = 0;
         var ctrS = [0, 0, 0, 0, 0];
+        //idk what these are, they're basically just for random tanks. aN is anti-nuisance.
         var aN = 0;
         var aN2 = [];
+        //polygon variables
         var xP = [0, 240, -320];
         var yP = [0, -564, 123];
         var tP = [0, 1, 2];
         var hPP = [1000, 2000, 10000];
         var mHPP = [1000, 2000, 10000]
+        //enemy variables
         var xE = [157];
         var yE = [110];
         var tE = [0];
@@ -56,6 +64,7 @@
         var mHPE = [30];
         var tMRE = [0];
         var tMRE2 = [0];
+        //bullet variables
         var xB = [];
         var yB = [];
         var dB = [];
@@ -63,36 +72,50 @@
         var teams = [];
         var vB = [];
         var tB = [];
+        //used for determining what a tank/enemy will aim at
         var cEV = 0;
         var cEV2 = 0;
         var cEV3 = 0;
         var cED = 0;
         var cED2 = 0;
+        //used to determining whether a key was pressed
         var keys = [];
         var keys2 = [];
+        //used for selecting and adding new towers
         var sT = 0;
         var sT2 = 0;
         var sTV = 0;
+        //cash and power variables, half of these I'm not using or something
         var cash = 100;
         var power = 0;
         var mPower = 0;
+        //the type of tank that is selected to be placed
         var pT = 0;
+        //prevents multiple clicks from auto-upgrading a tank a bunch of times
         var aRCV = 0;
+        //output is dependant on whether your mouse is within an area where a tank can be placed
         var iR = 0;
+        //more power stuff
         var pWC = 0;
         var pWL = [];
         var totalPower = 0;
+        //fov style, changes a graphical setting
         var FOVStyle = 1;
+        //stands for level active, and it is on when a level is being played.
+        var lVA = 1;
+        //fills keys arrays with empty spaces
         while (ctr < 256) {
             keys.push(0);
             keys2.push(0);
             ctr++;
         }
+        //mouse crap
         ctr = 0;
         function getMousePos(canvas, evt) {
             var rect = canvas.getBoundingClientRect();
             mP = { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
             if (mID == 1) {
+                //allows you to drag the screen
                 x = x + (pMX - mP.x);
                 y = y + (pMY - mP.y);
             }
@@ -100,6 +123,7 @@
         function mouseDown(e) {
             mID = 1;
             if (iR == 1) {
+                //how towers are placed. It summons them if the mouse is down and you are in the correct area.
                 if (pT == 1) {
                     summonTower(x + mP.x - 512, y + mP.y - 512, 0);
                     cash = cash - 30;
@@ -115,10 +139,16 @@
                     cash = cash - 10;
                     pT = 0;
                 }
+                if (pT == 4) {
+                    summonTower(x + mP.x - 512, y + mP.y - 512, 8);
+                    cash = cash - 50;
+                    pT = 0;
+                }
             }
             ctr4 = 0;
             sT2 = 0;
             while (ctr4 < xS.length) {
+                //detects if your mouse is near a tower when clicking. if it is, then that tower is selected.
                 if (Math.sqrt(Math.pow(xS[ctr4] - (mP.x + x - 512), 2) + Math.pow(yS[ctr4] - (mP.y + y - 512), 2)) < 20) {
                     sT = 1;
                     sT2 = 1;
@@ -129,6 +159,7 @@
                 //}
                 ctr4++;
             }
+            //detects if you are pressing a button for spawning a new tower.
             if (mP.x > 824 && mP.y > 954 && mP.x < 974 && mP.y < 984) {
                 pT = 1
             }
@@ -138,6 +169,10 @@
             if (mP.x > 824 && mP.y > 874 && mP.x < 974 && mP.y < 904) {
                 pT = 3
             }
+            if (mP.x > 824 && mP.y > 834 && mP.x < 974 && mP.y < 864) {
+                pT = 4
+            }
+            //detects if you are pressing a button for upgrading a tower
             if (sT == 1) {
                 if (mP.x > 50 && mP.y > 824 && mP.x < 200 && mP.y < 974) {
                     if (tS[sTV] == 0) {
@@ -180,6 +215,7 @@
                 }
             }
         }
+        //mouse and keyboard listeners and stuff
         function mouseUp(e) {
             mID = 0;
             aRCV = 0;
@@ -203,12 +239,14 @@
         }, false);
         c.addEventListener("mousedown", mouseDown, false);
         c.addEventListener("mouseup", mouseUp, false);
+        //changes the style of fov, determined by an html button element
         function changeFOVStyle() {
             FOVStyle++
             if (FOVStyle > 1) {
                 FOVStyle = 0;
             }
         }
+        //barrel rendering script
         function renderBarrel(x, y, l, w, offset, dir) {
             ctx.beginPath();
             ctx.fillStyle = "#555555";
@@ -227,6 +265,7 @@
             ctx.fill();
             ctx.closePath();
         }
+        //shadow barrel rendering script
         function renderShadowBarrel(x, y, l, w, offset, dir) {
             ctx.beginPath();
             ctx.fillStyle = "rgb(110, 110, 110)";
@@ -237,6 +276,7 @@
             ctx.fill();
             ctx.closePath();
         }
+        //trapezoid barrel, self explanatory
         function renderTrapezoidBarrel(x, y, l, w, offset, dir, outerWidth) {
             ctx.beginPath();
             ctx.fillStyle = "#555555";
@@ -255,6 +295,7 @@
             ctx.fill();
             ctx.closePath();
         }
+        //i don't need to provide another description, this one is obvious
         function renderTrapezoidShadowBarrel(x, y, l, w, offset, dir, outerWidth) {
             ctx.beginPath();
             ctx.fillStyle = "rgb(110, 110, 110)";
@@ -265,15 +306,22 @@
             ctx.fill();
             ctx.closePath();
         }
-        function summonBullet(x, y, dir, lifetime, team, vel, tank) {
-            xB.push(x);
-            yB.push(y);
+        //adds a bullet
+        function summonBullet(x, y, dir, lifetime, team, vel, tank, offset) {
+            if (offset == undefined) {
+                xB.push(x);
+                yB.push(y);
+            } else {
+                xB.push(x + Math.cos(dir + Math.PI / 2) * offset);
+                yB.push(y + Math.sin(dir + Math.PI / 2) * offset);
+            }
             dB.push(dir);
             lTB.push(lifetime);
             teams.push(team);
             vB.push(vel);
             tB.push(tank);
         }
+        //adds a tower
         function summonTower(x, y, type) {
             xS.push(x);
             yS.push(y);
@@ -283,8 +331,10 @@
             dS.push(0);
             if (type == 8) {
                 pW.push(0);
+                pW2.push(new Array());
             } else {
                 pW.push(new Array());
+                pW2.push(0);
             }
             if (type == 0) {
                 hPS.push(150);
@@ -323,6 +373,7 @@
                 mHPS.push(750);
             }
         }
+        //adds an enemy
         function summonEnemy(x, y, type) {
             xE.push(x);
             yE.push(y);
@@ -347,6 +398,7 @@
                 mHPE.push(55);
             }
         }
+        //renders a polygon
         function polygon(x, y, sides, size, dir, color) {
             ctr6 = 0;
             ctx.beginPath();
@@ -359,6 +411,7 @@
             ctx.fill();
             ctx.closePath();
         }
+        //renders a health bar
         function healthBar(x, y, hp, maxHp, radius) {
             ctx.beginPath();
             ctx.strokeStyle = "rgba(85, 85, 85, " + ((0.35 / maxHp) * (maxHp - hp) + 0.05) + ")";
@@ -373,6 +426,7 @@
             ctx.stroke();
             ctx.closePath();
         }
+        //renders a "diep circle" with a border that has the color "#555555"
         function diepCircle(x, y, radius, color) {
             ctx.beginPath();
             ctx.fillStyle = "#555555";
@@ -385,6 +439,7 @@
             ctx.fill();
             ctx.closePath();
         }
+        //diepcircle without the border. Literally just a circle.
         function diepCircle2(x, y, radius, color) {
             ctx.beginPath();
             ctx.fillStyle = color;
@@ -392,6 +447,7 @@
             ctx.fill();
             ctx.closePath();
         }
+        //field of view, the thing that shows how far a tank can shoot/reach
         function FOV(x, y, radius, color, color2) {
             ctx.beginPath();
             ctx.fillStyle = color;
@@ -408,6 +464,7 @@
             }
 
         }
+        //a tank icon, which contains info like a tank upgrade
         function tankIcon(x, y, color1, color2) {
             ctx.beginPath();
             ctx.fillStyle = color1;
@@ -428,6 +485,7 @@
             ctx.stroke();
             ctx.closePath();
         }
+        //smaller tank icon that is usually used to display text
         function tankIcon2(x, y, color1, color2) {
             ctx.beginPath();
             ctx.fillStyle = color1;
@@ -448,6 +506,7 @@
             ctx.stroke();
             ctx.closePath();
         }
+        //does calculations for "powering" a tank
         function powerTank(tank, power1) {
             ctr7 = 0;
             aN = 0;
@@ -466,6 +525,7 @@
                 ctr7++;
             }
         }
+        //sees how much usable power there is for a tank
         function usableTankPower(tank) {
             aN = 0;
             ctr7 = 0;
@@ -475,82 +535,10 @@
             }
             return aN;
         }
+        //TREMBLE BEFORE THE ALMIGHTY LOOP FUNCTION! IT LOOPS OVER AND OVER AND OVER AND OVER AGAIN IN AN INFINITE LOOP, CALLING ITSELF OVER AND OVER AGAIN!
+        //Basically this is just a game loop, it keeps on repeating and stuff, every time it repeats, everything is re-rendered and all that. You get the point.
         function loop() {
-            mPower = 0;
-            iR = 0;
-            ctr6 = 0;
-            while (ctr6 < xS.length) {
-                if (Math.sqrt(Math.pow((x + mP.x - 512) - xS[ctr6], 2) + Math.pow((y + mP.y - 512) - yS[ctr6], 2)) < 175 && tS[ctr6] == 7) {
-                    iR = 1;
-                }
-                ctr6++;
-            }
-            ctr6 = 0;
-            while (ctr6 < xS.length && iR == 1) {
-                if (Math.sqrt(Math.pow((x + mP.x - 512) - xS[ctr6], 2) + Math.pow((y + mP.y - 512) - yS[ctr6], 2)) < 40) {
-                    iR = 0;
-                }
-                ctr6++;
-            }
-            if (keys2[32] == 1) {
-                pT = 1;
-                keys2[32] == 2;
-            }
-            if (keys2[65] == 1) {
-                summonEnemy(x + mP.x - 512, y + mP.y - 512, 0);
-                keys2[65] = 2;
-            }
-            if (keys2[68] == 1) {
-                summonEnemy(x + mP.x - 512, y + mP.y - 512, 1);
-                keys2[68] = 2;
-            }
-            //if (keys2[67] == 1) {
-            //    summonEnemy(x + mP.x - 512, y + mP.y - 512, 2);
-            //    keys2[67] = 2;
-            //}
-            if (keys2[77] == 1) {
-                pT = 2;
-                keys2[77] = 2;
-            }
-            if (keys2[69] == 1) {
-                summonTower(x + mP.x - 512, y + mP.y - 512, 8);
-                keys2[69] = 2;
-            }
-            if (keys2[87] == 1) {
-                summonEnemy(x + mP.x - 512, y + mP.y - 512, 3);
-                keys2[87] = 2;
-            }
-            if (keys2[83] == 1) {
-                summonTower(x + mP.x - 512, y + mP.y - 512, 7);
-                keys2[83] = 2;
-            }
-            if (keys2[81] == 1) {
-                summonEnemy(x + mP.x - 512, y + mP.y - 512, 4);
-                keys2[81] = 2;
-            }
-            if (keys2[67] == 1) {
-                pT = 3;
-                keys2[67] = 2
-            }
-            if (keys2[82] == 1 && sT == 1) {
-                xS.splice(sTV, 1);
-                yS.splice(sTV, 1);
-                dS.splice(sTV, 1);
-                hPS.splice(sTV, 1);
-                mHPS.splice(sTV, 1);
-                tMRS.splice(sTV, 1);
-                tMRS2.splice(sTV, 1);
-                tS.splice(sTV, 1);
-                pW.splice(sTV, 1);
-                sT = 0;
-                keys2[82] = 2;
-            }
-            if (keys2[88] == 1 || keys2[27] == 1) {
-                sT = 0;
-                pT = 0;
-                keys2[88] = 2;
-                keys2[27] = 2;
-            }
+            //creates the grid of lines that you see in the background.
             ctx.fillStyle = "#CBCBCB";
             ctx.fillRect(0, 0, 1024, 1024);
             ctr = 0;
@@ -577,1097 +565,1258 @@
             }
             ctx.stroke();
             ctx.closePath();
-            ctr = 0;
-            while (pT != 0 && ctr < xS.length) {
-                if (tS[ctr] == 7) {
+            if (lVA == 1) {
+                //calculations for whether a tank can be placed in that location or not
+                mPower = 0;
+                iR = 0;
+                ctr6 = 0;
+                while (ctr6 < xS.length) {
+                    if (Math.sqrt(Math.pow((x + mP.x - 512) - xS[ctr6], 2) + Math.pow((y + mP.y - 512) - yS[ctr6], 2)) < 175 && tS[ctr6] == 7) {
+                        iR = 1;
+                    }
+                    if (Math.sqrt(Math.pow((x + mP.x - 512) - xS[ctr6], 2) + Math.pow((y + mP.y - 512) - yS[ctr6], 2)) < 175 && tS[ctr6] == 8) {
+                        iR = 1;
+                    }
+                    ctr6++;
+                }
+                ctr6 = 0;
+                while (ctr6 < xS.length && iR == 1) {
+                    if (Math.sqrt(Math.pow((x + mP.x - 512) - xS[ctr6], 2) + Math.pow((y + mP.y - 512) - yS[ctr6], 2)) < 40) {
+                        iR = 0;
+                    }
+                    ctr6++;
+                }
+                //detects if keys are being pressed so tanks can be spawned and all that. some of these are cheat-y and are for debug purposes.
+                if (keys2[32] == 1) {
+                    pT = 1;
+                    keys2[32] == 2;
+                }
+                if (keys2[65] == 1) {
+                    summonEnemy(x + mP.x - 512, y + mP.y - 512, 0);
+                    keys2[65] = 2;
+                }
+                if (keys2[68] == 1) {
+                    summonEnemy(x + mP.x - 512, y + mP.y - 512, 1);
+                    keys2[68] = 2;
+                }
+                //if (keys2[67] == 1) {
+                //    summonEnemy(x + mP.x - 512, y + mP.y - 512, 2);
+                //    keys2[67] = 2;
+                //}
+                if (keys2[77] == 1) {
+                    pT = 2;
+                    keys2[77] = 2;
+                }
+                if (keys2[69] == 1) {
+                    pT = 4;
+                    keys2[69] = 2;
+                }
+                if (keys2[87] == 1) {
+                    summonEnemy(x + mP.x - 512, y + mP.y - 512, 3);
+                    keys2[87] = 2;
+                }
+                if (keys2[83] == 1) {
+                    summonEnemy(x + mP.x - 512, y + mP.y - 512, 2);
+                    keys2[83] = 2;
+                }
+                if (keys2[81] == 1) {
+                    summonEnemy(x + mP.x - 512, y + mP.y - 512, 4);
+                    keys2[81] = 2;
+                }
+                if (keys2[67] == 1) {
+                    pT = 3;
+                    keys2[67] = 2
+                }
+                //i forgot
+                if (keys2[82] == 1 && sT == 1) {
+                    xS.splice(sTV, 1);
+                    yS.splice(sTV, 1);
+                    dS.splice(sTV, 1);
+                    hPS.splice(sTV, 1);
+                    mHPS.splice(sTV, 1);
+                    tMRS.splice(sTV, 1);
+                    tMRS2.splice(sTV, 1);
+                    tS.splice(sTV, 1);
+                    pW.splice(sTV, 1);
+                    pW2.splice(sTV, 1);
+                    sT = 0;
+                    keys2[82] = 2;
+                }
+                //de-selects stuff and cancels tank placement
+                if (keys2[88] == 1 || keys2[27] == 1) {
+                    sT = 0;
+                    pT = 0;
+                    keys2[88] = 2;
+                    keys2[27] = 2;
+                }
+                ctr = 0;
+                //turns the fov of certain tanks green so you know where you can place something.
+                while (pT != 0 && ctr < xS.length) {
+                    if (tS[ctr] == 7 || tS[ctr] == 8) {
+                        if (FOVStyle == 0) {
+                            FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(0, 110, 30, 0.14)", "rgba(0, 110, 30, 0.63)");
+                        } else if (FOVStyle == 1) {
+                            FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(0, 110, 30, 0.3)", "rgba(0, 110, 30, 0.63)");
+                        }
+                    }
+                    ctr++;
+                }
+                ctr = 0;
+                //updates and renders bullets. does damage calculations as well.
+                while (ctr < xB.length) {
+                    xB[ctr] = xB[ctr] + Math.cos(dB[ctr]) * vB[ctr];
+                    yB[ctr] = yB[ctr] + Math.sin(dB[ctr]) * vB[ctr];
+                    lTB[ctr]--;
+                    if (teams[ctr] == 0) {
+                        ctx.beginPath();
+                        ctx.fillStyle = "rgb(110, 110, 110)";
+                        ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 15, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.closePath();
+                        diepCircle(xB[ctr] - x + 512, yB[ctr] - y + 512, 12, "#00B2E1");
+                        ctr2 = 0
+                        while (ctr2 < xE.length) {
+                            if (Math.sqrt(Math.pow(xB[ctr] - xE[ctr2], 2) + Math.pow(yB[ctr] - yE[ctr2], 2)) < 15) {
+                                hPE[ctr2] = hPE[ctr2] - 10
+                                xB.splice(ctr, 1);
+                                yB.splice(ctr, 1);
+                                dB.splice(ctr, 1);
+                                teams.splice(ctr, 1);
+                                vB.splice(ctr, 1);
+                                lTB.splice(ctr, 1);
+                            }
+                            ctr2++;
+                        }
+                    } else if (teams[ctr] == 1) {
+                        ctx.beginPath();
+                        ctx.fillStyle = "rgb(110, 110, 110)";
+                        ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 10, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.closePath();
+                        diepCircle(xB[ctr] - x + 512, yB[ctr] - y + 512, 8, "#F14E54");
+                        ctr2 = 0
+                        while (ctr2 < xS.length) {
+                            if (Math.sqrt(Math.pow(xB[ctr] - xS[ctr2], 2) + Math.pow(yB[ctr] - yS[ctr2], 2)) < 20) {
+                                hPS[ctr2] = hPS[ctr2] - 10
+                                xB.splice(ctr, 1);
+                                yB.splice(ctr, 1);
+                                dB.splice(ctr, 1);
+                                teams.splice(ctr, 1);
+                                vB.splice(ctr, 1);
+                                lTB.splice(ctr, 1);
+                                tB.splice(ctr, 1);
+                            }
+                            ctr2++;
+                        }
+                    } else if (teams[ctr] == 2) {
+                        ctx.beginPath();
+                        ctx.fillStyle = "rgb(110, 110, 110)";
+                        ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 10, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.closePath();
+                        diepCircle(xB[ctr] - x + 512, yB[ctr] - y + 512, 8, "#999999");
+                        ctr2 = 0
+                        while (ctr2 < xP.length) {
+                            if (Math.sqrt(Math.pow(xB[ctr] - xP[ctr2], 2) + Math.pow(yB[ctr] - yP[ctr2], 2)) < 20) {
+                                hPP[ctr2]--;
+                                cash++;
+                                xB.splice(ctr, 1);
+                                yB.splice(ctr, 1);
+                                dB.splice(ctr, 1);
+                                teams.splice(ctr, 1);
+                                vB.splice(ctr, 1);
+                                lTB.splice(ctr, 1);
+                                tB.splice(ctr, 1);
+                            }
+                            ctr2++;
+                        }
+                    } else if (teams[ctr] == 3) {
+                        ctx.beginPath();
+                        ctx.fillStyle = "rgb(110, 110, 110)";
+                        ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 10, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.closePath();
+                        diepCircle(xB[ctr] - x + 512, yB[ctr] - y + 512, 14, "#00E16E");
+                        ctr2 = 0
+                        while (ctr2 < xP.length) {
+                            if (Math.sqrt(Math.pow(xB[ctr] - xP[ctr2], 2) + Math.pow(yB[ctr] - yP[ctr2], 2)) < 20) {
+                                //pW[tB[ctr]]++;
+                                xB.splice(ctr, 1);
+                                yB.splice(ctr, 1);
+                                dB.splice(ctr, 1);
+                                teams.splice(ctr, 1);
+                                vB.splice(ctr, 1);
+                                lTB.splice(ctr, 1);
+                                tB.splice(ctr, 1);
+                            }
+                            ctr2++;
+                        }
+                    }
+                    if (lTB[ctr] < 0) {
+                        xB.splice(ctr, 1);
+                        yB.splice(ctr, 1);
+                        dB.splice(ctr, 1);
+                        vB.splice(ctr, 1);
+                        teams.splice(ctr, 1);
+                        lTB.splice(ctr, 1);
+                        tB.splice(ctr, 1);
+                    }
+                    ctr++;
+                }
+                ctr = 0;
+                //some power related stuff, all of the towers' shadow rendering, and then their default FOVs.
+                while (ctr < xS.length) {
+                    if (tS[ctr] == 8) {
+                        pWL.push(ctr);
+                        if (pW[ctr] > 10) {
+                            pW[ctr] = 10;
+                        }
+                    }
+                    if (tS[ctr] == 0) {
+                        renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
+                        polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 30, 0, "rgb(110, 110, 110)");
+                    }
+                    if (tS[ctr] == 1) {
+                        renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 21, 0, dS[ctr]);
+                        polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 35, 0, "rgb(110, 110, 110)");
+                    }
+                    if (tS[ctr] == 2) {
+                        renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 14, dS[ctr]);
+                        renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, -14, dS[ctr]);
+                        polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 35, 0, "rgb(110, 110, 110)");
+                    }
+                    if (tS[ctr] == 3) {
+                        renderTrapezoidShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 48, 24, 0, dS[ctr], 42);
+                        polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 35, 0, "rgb(110, 110, 110)");
+                    }
+                    if (tS[ctr] == 4) {
+                        renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 44, 21, 0, dS[ctr]);
+                        diepCircle2((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 34, "rgb(110, 110, 110)");
+                    }
+                    if (tS[ctr] == 5) {
+                        polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 42, 0, "rgb(110, 110, 110)");
+                        renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 56, 27, 0, dS[ctr]);
+                        renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 56, 27, 0, dS[ctr] + Math.PI / 4);
+                        renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 56, 27, 0, dS[ctr] - Math.PI / 4);
+                    }
+                    if (tS[ctr] == 6) {
+                        polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 45, 0, "rgb(110, 110, 110)");
+                        renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 29, 0, dS[ctr] + Math.PI / 4);
+                        renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 29, 0, dS[ctr] - Math.PI / 4);
+                        renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 66, 29, 0, dS[ctr] + Math.PI / 8);
+                        renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 66, 29, 0, dS[ctr] - Math.PI / 8);
+                        renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 77, 29, 0, dS[ctr]);
+                    }
+                    if (tS[ctr] == 7) {
+                        polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 5, 23, lctr / 30, "rgb(110, 110, 110)");
+                    }
+                    if (tS[ctr] == 8) {
+                        diepCircle2((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 45, "rgb(110, 110, 110)");
+                        renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 28, 0, dS[ctr]);
+                    }
                     if (FOVStyle == 0) {
-                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(0, 60, 0, 0.14)", "rgba(0, 110, 60, 0.63)");
+                        if (tS[ctr] == 0 || tS[ctr] == 2 || tS[ctr] == 3 || tS[ctr] == 6) {
+                            FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 200, "rgba(0, 60, 110, 0.02)", "rgba(0, 60, 110, 0.09)");
+                        }
+                        if (tS[ctr] == 1) {
+                            FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 350, "rgba(0, 60, 110, 0.02)", "rgba(0, 60, 110, 0.09)");
+                        }
+                        if (tS[ctr] == 4) {
+                            FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 240, "rgba(110, 110, 110, 0.02)", "rgba(110, 110, 110, 0.09)");
+                        }
+                        if (tS[ctr] == 7) {
+                            FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(110, 110, 110, 0.02)", "rgba(110, 110, 110, 0.09)");
+                        }
+                        if (tS[ctr] == 8) {
+                            FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 240, "rgba(0, 110, 30, 0.02)", "rgba(0, 110, 30, 0.09)");
+                            FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(110, 110, 110, 0.03)", "rgba(110, 110, 110, 0.14)");
+                        }
                     } else if (FOVStyle == 1) {
-                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(0, 60, 0, 0.3)", "rgba(0, 110, 60, 0.63)");
-                    }
-                }
-                ctr++;
-            }
-            ctr = 0;
-            while (ctr < xB.length) {
-                xB[ctr] = xB[ctr] + Math.cos(dB[ctr]) * vB[ctr];
-                yB[ctr] = yB[ctr] + Math.sin(dB[ctr]) * vB[ctr];
-                lTB[ctr]--;
-                if (teams[ctr] == 0) {
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 15, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    diepCircle(xB[ctr] - x + 512, yB[ctr] - y + 512, 12, "#00B2E1");
-                    ctr2 = 0
-                    while (ctr2 < xE.length) {
-                        if (Math.sqrt(Math.pow(xB[ctr] - xE[ctr2], 2) + Math.pow(yB[ctr] - yE[ctr2], 2)) < 15) {
-                            hPE[ctr2] = hPE[ctr2] - 10
-                            xB.splice(ctr, 1);
-                            yB.splice(ctr, 1);
-                            dB.splice(ctr, 1);
-                            teams.splice(ctr, 1);
-                            vB.splice(ctr, 1);
-                            lTB.splice(ctr, 1);
+                        if (tS[ctr] == 0 || tS[ctr] == 2 || tS[ctr] == 3 || tS[ctr] == 6) {
+                            FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 200, "rgba(0, 60, 110, 0.07)", "rgba(0, 60, 110, 0.45)");
                         }
-                        ctr2++;
-                    }
-                } else if (teams[ctr] == 1) {
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 10, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    diepCircle(xB[ctr] - x + 512, yB[ctr] - y + 512, 8, "#F14E54");
-                    ctr2 = 0
-                    while (ctr2 < xS.length) {
-                        if (Math.sqrt(Math.pow(xB[ctr] - xS[ctr2], 2) + Math.pow(yB[ctr] - yS[ctr2], 2)) < 20) {
-                            hPS[ctr2] = hPS[ctr2] - 10
-                            xB.splice(ctr, 1);
-                            yB.splice(ctr, 1);
-                            dB.splice(ctr, 1);
-                            teams.splice(ctr, 1);
-                            vB.splice(ctr, 1);
-                            lTB.splice(ctr, 1);
-                            tB.splice(ctr, 1);
+                        if (tS[ctr] == 1) {
+                            FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 350, "rgba(0, 60, 110, 0.07)", "rgba(0, 60, 110, 0.45)");
                         }
-                        ctr2++;
-                    }
-                } else if (teams[ctr] == 2) {
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 10, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    diepCircle(xB[ctr] - x + 512, yB[ctr] - y + 512, 8, "#999999");
-                    ctr2 = 0
-                    while (ctr2 < xP.length) {
-                        if (Math.sqrt(Math.pow(xB[ctr] - xP[ctr2], 2) + Math.pow(yB[ctr] - yP[ctr2], 2)) < 20) {
-                            hPP[ctr2]--;
-                            cash++;
-                            xB.splice(ctr, 1);
-                            yB.splice(ctr, 1);
-                            dB.splice(ctr, 1);
-                            teams.splice(ctr, 1);
-                            vB.splice(ctr, 1);
-                            lTB.splice(ctr, 1);
-                            tB.splice(ctr, 1);
+                        if (tS[ctr] == 4) {
+                            FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 240, "rgba(110, 110, 110, 0.07)", "rgba(110, 110, 110, 0.45)");
                         }
-                        ctr2++;
-                    }
-                } else if (teams[ctr] == 3) {
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.arc((xB[ctr] - x) * 1.1 + 512, (yB[ctr] - y) * 1.1 + 512, 10, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                    diepCircle(xB[ctr] - x + 512, yB[ctr] - y + 512, 14, "#00E16E");
-                    ctr2 = 0
-                    while (ctr2 < xP.length) {
-                        if (Math.sqrt(Math.pow(xB[ctr] - xP[ctr2], 2) + Math.pow(yB[ctr] - yP[ctr2], 2)) < 20) {
-                            //pW[tB[ctr]]++;
-                            xB.splice(ctr, 1);
-                            yB.splice(ctr, 1);
-                            dB.splice(ctr, 1);
-                            teams.splice(ctr, 1);
-                            vB.splice(ctr, 1);
-                            lTB.splice(ctr, 1);
-                            tB.splice(ctr, 1);
+                        if (tS[ctr] == 7) {
+                            FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(110, 110, 110, 0.07)", "rgba(110, 110, 110, 0.45)");
                         }
-                        ctr2++;
+                        if (tS[ctr] == 8) {
+                            FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 240, "rgba(0, 110, 30, 0.07)", "rgba(0, 110, 30, 0.45)");
+                            FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(110, 110, 110, 0.11)", "rgba(110, 110, 110, 0.45)");
+                        }
                     }
+                    ctr++;
                 }
-                if (lTB[ctr] < 0) {
-                    xB.splice(ctr, 1);
-                    yB.splice(ctr, 1);
-                    dB.splice(ctr, 1);
-                    vB.splice(ctr, 1);
-                    teams.splice(ctr, 1);
-                    lTB.splice(ctr, 1);
-                    tB.splice(ctr, 1);
-                }
-                ctr++;
-            }
-            ctr = 0;
-            while (ctr < xS.length) {
-                if (tS[ctr] == 8) {
-                    pWL.push(ctr);
-                    if (pW[ctr] > 10) {
-                        pW[ctr] = 10;
+                ctr = 0;
+                while (ctr < xP.length) {
+                    if (tP[ctr] == 0) {
+                        polygon((xP[ctr] - x) * 1.1 + 512, (yP[ctr] - y) * 1.1 + 512, 4, 28, lctr / 100, "rgb(110, 110, 110)");
+                        polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 4, 24, lctr / 100, "#555555");
+                        polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 4, 20, lctr / 100, "#FFE95E");
+                        healthBar(xP[ctr] - x + 512, yP[ctr] - y + 512, hPP[ctr], mHPP[ctr], 40);
                     }
+                    if (tP[ctr] == 1) {
+                        polygon((xP[ctr] - x) * 1.1 + 512, (yP[ctr] - y) * 1.1 + 512, 3, 26, lctr / 100, "rgb(110, 110, 110)");
+                        polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 3, 22, lctr / 100, "#555555");
+                        polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 3, 17, lctr / 100, "#FC7677");
+                        healthBar(xP[ctr] - x + 512, yP[ctr] - y + 512, hPP[ctr], mHPP[ctr], 40);
+                    }
+                    if (tP[ctr] == 2) {
+                        polygon((xP[ctr] - x) * 1.1 + 512, (yP[ctr] - y) * 1.1 + 512, 5, 35, lctr / 100, "rgb(110, 110, 110)");
+                        polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 5, 31, lctr / 100, "#555555");
+                        polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 5, 27, lctr / 100, "#768DFC");
+                        healthBar(xP[ctr] - x + 512, yP[ctr] - y + 512, hPP[ctr], mHPP[ctr], 50);
+                    }
+                    if (hPP[ctr] < 0) {
+                        xP.splice(ctr, 1);
+                        yP.splice(ctr, 1);
+                        hPP.splice(ctr, 1);
+                        mHPP.splice(ctr, 1);
+                        tP.splice(ctr, 1);
+                    }
+                    ctr++;
                 }
-                if (tS[ctr] == 0) {
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
-                    polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 30, 0, "rgb(110, 110, 110)");
+                ctr = 0;
+                while (ctr < xE.length) {
+                    if (tE[ctr] == 0) {
+                        renderShadowBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 26, 12, 0, dE[ctr]);
+                        diepCircle2((xE[ctr] - x) * 1.1 + 512, (yE[ctr] - y) * 1.1 + 512, 17, "rgb(110, 110, 110)");
+                    }
+                    if (tE[ctr] == 1) {
+                        renderShadowBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 34, 14, 0, dE[ctr]);
+                        diepCircle2((xE[ctr] - x) * 1.1 + 512, (yE[ctr] - y) * 1.1 + 512, 20, "rgb(110, 110, 110)");
+                    }
+                    if (tE[ctr] == 2) {
+                        renderShadowBarrel(xE[ctr] - x + Math.cos(dE[ctr]) * 9 + 512, yE[ctr] - y + Math.sin(dE[ctr]) * 9 + 512, 34, 14, 0, dE[ctr]);
+                        renderShadowBarrel(xE[ctr] - x - Math.cos(dE[ctr]) * 9 + 512, yE[ctr] - y - Math.sin(dE[ctr]) * 9 + 512, 34, 14, 0, dE[ctr]);
+                        diepCircle2((xE[ctr] - x) * 1.1 + 512, (yE[ctr] - y) * 1.1 + 512, 20, "rgb(110, 110, 110)");
+                    }
+                    ctr++;
                 }
-                if (tS[ctr] == 1) {
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 21, 0, dS[ctr]);
-                    polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 35, 0, "rgb(110, 110, 110)");
-                }
-                if (tS[ctr] == 2) {
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 14, dS[ctr]);
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, -14, dS[ctr]);
-                    polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 35, 0, "rgb(110, 110, 110)");
-                }
-                if (tS[ctr] == 3) {
-                    renderTrapezoidShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 48, 24, 0, dS[ctr], 42);
-                    polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 35, 0, "rgb(110, 110, 110)");
-                }
-                if (tS[ctr] == 4) {
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 44, 21, 0, dS[ctr]);
-                    diepCircle2((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 34, "rgb(110, 110, 110)");
-                }
-                if (tS[ctr] == 5) {
-                    polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 42, 0, "rgb(110, 110, 110)");
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 56, 27, 0, dS[ctr]);
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 56, 27, 0, dS[ctr] + Math.PI / 4);
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 56, 27, 0, dS[ctr] - Math.PI / 4);
-                }
-                if (tS[ctr] == 6) {
-                    polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 6, 45, 0, "#555555");
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 29, 0, dS[ctr] + Math.PI / 4);
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 55, 29, 0, dS[ctr] - Math.PI / 4);
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 66, 29, 0, dS[ctr] + Math.PI / 8);
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 66, 29, 0, dS[ctr] - Math.PI / 8);
-                    renderShadowBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 77, 29, 0, dS[ctr]);
-                }
-                if (tS[ctr] == 7) { 
-                    polygon((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 5, 23, lctr / 30, "rgb(110, 110, 110)");
-                }
-                if (tS[ctr] == 8) {
-                    diepCircle2((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 45, "rgb(110, 110, 110)");
-                    renderBarrel((xS[ctr] - x) * 1.1 + 512, (yS[ctr] - y) * 1.1 + 512, 55, 28, 0, dS[ctr]);
-                }
-                if (FOVStyle == 0) {
-                    if (tS[ctr] == 0 || tS[ctr] == 2 || tS[ctr] == 3 || tS[ctr] == 6) {
-                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 200, "rgba(0, 60, 110, 0.02)", "rgba(0, 60, 110, 0.09)");
+                ctr = 0;
+                while (ctr < xS.length) {
+                    if (tS[ctr] == 0) {
+                        ctr2 = 0;
+                        cED = 200;
+                        while (ctr2 < xE.length) {
+                            if (Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < 200) {
+                                cEV = ctr2;
+                                dS[ctr] = Math.atan2(yE[cEV] - yS[ctr], xE[cEV] - xS[ctr]);
+                                cED = Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2));
+                            }
+                            ctr2++
+                        }
+                        if (tMRS[ctr] > 60 && cED < 200 && usableTankPower(ctr) > 0.2) {
+                            tMRS[ctr] = 0;
+                            summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 0, 15);
+                            powerTank(ctr, 0.2);
+                        }
+                        polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 27, 0, "#555555");
+                        renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
+                        diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 22, "#00B2E1");
+                        healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
                     }
                     if (tS[ctr] == 1) {
-                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 350, "rgba(0, 60, 110, 0.02)", "rgba(0, 60, 110, 0.09)");
+                        ctr2 = 0;
+                        cED = 350;
+                        while (ctr2 < xE.length) {
+                            if (Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < 350) {
+                                cEV = ctr2;
+                                dS[ctr] = Math.atan2(yE[cEV] - yS[ctr], xE[cEV] - xS[ctr]);
+                                cED = Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2));
+                            }
+                            ctr2++
+                        }
+                        if (tMRS[ctr] > 100 && cED < 350 && usableTankPower(ctr) > 0.2) {
+                            tMRS[ctr] = 0;
+                            summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 0, 15);
+                            powerTank(ctr, 0.2);
+                        }
+                        polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
+                        renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 21, 0, dS[ctr]);
+                        diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 25, "#00B2E1");
+                        healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
+                    }
+                    if (tS[ctr] == 2) {
+                        ctr2 = 0;
+                        cED = 200;
+                        while (ctr2 < xE.length) {
+                            if (Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < 200) {
+                                cEV = ctr2;
+                                dS[ctr] = Math.atan2(yE[cEV] - yS[ctr], xE[cEV] - xS[ctr]);
+                                cED = Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2));
+                            }
+                            ctr2++
+                        }
+                        if (tMRS[ctr] == 27 && cED < 200 && usableTankPower(ctr) > 0.15) {
+                            summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 0, 15, ctr, 12);
+                            powerTank(ctr, 0.15);
+                        }
+                        if (tMRS[ctr] > 54 && cED < 200 && usableTankPower(ctr) > 0.15) {
+                            tMRS[ctr] = 0;
+                            summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 0, 15, ctr, -12);
+                            powerTank(ctr, 0.15);
+                        }
+                        polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
+                        renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, 12, dS[ctr]);
+                        renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, -12, dS[ctr]);
+                        diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 25, "#00B2E1");
+                        healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
+                    }
+                    if (tS[ctr] == 3) {
+                        ctr2 = 0;
+                        cED = 200;
+                        while (ctr2 < xE.length) {
+                            if (Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < 200) {
+                                cEV = ctr2;
+                                dS[ctr] = Math.atan2(yE[cEV] - yS[ctr], xE[cEV] - xS[ctr]);
+                                cED = Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2));
+                            }
+                            ctr2++
+                        }
+                        if (tMRS[ctr] == 16 && cED < 200 && usableTankPower(ctr) > 0.15) {
+                            summonBullet(xS[ctr] + Math.cos(dS[ctr]) * 10, yS[ctr] + Math.sin(dS[ctr]) * 10, dS[ctr] + 0.25, 30, 0, 15);
+                            powerTank(ctr, 0.15);
+                        }
+                        if (tMRS[ctr] == 32 && cED < 200 && usableTankPower(ctr) > 0.15) {
+                            summonBullet(xS[ctr] + Math.cos(dS[ctr]) * 10, yS[ctr] + Math.sin(dS[ctr]) * 10, dS[ctr], 30, 0, 15);
+                            powerTank(ctr, 0.15);
+                        }
+                        if (tMRS[ctr] == 48 && cED < 200 && usableTankPower(ctr) > 0.15) {
+                            summonBullet(xS[ctr] + Math.cos(dS[ctr]) * 10, yS[ctr] + Math.sin(dS[ctr]) * 10, dS[ctr] - 0.25, 30, 0, 15);
+                            powerTank(ctr, 0.15);
+                        }
+                        if (tMRS[ctr] > 64 && cED < 200 && usableTankPower(ctr) > 0.15) {
+                            tMRS[ctr] = 0;
+                            summonBullet(xS[ctr] - Math.cos(dS[ctr]) * 10, yS[ctr] - Math.sin(dS[ctr]) * 10, dS[ctr], 30, 0, 15);
+                            powerTank(ctr, 0.15);
+                        }
+                        polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
+                        renderTrapezoidBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, 0, dS[ctr], 38);
+                        diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 25, "#00B2E1");
+                        healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
                     }
                     if (tS[ctr] == 4) {
-                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 240, "rgba(110, 110, 110, 0.02)", "rgba(110, 110, 110, 0.09)");
+                        ctr2 = 0;
+                        cED = 240;
+                        while (ctr2 < xP.length) {
+                            if (Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2)) < 240) {
+                                cEV = ctr2;
+                                dS[ctr] = Math.atan2(yP[cEV] - yS[ctr], xP[cEV] - xS[ctr]);
+                                cED = Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2));
+                            }
+                            ctr2++
+                        }
+                        if (tMRS[ctr] > 40 && cED < 240 && usableTankPower(ctr) > 0.02) {
+                            tMRS[ctr] = 0;
+                            summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 2, 25);
+                            powerTank(ctr, 0.02);
+                        }
+                        diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 30, "#555555");
+                        renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 39, 18, 0, dS[ctr]);
+                        diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 22, "#999999");
+                        healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
+                    }
+                    if (tS[ctr] == 5) {
+                        ctr2 = 0;
+                        cED = 200;
+                        while (ctr2 < xE.length) {
+                            if (Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < 200) {
+                                cEV = ctr2;
+                                dS[ctr] = Math.atan2(yE[cEV] - yS[ctr], xE[cEV] - xS[ctr]);
+                                cED = Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2));
+                            }
+                            ctr2++
+                        }
+                        if (tMRS[ctr] > 50 && cED < 200 && usableTankPower(ctr) > 0.45) {
+                            tMRS[ctr] = 0;
+                            summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 0, 15);
+                            summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 4, 30, 0, 15);
+                            summonBullet(xS[ctr], yS[ctr], dS[ctr] - Math.PI / 4, 30, 0, 15);
+                            powerTank(ctr, 0.45);
+                        }
+                        polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 35, 0, "#555555");
+                        renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 24, 0, dS[ctr]);
+                        renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 24, 0, dS[ctr] + Math.PI / 4);
+                        renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 24, 0, dS[ctr] - Math.PI / 4);
+                        diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 27, "#00B2E1");
+                        healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 60);
+                    }
+                    if (tS[ctr] == 6) {
+                        ctr2 = 0;
+                        cED = 200;
+                        while (ctr2 < xE.length) {
+                            if (Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < 200) {
+                                cEV = ctr2;
+                                dS[ctr] = Math.atan2(yE[cEV] - yS[ctr], xE[cEV] - xS[ctr]);
+                                cED = Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2));
+                            }
+                            ctr2++
+                        }
+                        if (tMRS[ctr] == 15 && cED < 200 && usableTankPower(ctr) > 0.1) {
+                            summonBullet(xS[ctr], yS[ctr], dS[ctr], 75, 0, 5);
+                            powerTank(ctr, 0.1);
+                        }
+                        if (tMRS[ctr] == 30 && cED < 200 && usableTankPower(ctr) > 0.2) {
+                            summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 8, 75, 0, 5);
+                            summonBullet(xS[ctr], yS[ctr], dS[ctr] - Math.PI / 8, 75, 0, 5);
+                            powerTank(ctr, 0.2);
+                        }
+                        if (tMRS[ctr] > 45 && cED < 200 && usableTankPower(ctr) > 0.2) {
+                            tMRS[ctr] = 0;
+                            summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 4, 75, 0, 5);
+                            summonBullet(xS[ctr], yS[ctr], dS[ctr] - Math.PI / 4, 75, 0, 5);
+                            powerTank(ctr, 0.2);
+                        }
+                        polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 39, 0, "#555555");
+                        renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 26, 0, dS[ctr] + Math.PI / 4);
+                        renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 26, 0, dS[ctr] - Math.PI / 4);
+                        renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 60, 26, 0, dS[ctr] + Math.PI / 8);
+                        renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 60, 26, 0, dS[ctr] - Math.PI / 8);
+                        renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 70, 26, 0, dS[ctr]);
+                        diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 30, "#00B2E1");
+                        healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 70);
                     }
                     if (tS[ctr] == 7) {
-                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(110, 110, 110, 0.02)", "rgba(110, 110, 110, 0.09)");
-                    }
-                } else if (FOVStyle == 1) {
-                    if (tS[ctr] == 0 || tS[ctr] == 2 || tS[ctr] == 3 || tS[ctr] == 6) {
-                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 200, "rgba(0, 60, 110, 0.07)", "rgba(0, 60, 110, 0.45)");
-                    }
-                    if (tS[ctr] == 1) {
-                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 350, "rgba(0, 60, 110, 0.07)", "rgba(0, 60, 110, 0.45)");
-                    }
-                    if (tS[ctr] == 4) {
-                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 240, "rgba(110, 110, 110, 0.07)", "rgba(110, 110, 110, 0.45)");
-                    }
-                    if (tS[ctr] == 7) {
-                        FOV(xS[ctr] - x + 512, yS[ctr] - y + 512, 175, "rgba(110, 110, 110, 0.07)", "rgba(110, 110, 110, 0.45)");
-                    }
-                }
-                ctr++;
-            }
-            ctr = 0;
-            while (ctr < xP.length) {
-                if (tP[ctr] == 0) {
-                    polygon((xP[ctr] - x) * 1.1 + 512, (yP[ctr] - y) * 1.1 + 512, 4, 28, lctr / 100, "rgb(110, 110, 110)");
-                    polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 4, 24, lctr / 100, "#555555");
-                    polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 4, 20, lctr / 100, "#FFE95E");
-                    healthBar(xP[ctr] - x + 512, yP[ctr] - y + 512, hPP[ctr], mHPP[ctr], 40);
-                }
-                if (tP[ctr] == 1) {
-                    polygon((xP[ctr] - x) * 1.1 + 512, (yP[ctr] - y) * 1.1 + 512, 3, 26, lctr / 100, "rgb(110, 110, 110)");
-                    polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 3, 22, lctr / 100, "#555555");
-                    polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 3, 17, lctr / 100, "#FC7677");
-                    healthBar(xP[ctr] - x + 512, yP[ctr] - y + 512, hPP[ctr], mHPP[ctr], 40);
-                }
-                if (tP[ctr] == 2) {
-                    polygon((xP[ctr] - x) * 1.1 + 512, (yP[ctr] - y) * 1.1 + 512, 5, 35, lctr / 100, "rgb(110, 110, 110)");
-                    polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 5, 31, lctr / 100, "#555555");
-                    polygon((xP[ctr] - x) + 512, (yP[ctr] - y) + 512, 5, 27, lctr / 100, "#768DFC");
-                    healthBar(xP[ctr] - x + 512, yP[ctr] - y + 512, hPP[ctr], mHPP[ctr], 50);
-                }
-                if (hPP[ctr] < 0) {
-                    xP.splice(ctr, 1);
-                    yP.splice(ctr, 1);
-                    hPP.splice(ctr, 1);
-                    mHPP.splice(ctr, 1);
-                    tP.splice(ctr, 1);
-                }
-                ctr++;
-            }
-            ctr = 0;
-            while (ctr < xE.length) {
-                if (tE[ctr] == 0) {
-                    renderShadowBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 26, 12, 0, dE[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.arc((xE[ctr] - x) * 1.1 + 512, (yE[ctr] - y) * 1.1 + 512, 17, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                }
-                if (tE[ctr] == 1) {
-                    renderShadowBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 34, 14, 0, dE[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.arc((xE[ctr] - x) * 1.1 + 512, (yE[ctr] - y) * 1.1 + 512, 20, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                }
-                if (tE[ctr] == 2) {
-                    renderShadowBarrel(xE[ctr] - x + Math.cos(dE[ctr]) * 9 + 512, yE[ctr] - y + Math.sin(dE[ctr]) * 9 + 512, 34, 14, 0, dE[ctr]);
-                    renderShadowBarrel(xE[ctr] - x - Math.cos(dE[ctr]) * 9 + 512, yE[ctr] - y - Math.sin(dE[ctr]) * 9 + 512, 34, 14, 0, dE[ctr]);
-                    ctx.beginPath();
-                    ctx.fillStyle = "rgb(110, 110, 110)";
-                    ctx.arc((xE[ctr] - x) * 1.1 + 512, (yE[ctr] - y) * 1.1 + 512, 20, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                }
-                ctr++;
-            }
-            ctr = 0;
-            while (ctr < xS.length) {
-                if (tS[ctr] == 0) {
-                    ctr2 = 0;
-                    cED = 200;
-                    while (ctr2 < xE.length) {
-                        if (Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < 200) {
-                            cEV = ctr2;
-                            dS[ctr] = Math.atan2(yE[cEV] - yS[ctr], xE[cEV] - xS[ctr]);
-                            cED = Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2));
-                        }
-                        ctr2++
-                    }
-                    if (tMRS[ctr] > 60 && cED < 200 && usableTankPower(ctr) > 0.2) {
-                        tMRS[ctr] = 0;
-                        summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 0, 15);
-                        powerTank(ctr, 0.2);
-                    }
-                    polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 27, 0, "#555555");
-                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 43, 21, 0, dS[ctr]);
-                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 22, "#00B2E1");
-                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
-                }
-                if (tS[ctr] == 1) {
-                    ctr2 = 0;
-                    cED = 350;
-                    while (ctr2 < xE.length) {
-                        if (Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < 350) {
-                            cEV = ctr2;
-                            dS[ctr] = Math.atan2(yE[cEV] - yS[ctr], xE[cEV] - xS[ctr]);
-                            cED = Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2));
-                        }
-                        ctr2++
-                    }
-                    if (tMRS[ctr] > 100 && cED < 350 && usableTankPower(ctr) > 0.2) {
-                        tMRS[ctr] = 0;
-                        summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 0, 15);
-                        powerTank(ctr, 0.2);
-                    }
-                    polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
-                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 21, 0, dS[ctr]);
-                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 25, "#00B2E1");
-                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
-                }
-                if (tS[ctr] == 2) {
-                    ctr2 = 0;
-                    cED = 200;
-                    while (ctr2 < xE.length) {
-                        if (Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < 200) {
-                            cEV = ctr2;
-                            dS[ctr] = Math.atan2(yE[cEV] - yS[ctr], xE[cEV] - xS[ctr]);
-                            cED = Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2));
-                        }
-                        ctr2++
-                    }
-                    if (tMRS[ctr] == 27 && cED < 200 && usableTankPower(ctr) > 0.15) {
-                        summonBullet(xS[ctr] + Math.cos(dS[ctr]) * 10, yS[ctr] + Math.sin(dS[ctr]) * 10, dS[ctr], 30, 0, 15);
-                        powerTank(ctr, 0.15);
-                    }
-                    if (tMRS[ctr] > 54 && cED < 200 && usableTankPower(ctr) > 0.15) {
-                        tMRS[ctr] = 0;
-                        summonBullet(xS[ctr] - Math.cos(dS[ctr]) * 10, yS[ctr] - Math.sin(dS[ctr]) * 10, dS[ctr], 30, 0, 15);
-                        powerTank(ctr, 0.15);
-                    }
-                    polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
-                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, 12, dS[ctr]);
-                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, -12, dS[ctr]);
-                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 25, "#00B2E1");
-                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
-                }
-                if (tS[ctr] == 3) {
-                    ctr2 = 0;
-                    cED = 200;
-                    while (ctr2 < xE.length) {
-                        if (Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < 200) {
-                            cEV = ctr2;
-                            dS[ctr] = Math.atan2(yE[cEV] - yS[ctr], xE[cEV] - xS[ctr]);
-                            cED = Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2));
-                        }
-                        ctr2++
-                    }
-                    if (tMRS[ctr] == 16 && cED < 200 && usableTankPower(ctr) > 0.15) {
-                        summonBullet(xS[ctr] + Math.cos(dS[ctr]) * 10, yS[ctr] + Math.sin(dS[ctr]) * 10, dS[ctr] + 0.25, 30, 0, 15);
-                        powerTank(ctr, 0.15);
-                    }
-                    if (tMRS[ctr] == 32 && cED < 200 && usableTankPower(ctr) > 0.15) {
-                        summonBullet(xS[ctr] + Math.cos(dS[ctr]) * 10, yS[ctr] + Math.sin(dS[ctr]) * 10, dS[ctr], 30, 0, 15);
-                        powerTank(ctr, 0.15);
-                    }
-                    if (tMRS[ctr] == 48 && cED < 200 && usableTankPower(ctr) > 0.15) {
-                        summonBullet(xS[ctr] + Math.cos(dS[ctr]) * 10, yS[ctr] + Math.sin(dS[ctr]) * 10, dS[ctr] - 0.25, 30, 0, 15);
-                        powerTank(ctr, 0.15);
-                    }
-                    if (tMRS[ctr] > 64 && cED < 200 && usableTankPower(ctr) > 0.15) {
-                        tMRS[ctr] = 0;
-                        summonBullet(xS[ctr] - Math.cos(dS[ctr]) * 10, yS[ctr] - Math.sin(dS[ctr]) * 10, dS[ctr], 30, 0, 15);
-                        powerTank(ctr, 0.15);
-                    }
-                    polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 32, 0, "#555555");
-                    renderTrapezoidBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 45, 21, 0, dS[ctr], 38);
-                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 25, "#00B2E1");
-                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
-                }
-                if (tS[ctr] == 4) {
-                    ctr2 = 0;
-                    cED = 240;
-                    while (ctr2 < xP.length) {
-                        if (Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2)) < 240) {
-                            cEV = ctr2;
-                            dS[ctr] = Math.atan2(yP[cEV] - yS[ctr], xP[cEV] - xS[ctr]);
-                            cED = Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2));
-                        }
-                        ctr2++
-                    }
-                    if (tMRS[ctr] > 40 && cED < 240 && usableTankPower(ctr) > 0.02) {
-                        tMRS[ctr] = 0;
-                        summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 2, 25);
-                        powerTank(ctr, 0.02);
-                    }
-                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 30, "#555555");
-                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 39, 18, 0, dS[ctr]);
-                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 22, "#999999");
-                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
-                }
-                if (tS[ctr] == 5) {
-                    ctr2 = 0;
-                    cED = 200;
-                    while (ctr2 < xE.length) {
-                        if (Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < 200) {
-                            cEV = ctr2;
-                            dS[ctr] = Math.atan2(yE[cEV] - yS[ctr], xE[cEV] - xS[ctr]);
-                            cED = Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2));
-                        }
-                        ctr2++
-                    }
-                    if (tMRS[ctr] > 50 && cED < 200 && usableTankPower(ctr) > 0.45) {
-                        tMRS[ctr] = 0;
-                        summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 0, 15);
-                        summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 4, 30, 0, 15);
-                        summonBullet(xS[ctr], yS[ctr], dS[ctr] - Math.PI / 4, 30, 0, 15);
-                        powerTank(ctr, 0.45);
-                    }
-                    polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 35, 0, "#555555");
-                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 24, 0, dS[ctr]);
-                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 24, 0, dS[ctr] + Math.PI / 4);
-                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 24, 0, dS[ctr] - Math.PI / 4);
-                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 27, "#00B2E1");
-                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 60);
-                }
-                if (tS[ctr] == 6) {
-                    ctr2 = 0;
-                    cED = 200;
-                    while (ctr2 < xE.length) {
-                        if (Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2)) < 200) {
-                            cEV = ctr2;
-                            dS[ctr] = Math.atan2(yE[cEV] - yS[ctr], xE[cEV] - xS[ctr]);
-                            cED = Math.sqrt(Math.pow(xS[ctr] - xE[ctr2], 2) + Math.pow(yS[ctr] - yE[ctr2], 2));
-                        }
-                        ctr2++
-                    }
-                    if (tMRS[ctr] == 15 && cED < 200 && usableTankPower(ctr) > 0.1) {
-                        summonBullet(xS[ctr], yS[ctr], dS[ctr], 75, 0, 5);
-                        powerTank(ctr, 0.1);
-                    }
-                    if (tMRS[ctr] == 30 && cED < 200 && usableTankPower(ctr) > 0.2) {
-                        summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 8, 75, 0, 5);
-                        summonBullet(xS[ctr], yS[ctr], dS[ctr] - Math.PI / 8, 75, 0, 5);
-                        powerTank(ctr, 0.2);
-                    }
-                    if (tMRS[ctr] > 45 && cED < 200 && usableTankPower(ctr) > 0.2) {
-                        tMRS[ctr] = 0;
-                        summonBullet(xS[ctr], yS[ctr], dS[ctr] + Math.PI / 4, 75, 0, 5);
-                        summonBullet(xS[ctr], yS[ctr], dS[ctr] - Math.PI / 4, 75, 0, 5);
-                        powerTank(ctr, 0.2);
-                    }
-                    polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 6, 39, 0, "#555555");
-                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 26, 0, dS[ctr] + Math.PI / 4);
-                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 26, 0, dS[ctr] - Math.PI / 4);
-                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 60, 26, 0, dS[ctr] + Math.PI / 8);
-                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 60, 26, 0, dS[ctr] - Math.PI / 8);
-                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 70, 26, 0, dS[ctr]);
-                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 30, "#00B2E1");
-                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 70);
-                }
-                if (tS[ctr] == 7) {
-                    ctr6 = 0;
-                    ctx.strokeStyle = "rgba(0, 60, 110, 0.25)";
-                    ctx.lineWidth = 5;
-                    while (ctr6 < xS.length) {
-                        if (Math.sqrt(Math.pow(xS[ctr] - xS[ctr6], 2) + Math.pow(yS[ctr] - yS[ctr6], 2)) < 175 && ctr != ctr6) {
-                            if (tS[ctr6] == 7) {
-                                if (ctr6 > ctr) {
+                        ctr6 = 0;
+                        ctx.strokeStyle = "rgba(0, 60, 110, 0.25)";
+                        ctx.lineWidth = 5;
+                        while (ctr6 < xS.length) {
+                            if (Math.sqrt(Math.pow(xS[ctr] - xS[ctr6], 2) + Math.pow(yS[ctr] - yS[ctr6], 2)) < 175 && ctr != ctr6) {
+                                if (tS[ctr6] == 7 || tS[ctr6] == 8) {
+                                    if (ctr6 > ctr) {
+                                        ctx.beginPath();
+                                        ctx.moveTo(xS[ctr] - x + 512, yS[ctr] - y + 512);
+                                        ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
+                                        ctx.stroke();
+                                        ctx.closePath();
+                                    }
+                                } else {
                                     ctx.beginPath();
                                     ctx.moveTo(xS[ctr] - x + 512, yS[ctr] - y + 512);
                                     ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
                                     ctx.stroke();
                                     ctx.closePath();
                                 }
-                            } else {
-                                ctx.beginPath();
-                                ctx.moveTo(xS[ctr] - x + 512, yS[ctr] - y + 512);
-                                ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
-                                ctx.stroke();
-                                ctx.closePath();
                             }
+                            ctr6++
+                        }
+                        polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 5, 20, lctr / 30, "#555555");
+                        diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 12, "#999999");
+                        healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 30);
+                    }
+                    if (tS[ctr] == 8) {
+                        mPower = mPower + 10;
+                        ctr2 = 0;
+                        cED = 240;
+                        while (ctr2 < xP.length) {
+                            if (Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2)) < 240) {
+                                cEV = ctr2;
+                                dS[ctr] = Math.atan2(yP[cEV] - yS[ctr], xP[cEV] - xS[ctr]);
+                                cED = Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2));
+                            }
+                            ctr2++
+                        }
+                        if (tMRS[ctr] > 100 && cED < 240) {
+                            tMRS[ctr] = 0;
+                            pW[ctr]++;
+                            summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 3, 25, ctr);
+                        }
+                        diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 40, "#555555");
+                        renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 25, 0, dS[ctr]);
+                        diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 32, "#00E16E");
+                        healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
+                        ctx.fillStyle = "White";
+                        ctx.strokeStyle = "rgb(40, 40, 40)";
+                        ctx.font = "Bold 18px Ubuntu";
+                        ctx.textAlign = "center";
+                        ctx.strokeText(Math.round(pW[ctr] * 100) / 100 + "/" + 10, xS[ctr] - x + 512, yS[ctr] - y + 518);
+                        ctx.fillText(Math.round(pW[ctr] * 100) / 100 + "/" + 10, xS[ctr] - x + 512, yS[ctr] - y + 518);
+                        ctr6 = 0;
+                        ctx.strokeStyle = "rgba(0, 60, 110, 0.25)";
+                        ctx.lineWidth = 5;
+                        pW2[ctr] = [];
+                        while (ctr6 < xS.length) {
+                            if (Math.sqrt(Math.pow(xS[ctr] - xS[ctr6], 2) + Math.pow(yS[ctr] - yS[ctr6], 2)) < 175 && ctr != ctr6) {
+                                if (tS[ctr6] == 7 || tS[ctr6] == 8) {
+                                    if (ctr6 > ctr) {
+                                        ctx.beginPath();
+                                        ctx.moveTo(xS[ctr] - x + 512, yS[ctr] - y + 512);
+                                        ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
+                                        ctx.stroke();
+                                        ctx.closePath();
+                                    }
+                                } else {
+                                    ctx.beginPath();
+                                    ctx.moveTo(xS[ctr] - x + 512, yS[ctr] - y + 512);
+                                    ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
+                                    ctx.stroke();
+                                    ctx.closePath();
+                                }
+                                if (tS[ctr] == 8) {
+                                    pW2[ctr].push(ctr6);
+                                }
+                            }
+                            ctr6++
+                        }
+                    }
+                    ctr6 = 0;
+                    ctr5 = 0;
+                    if (tS[ctr] != 8) {
+                        pW[ctr] = [];
+                        while (ctr5 < pWL.length) {
+                            pWC = 0;
+                            ctr6 = 0;
+                            while (ctr6 < xS.length) {
+                                if (Math.sqrt(Math.pow(xS[ctr] - xS[ctr6], 2) + Math.pow(yS[ctr] - yS[ctr6], 2)) < 175 && tS[ctr6] == 7 && pW[ctr6].indexOf(pWL[ctr5]) != -1) {
+                                    pWC = 1;
+                                }
+                                if (ctr6 == pWL[ctr5] && Math.sqrt(Math.pow(xS[ctr] - xS[ctr6], 2) + Math.pow(yS[ctr] - yS[ctr6], 2)) < 175 && tS[ctr6] == 8) {
+                                    pWC = 1;
+                                }
+                                if (Math.sqrt(Math.pow(xS[ctr] - xS[ctr6], 2) + Math.pow(yS[ctr] - yS[ctr6], 2)) < 175 && tS[ctr6] == 8 && pW2[ctr6].indexOf(pWL[ctr5]) != -1) {
+                                    pWC = 1;
+                                }
+                                ctr6++;
+                            }
+                            if (pWC == 1) {
+                                pW[ctr].push(pWL[ctr5]);
+                            }
+                            ctr5++;
+                        }
+                    }
+                    if (hPS[ctr] < mHPS[ctr] && tMRS2[ctr] % 50 == 0 && usableTankPower(ctr) > mHPS[ctr] / 10000 && tS[ctr] != 8) {
+                        hPS[ctr] = hPS[ctr] + mHPS[ctr] / 100;
+                        powerTank(ctr, mHPS[ctr] / 10000);
+                    }
+                    if (tS[ctr] == 8 && hPS[ctr] < mHPS[ctr] && tMRS2[ctr] % 50 == 0) {
+                        hPS[ctr] = hPS[ctr] + mHPS[ctr] / 200;
+                    }
+                    tMRS[ctr]++
+                    tMRS2[ctr]++
+                    if (hPS[ctr] <= 0) {
+                        xS.splice(ctr, 1);
+                        yS.splice(ctr, 1);
+                        dS.splice(ctr, 1);
+                        hPS.splice(ctr, 1);
+                        mHPS.splice(ctr, 1);
+                        tMRS.splice(ctr, 1);
+                        tMRS2.splice(ctr, 1);
+                        tS.splice(ctr, 1);
+                        pW.splice(ctr, 1);
+                        pW2.splice(ctr, 1);
+                    }
+                    ctr++;
+                }
+                ctr = 0;
+                while (ctr < xE.length) {
+                    if (tE[ctr] == 0) {
+                        ctr2 = 0;
+                        cED = 120;
+                        cED2 = 99999;
+                        while (ctr2 < xS.length) {
+                            if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED2) {
+                                cEV2 = ctr2;
+                                cED2 = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
+                                dE[ctr] = Math.atan2(yS[cEV2] - yE[ctr], xS[cEV2] - xE[ctr]);
+                            }
+                            if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED && Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < 120) {
+                                cEV = ctr2;
+                                cED = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
+                            }
+                            ctr2++
+                        }
+                        if (Math.sqrt(Math.pow(xE[ctr] - xS[cEV2], 2) + Math.pow(yE[ctr] - yS[cEV2], 2)) > 100) {
+                            xE[ctr] = xE[ctr] + Math.cos(dE[ctr]);
+                            yE[ctr] = yE[ctr] + Math.sin(dE[ctr]);
+                        }
+                        if (cED < 120) {
+                            if (tMRE[ctr] > 90) {
+                                tMRE[ctr] = 0;
+                                summonBullet(xE[ctr], yE[ctr], dE[ctr], 50, 1, 5);
+                            }
+                        }
+                        if (FOVStyle == 0) {
+                            FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                        } else if (FOVStyle == 1) {
+                            FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
+                        }
+                        renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 26, 12, 0, dE[ctr]);
+                        diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 15, "#F14E54");
+                        healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
+                    }
+                    if (tE[ctr] == 1) {
+                        ctr2 = 0;
+                        cED = 200;
+                        cED2 = 99999;
+                        while (ctr2 < xS.length) {
+                            if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED2) {
+                                cEV2 = ctr2;
+                                cED2 = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
+                                dE[ctr] = Math.atan2(yS[cEV2] - yE[ctr], xS[cEV2] - xE[ctr]);
+                            }
+                            if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED && Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < 200) {
+                                cEV = ctr2;
+                                cED = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
+                            }
+                            ctr2++
+                        }
+                        if (Math.sqrt(Math.pow(xE[ctr] - xS[cEV2], 2) + Math.pow(yE[ctr] - yS[cEV2], 2)) > 180) {
+                            xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) / 1.4;
+                            yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) / 1.4;
+                        }
+                        if (cED < 200) {
+                            if (tMRE[ctr] > 150) {
+                                tMRE[ctr] = 0;
+                                summonBullet(xE[ctr], yE[ctr], dE[ctr], 50, 1, 15);
+                            }
+                        }
+                        if (FOVStyle == 0) {
+                            FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 200, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                        } else if (FOVStyle == 1) {
+                            FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 200, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
+                        }
+                        renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 34, 14, 0, dE[ctr]);
+                        diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
+                        healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
+                    }
+                    if (tE[ctr] == 2) {
+                        ctr2 = 0;
+                        cED = 120;
+                        cED2 = 99999;
+                        while (ctr2 < xS.length) {
+                            if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED2) {
+                                cEV2 = ctr2;
+                                cED2 = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
+                                dE[ctr] = Math.atan2(yS[cEV2] - yE[ctr], xS[cEV2] - xE[ctr]);
+                            }
+                            if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED && Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < 120) {
+                                cEV = ctr2;
+                                cED = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
+                            }
+                            ctr2++
+                        }
+                        if (Math.sqrt(Math.pow(xE[ctr] - xS[cEV2], 2) + Math.pow(yE[ctr] - yS[cEV2], 2)) > 100) {
+                            xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) / 1.7;
+                            yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) / 1.7;
+                        }
+                        if (cED < 120) {
+                            if (tMRE[ctr] == 40) {
+                                summonBullet(xE[ctr] + Math.cos(dE[ctr]) * 8, yE[ctr] + Math.sin(dE[ctr]) * 8, dE[ctr], 50, 1, 5, ctr, 8);
+                            }
+                            if (tMRE[ctr] > 80) {
+                                tMRE[ctr] = 0;
+                                summonBullet(xE[ctr] - Math.cos(dE[ctr]) * 8, yE[ctr] - Math.sin(dE[ctr]) * 8, dE[ctr], 50, 1, 5, ctr, -8);
+                            }
+                        }
+                        if (FOVStyle == 0) {
+                            FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                        } else if (FOVStyle == 1) {
+                            FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
+                        }
+                        renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 8, dE[ctr]);
+                        renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, -8, dE[ctr]);
+                        diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
+                        healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
+                    }
+                    if (tE[ctr] == 3) {
+                        ctr2 = 0;
+                        cED = 120;
+                        cED2 = 99999;
+                        cEV3 = -1;
+                        ctr3 = 0;
+                        ctr4 = 0;
+                        ctr5 = 0;
+                        while (ctr3 < xS.length) {
+                            while (ctr4 < xS.length) {
+                                if (Math.sqrt(Math.pow(xS[ctr3] - xS[ctr4], 2) + Math.pow(yS[ctr3] - yS[ctr4], 2)) < 239 && Math.sqrt(Math.pow(xE[ctr] - (xS[ctr3] + xS[ctr4]) / 2, 2) + Math.pow(yE[ctr] - (yS[ctr3] + yS[ctr4]) / 2, 2)) < cED2) {
+                                    if (ctr5 == 0 || ctr3 != ctr4) {
+                                        cEV2 = ctr3;
+                                        cEV3 = ctr4;
+                                        cED2 = Math.sqrt(Math.pow(xE[ctr] - (xS[ctr3] + xS[ctr4]) / 2, 2) + Math.pow(yE[ctr] - (yS[ctr3] + yS[ctr4]) / 2, 2));
+                                        if (ctr3 != ctr4) {
+                                            ctr5++;
+                                        }
+                                    }
+
+                                }
+                                ctr4++;
+                            }
+                            ctr4 = 0;
+                            ctr3++;
+                        }
+                        dE[ctr] = Math.atan2((yS[cEV2] + yS[cEV3]) / 2 - yE[ctr], (xS[cEV2] + xS[cEV3]) / 2 - xE[ctr]);
+                        if (Math.sqrt(Math.pow(xE[ctr] - (xS[cEV2] + xS[cEV3]) / 2, 2) + Math.pow(yE[ctr] - (yS[cEV2] + yS[cEV3]) / 2, 2)) > 5) {
+                            xE[ctr] = xE[ctr] + Math.cos(dE[ctr]);
+                            yE[ctr] = yE[ctr] + Math.sin(dE[ctr]);
+                        } else {
+                            dE[ctr] = Math.atan2(yS[cEV2] - yE[ctr], xS[cEV2] - xE[ctr]);
+                        }
+                        if (xS.length == 0) {
+                            dE[ctr] = 0;
+                        }
+                        //}
+                        if (cED2 < 120) {
+                            if (tMRE[ctr] > 90) {
+                                tMRE[ctr] = 0;
+                                summonBullet(xE[ctr], yE[ctr], dE[ctr] + Math.PI, 50, 1, 5);
+                                summonBullet(xE[ctr], yE[ctr], dE[ctr], 50, 1, 5);
+                            }
+                        }
+                        if (FOVStyle == 0) {
+                            FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                        } else if (FOVStyle == 1) {
+                            FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
+                        }
+                        renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 0, dE[ctr]);
+                        renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 0, dE[ctr] + Math.PI);
+                        diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
+                        healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
+                    }
+                    if (tE[ctr] == 4) {
+                        ctr2 = 0;
+                        cED = 120;
+                        cED2 = 99999;
+                        while (ctr2 < xS.length) {
+                            if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED2) {
+                                cEV2 = ctr2;
+                                cED2 = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
+                                dE[ctr] = Math.atan2(yS[cEV2] - yE[ctr], xS[cEV2] - xE[ctr]);
+                            }
+                            if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED && Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < 120) {
+                                cEV = ctr2;
+                                cED = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
+                            }
+                            ctr2++
+                        }
+                        if (Math.sqrt(Math.pow(xE[ctr] - xS[cEV2], 2) + Math.pow(yE[ctr] - yS[cEV2], 2)) > 100) {
+                            xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) * 1.5;
+                            yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) * 1.5;
+                        }
+                        if (cED < 120) {
+                            if (tMRE[ctr] > 70) {
+                                tMRE[ctr] = 0;
+                                summonBullet(xE[ctr] - Math.cos(dE[ctr]) * 8, yE[ctr] - Math.sin(dE[ctr]) * 8, dE[ctr], 50, 1, 5);
+                            }
+                        } else {
+                            if (tMRE2[ctr] > 90) {
+                                tMRE2[ctr] = 0;
+                                summonBullet(xE[ctr] - Math.cos(dE[ctr] + Math.PI * (7 / 6)) * 8, yE[ctr] - Math.sin(dE[ctr] + Math.PI * (7 / 6)) * 8, dE[ctr] + Math.PI * (7 / 6), 50, 1, 5);
+                                summonBullet(xE[ctr] - Math.cos(dE[ctr] + Math.PI * (5 / 6)) * 8, yE[ctr] - Math.sin(dE[ctr] + Math.PI * (5 / 6)) * 8, dE[ctr] + Math.PI * (5 / 6), 50, 1, 5);
+                            }
+                            if (tMRE2[ctr] < 30) {
+                                xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) * (6 - tMRE2[ctr] / 5);
+                                yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) * (6 - tMRE2[ctr] / 5);
+                            }
+                        }
+                        if (FOVStyle == 0) {
+                            FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
+                        } else if (FOVStyle == 1) {
+                            FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
+                        }
+                        renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 0, dE[ctr]);
+                        renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 25, 14, 0, dE[ctr] + Math.PI * (7 / 6));
+                        renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 25, 14, 0, dE[ctr] + Math.PI * (5 / 6));
+                        diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
+                        healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
+                    }
+                    tMRE[ctr]++
+                    tMRE2[ctr]++
+                    if (hPE[ctr] <= 0) {
+                        xE.splice(ctr, 1);
+                        yE.splice(ctr, 1);
+                        dE.splice(ctr, 1);
+                        hPE.splice(ctr, 1);
+                        mHPE.splice(ctr, 1);
+                        tMRE.splice(ctr, 1);
+                        tMRE2.splice(ctr, 1);
+                        tE.splice(ctr, 1);
+                    }
+                    ctr++;
+                }
+                //ctr = 0;
+                //while (ctr < xS.length) {
+                //fov stuff was here before
+                //    ctr++
+                //}
+                ctx.fillStyle = "#555555";
+                //ctx.font = "24px Consolas";
+                ctx.font = "24px Ubuntu";
+                ctx.textAlign = "left";
+                ctx.fillText("Drag mouse to move around.", 10, 24);
+                ctx.fillText("Press [SPACE] to spawn a tower.", 10, 48);
+                ctx.fillText("Press [B] to spawn a polygon miner tower [WIP]. (Temporary Change)", 10, 72);
+                ctx.fillText("Press [E] to spawn a penta shot tower.", 10, 96);
+                ctx.fillText("Press [A] to spawn an enemy tank.", 10, 120);
+                ctx.fillText("Press [D] to spawn an enemy sniper.", 10, 144);
+                ctx.fillText("Press [C] to spawn an enemy twin tank.", 10, 168);
+                ctx.fillText("Press [W] to spawn an enemy flank guard.", 10, 192);
+                ctx.fillText("Press [S] to spawn a machine gun tower [WIP].", 10, 216);
+                ctx.fillText("Press [Q] to spawn an enemy tri-angle. [WIP].", 10, 240);
+                ctx.fillText("Click a tower, and press a number key to upgrade (only works with basic tank).", 10, 264);
+                ctx.fillText("Sniper can still be spawned from upgrade menu.", 10, 288);
+                ctx.fillText("Made by adasba.", 10, 312);
+                //ctx.fillRect(xE[0] - x + 512, yE[0] - y + 512, 15, 15)
+                if (sT == 1) {
+                    ctx.beginPath();
+                    if (tS[sTV] != 4) {
+                        ctx.strokeStyle = "rgba(0, 60, 110, 0.4)";
+                    } else {
+                        ctx.strokeStyle = "rgba(110, 110, 110, 0.4)";
+                    }
+                    ctx.lineWidth = 10;
+                    ctx.arc(xS[sTV] - x + 512, yS[sTV] - y + 512, 40, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.closePath();
+                    if (FOVStyle == 0) {
+                        if (tS[sTV] == 0 || tS[sTV] == 2 || tS[sTV] == 3 || tS[sTV] == 6) {
+                            FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 200, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
+                        }
+                        if (tS[sTV] == 1) {
+                            FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 350, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
+                        }
+                        if (tS[sTV] == 4) {
+                            FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 240, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                        }
+                        if (tS[sTV] == 7) {
+                            FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 175, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                        }
+                        if (tS[sTV] == 8) {
+                            FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 240, "rgba(0, 110, 30, 0.10)", "rgba(0, 110, 30, 0.45)");
+                            FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 175, "rgba(110, 110, 110, 0.15)", "rgba(110, 110, 110, 0.45)");
+                        }
+                    } else if (FOVStyle == 1) {
+                        if (tS[sTV] == 0 || tS[sTV] == 2 || tS[sTV] == 3 || tS[sTV] == 6) {
+                            FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 200, "rgba(0, 60, 110, 0.20)", "rgba(0, 60, 110, 0.45)");
+                        }
+                        if (tS[sTV] == 1) {
+                            FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 350, "rgba(0, 60, 110, 0.20)", "rgba(0, 60, 110, 0.45)");
+                        }
+                        if (tS[sTV] == 4) {
+                            FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 240, "rgba(110, 110, 110, 0.20)", "rgba(110, 110, 110, 0.45)");
+                        }
+                        if (tS[sTV] == 7) {
+                            FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 175, "rgba(110, 110, 110, 0.20)", "rgba(110, 110, 110, 0.45)");
+                        }
+                        if (tS[sTV] == 8) {
+                            FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 240, "rgba(0, 110, 30, 0.20)", "rgba(0, 110, 30, 0.45)");
+                            FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 175, "rgba(110, 110, 110, 0.30)", "rgba(110, 110, 110, 0.45)");
+                        }
+                    }
+                    if (tS[sTV] == 0) {
+                        if (keys2[49] == 1) {
+                            cash = cash - 60;
+                            mHPS[sTV] = mHPS[sTV] + 125;
+                            hPS[sTV] = hPS[sTV] + 125;
+                            tS[sTV] = 2;
+                            keys2[49] = 2;
+                        }
+                        if (keys2[50] == 1) {
+                            cash = cash - 50;
+                            mHPS[sTV] = mHPS[sTV] + 100;
+                            hPS[sTV] = hPS[sTV] + 100;
+                            tS[sTV] = 3;
+                            keys2[50] = 2;
+                        }
+                        if (keys2[51] == 1) {
+                            cash = cash - 40;
+                            mHPS[sTV] = mHPS[sTV] + 75;
+                            hPS[sTV] = hPS[sTV] + 75;
+                            tS[sTV] = 1;
+                            keys2[51] = 2;
+                        }
+                    }
+                    if (tS[sTV] == 2) {
+                        if (keys2[49] == 1) {
+                            cash = cash - 50;
+                            mHPS[sTV] = mHPS[sTV] + 75;
+                            hPS[sTV] = hPS[sTV] + 75;
+                            tS[sTV] = 2;
+                            keys2[49] = 2;
+                        }
+                    }
+                }
+                if (ctrS[0] > 0) {
+                    aN = 300 / (ctrS[0] + 1);
+                    ctx.textAlign = "center";
+                    tankIcon(50, 824 + aN, "#75C6C3", "#60A2A0");
+                    polygon(125, 899 + aN, 6, 40, 0, "#555555");
+                    renderBarrel(125, 899 + aN, 56.25, 26.25, 15, lctr / 100);
+                    renderBarrel(125, 899 + aN, 56.25, 26.25, -15, lctr / 100);
+                    diepCircle(125, 899 + aN, 31.25, "#00B2E1");
+                    tankIcon(250, 824 + aN, "#8BCA7A", "#72A466");
+                    polygon(325, 899 + aN, 6, 40, 0, "#555555");
+                    renderTrapezoidBarrel(325, 899 + aN, 56.25, 26.25, 0, lctr / 100, 47.5);
+                    diepCircle(325, 899 + aN, 31.25, "#00B2E1");
+                    tankIcon(450, 824 + aN, "#CA7676", "#A56262");
+                    polygon(525, 899 + aN, 6, 40, 0, "#555555");
+                    renderBarrel(525, 899 + aN, 62.5, 26.25, 0, lctr / 100);
+                    diepCircle(525, 899 + aN, 31.25, "#00B2E1");
+                    ctx.fillStyle = "White";
+                    ctx.lineWidth = 6;
+                    ctx.strokeStyle = "rgb(40, 40, 40)";
+                    ctx.font = "Bold 18px Ubuntu";
+                    ctx.strokeText("Twin - 60", 125, 960 + aN);
+                    ctx.fillText("Twin - 60", 125, 960 + aN);
+                    ctx.strokeText("Machine Gun - 50", 325, 960 + aN);
+                    ctx.fillText("Machine Gun - 50", 325, 960 + aN);
+                    ctx.strokeText("Sniper - 40", 525, 960 + aN);
+                    ctx.fillText("Sniper - 40", 525, 960 + aN);
+                    ctx.strokeText("[1]", 125, 853 + aN);
+                    ctx.fillText("[1]", 125, 853 + aN);
+                    ctx.strokeText("[2]", 325, 853 + aN);
+                    ctx.fillText("[2]", 325, 853 + aN);
+                    ctx.strokeText("[3]", 525, 853 + aN);
+                    ctx.fillText("[3]", 525, 853 + aN);
+                }
+                if (ctrS[1] > 0) {
+                    aN = 300 / (ctrS[1] + 1);
+                    ctx.textAlign = "center";
+                    tankIcon(50, 824 + aN, "#75C6C3", "#60A2A0");
+                    polygon(125, 899 + aN, 6, 43.75, 0, "#555555");
+                    renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100);
+                    renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100 + Math.PI / 4);
+                    renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100 - Math.PI / 4);
+                    diepCircle(125, 899 + aN, 33.75, "#00B2E1");
+                    ctx.fillStyle = "White";
+                    ctx.lineWidth = 6;
+                    ctx.strokeStyle = "rgb(40, 40, 40)";
+                    ctx.font = "Bold 18px Ubuntu";
+                    ctx.strokeText("Triple Shot - 50", 125, 960 + aN);
+                    ctx.fillText("Triple Shot - 50", 125, 960 + aN);
+                    ctx.strokeText("[1]", 125, 853 + aN);
+                    ctx.fillText("[1]", 125, 853 + aN);
+                }
+                if (ctrS[2] > 0) {
+                    aN = 300 / (ctrS[2] + 1);
+                    ctx.textAlign = "center";
+                    tankIcon(50, 824 + aN, "#75C6C3", "#60A2A0");
+                    //polygon(125, 899 + aN, 6, 43.75, 0, "#555555");
+                    //renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100);
+                    //renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100 + Math.PI / 4);
+                    //renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100 - Math.PI / 4);
+                    //diepCircle(125, 899 + aN, 33.75, "#00B2E1");
+                    polygon(125, 899 + aN, 6, 39, 0, "#555555");
+                    renderBarrel(125, 899 + aN, 50, 26, 0, Math.PI / 4 + lctr / 100);
+                    renderBarrel(125, 899 + aN, 50, 26, 0, Math.PI / -4 + lctr / 100);
+                    renderBarrel(125, 899 + aN, 60, 26, 0, Math.PI / 8 + lctr / 100);
+                    renderBarrel(125, 899 + aN, 60, 26, 0, Math.PI / -8 + lctr / 100);
+                    renderBarrel(125, 899 + aN, 70, 26, 0, lctr / 100);
+                    diepCircle(125, 899 + aN, 30, "#00B2E1");
+                    ctx.fillStyle = "White";
+                    ctx.lineWidth = 6;
+                    ctx.strokeStyle = "rgb(40, 40, 40)";
+                    ctx.font = "Bold 18px Ubuntu";
+                    ctx.strokeText("Penta Shot - 250", 125, 960 + aN);
+                    ctx.fillText("Penta Shot - 250", 125, 960 + aN);
+                    ctx.strokeText("[1]", 125, 853 + aN);
+                    ctx.fillText("[1]", 125, 853 + aN);
+                }
+                ctr7 = 0;
+                totalPower = 0;
+                while (ctr7 < pWL.length) {
+                    totalPower = totalPower + pW[pWL[ctr7]];
+                    ctr7++
+                }
+                ctx.lineWidth = 6;
+                ctx.fillStyle = "White";
+                ctx.strokeStyle = "rgb(40, 40, 40)";
+                ctx.textAlign = "right";
+                ctx.font = "Bold 36px Ubuntu";
+                ctx.strokeText("Resources: " + cash, 1020, 36);
+                ctx.fillText("Resources: " + cash, 1020, 36);
+                ctx.strokeText("Power: " + Math.round(100 * totalPower) / 100 + " / " + pWL.length * 10, 1020, 72);
+                ctx.fillText("Power: " + Math.round(100 * totalPower) / 100 + " / " + pWL.length * 10, 1020, 72);
+                if (ctrS[0] < 40 && sT == 1 && tS[sTV] == 0) {
+                    ctrS[0]++;
+                }
+                if (tS[sTV] != 0 && ctrS[0] > 0) {
+                    ctrS[0]--;
+                }
+                if (ctrS[0] > 0 && sT == 0 && tS[sTV] == 0) {
+                    ctrS[0]--;
+                }
+                if (ctrS[1] < 40 && sT == 1 && tS[sTV] == 2) {
+                    ctrS[1]++;
+                }
+                if (tS[sTV] != 2 && ctrS[1] > 0) {
+                    ctrS[1]--;
+                }
+                if (ctrS[1] > 0 && sT == 0 && tS[sTV] == 2) {
+                    ctrS[1]--;
+                }
+                if (ctrS[2] < 40 && sT == 1 && tS[sTV] == 5) {
+                    ctrS[2]++;
+                }
+                if (tS[sTV] != 5 && ctrS[2] > 0) {
+                    ctrS[2]--;
+                }
+                if (ctrS[2] > 0 && sT == 0 && tS[sTV] == 5) {
+                    ctrS[2]--;
+                }
+                if (pT == 1) {
+                    polygon(mP.x, mP.y, 6, 27, 0, "#555555");
+                    renderBarrel(mP.x, mP.y, 43, 21, 0, 0);
+                    diepCircle(mP.x, mP.y, 22, "#00B2E1");
+                    healthBar(mP.x, mP.y, 1, 1, 55);
+                    if (iR == 1) {
+                        if (FOVStyle == 0) {
+                            FOV(mP.x, mP.y, 200, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
+                        } else if (FOVStyle == 1) {
+                            FOV(mP.x, mP.y, 200, "rgba(0, 60, 110, 0.20)", "rgba(0, 60, 110, 0.45)");
+                        }
+                    } else {
+                        if (FOVStyle == 0) {
+                            FOV(mP.x, mP.y, 200, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
+                        } else if (FOVStyle == 1) {
+                            FOV(mP.x, mP.y, 200, "rgba(116, 0, 0, 0.20)", "rgba(116, 0, 0, 0.45)");
+                        }
+                    }
+                    ctr6 = 0;
+                    ctx.strokeStyle = "rgba(0, 60, 110, 0.5)";
+                    ctx.lineWidth = 5;
+                    while (ctr6 < xS.length) {
+                        if (Math.sqrt(Math.pow(mP.x + x - 512 - xS[ctr6], 2) + Math.pow(mP.y + y - 512 - yS[ctr6], 2)) < 175 && tS[ctr6] == 7) {
+                            ctx.beginPath();
+                            ctx.moveTo(mP.x, mP.y);
+                            ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
+                            ctx.stroke();
+                            ctx.closePath();
                         }
                         ctr6++
                     }
-                    polygon(xS[ctr] - x + 512, yS[ctr] - y + 512, 5, 20, lctr / 30, "#555555");
-                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 12, "#999999");
-                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 30);
                 }
-                if (tS[ctr] == 8) {
-                    mPower = mPower + 10;
-                    ctr2 = 0;
-                    cED = 240;
-                    while (ctr2 < xP.length) {
-                        if (Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2)) < cED && Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2)) < 240) {
-                            cEV = ctr2;
-                            dS[ctr] = Math.atan2(yP[cEV] - yS[ctr], xP[cEV] - xS[ctr]);
-                            cED = Math.sqrt(Math.pow(xS[ctr] - xP[ctr2], 2) + Math.pow(yS[ctr] - yP[ctr2], 2));
-                        }
-                        ctr2++
-                    }
-                    if (tMRS[ctr] > 100 && cED < 240) {
-                        tMRS[ctr] = 0;
-                        pW[ctr]++;
-                        summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 3, 25, ctr);
-                    }
-                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 40, "#555555");
-                    renderBarrel(xS[ctr] - x + 512, yS[ctr] - y + 512, 50, 25, 0, dS[ctr]);
-                    diepCircle(xS[ctr] - x + 512, yS[ctr] - y + 512, 32, "#00E16E");
-                    healthBar(xS[ctr] - x + 512, yS[ctr] - y + 512, hPS[ctr], mHPS[ctr], 55);
-                    ctx.fillStyle = "White";
-                    ctx.strokeStyle = "rgb(40, 40, 40)";
-                    ctx.font = "Bold 18px Ubuntu";
-                    ctx.textAlign = "center";
-                    ctx.strokeText(Math.round(pW[ctr] * 100) / 100 + "/" + 10, xS[ctr] - x + 512, yS[ctr] - y + 518);
-                    ctx.fillText(Math.round(pW[ctr] * 100) / 100 + "/" + 10, xS[ctr] - x + 512, yS[ctr] - y + 518);
-                }
-                ctr6 = 0;
-                ctr5 = 0;
-                if (tS[ctr] != 8) {
-                    pW[ctr] = [];
-                    while (ctr5 < pWL.length) {
-                        pWC = 0;
-                        ctr6 = 0;
-                        while (ctr6 < xS.length) {
-                            if (Math.sqrt(Math.pow(xS[ctr] - xS[ctr6], 2) + Math.pow(yS[ctr] - yS[ctr6], 2)) < 175 && tS[ctr6] == 7 && pW[ctr6].indexOf(pWL[ctr5]) != -1) {
-                                pWC = 1;
-                            }
-                            if (ctr6 == pWL[ctr5] && Math.sqrt(Math.pow(xS[ctr] - xS[ctr6], 2) + Math.pow(yS[ctr] - yS[ctr6], 2)) < 175 && tS[ctr6] == 8) {
-                                pWC = 1;
-                            }
-                            ctr6++;
-                        }
-                        if (pWC == 1) {
-                            pW[ctr].push(pWL[ctr5]);
-                        }
-                        ctr5++;
-                    }
-                }
-                if (hPS[ctr] < mHPS[ctr] && tMRS2[ctr] % 50 == 0 && usableTankPower(ctr) > mHPS[ctr] / 10000 && tS[ctr] != 8) {
-                    hPS[ctr] = hPS[ctr] + mHPS[ctr] / 100;
-                    powerTank(ctr, mHPS[ctr] / 10000);
-                }
-                if (tS[ctr] == 8 && hPS[ctr] < mHPS[ctr] && tMRS2[ctr] % 50 == 0) {
-                    hPS[ctr] = hPS[ctr] + mHPS[ctr] / 200;
-                }
-                tMRS[ctr]++
-                tMRS2[ctr]++
-                if (hPS[ctr] <= 0) {
-                    xS.splice(ctr, 1);
-                    yS.splice(ctr, 1);
-                    dS.splice(ctr, 1);
-                    hPS.splice(ctr, 1);
-                    mHPS.splice(ctr, 1);
-                    tMRS.splice(ctr, 1);
-                    tMRS2.splice(ctr, 1);
-                    tS.splice(ctr, 1);
-                    pW.splice(ctr, 1);
-                }
-                ctr++;
-            }
-            ctr = 0;
-            while (ctr < xE.length) {
-                if (tE[ctr] == 0) {
-                    ctr2 = 0;
-                    cED = 120;
-                    cED2 = 99999;
-                    while (ctr2 < xS.length) {
-                        if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED2) {
-                            cEV2 = ctr2;
-                            cED2 = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
-                            dE[ctr] = Math.atan2(yS[cEV2] - yE[ctr], xS[cEV2] - xE[ctr]);
-                        }
-                        if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED && Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < 120) {
-                            cEV = ctr2;
-                            cED = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
-                        }
-                        ctr2++
-                    }
-                    if (Math.sqrt(Math.pow(xE[ctr] - xS[cEV2], 2) + Math.pow(yE[ctr] - yS[cEV2], 2)) > 100) {
-                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr]);
-                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr]);
-                    }
-                    if (cED < 120) {
-                        if (tMRE[ctr] > 90) {
-                            tMRE[ctr] = 0;
-                            summonBullet(xE[ctr], yE[ctr], dE[ctr], 50, 1, 5);
-                        }
-                    }
-                    if (FOVStyle == 0) {
-                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
-                    } else if (FOVStyle == 1) {
-                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
-                    }
-                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 26, 12, 0, dE[ctr]);
-                    diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 15, "#F14E54");
-                    healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
-                }
-                if (tE[ctr] == 1) {
-                    ctr2 = 0;
-                    cED = 200;
-                    cED2 = 99999;
-                    while (ctr2 < xS.length) {
-                        if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED2) {
-                            cEV2 = ctr2;
-                            cED2 = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
-                            dE[ctr] = Math.atan2(yS[cEV2] - yE[ctr], xS[cEV2] - xE[ctr]);
-                        }
-                        if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED && Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < 200) {
-                            cEV = ctr2;
-                            cED = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
-                        }
-                        ctr2++
-                    }
-                    if (Math.sqrt(Math.pow(xE[ctr] - xS[cEV2], 2) + Math.pow(yE[ctr] - yS[cEV2], 2)) > 180) {
-                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) / 1.4;
-                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) / 1.4;
-                    }
-                    if (cED < 200) {
-                        if (tMRE[ctr] > 150) {
-                            tMRE[ctr] = 0;
-                            summonBullet(xE[ctr], yE[ctr], dE[ctr], 50, 1, 15);
-                        }
-                    }
-                    if (FOVStyle == 0) {
-                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 200, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
-                    } else if (FOVStyle == 1) {
-                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 200, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
-                    }
-                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 34, 14, 0, dE[ctr]);
-                    diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
-                    healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
-                }
-                if (tE[ctr] == 2) {
-                    ctr2 = 0;
-                    cED = 120;
-                    cED2 = 99999;
-                    while (ctr2 < xS.length) {
-                        if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED2) {
-                            cEV2 = ctr2;
-                            cED2 = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
-                            dE[ctr] = Math.atan2(yS[cEV2] - yE[ctr], xS[cEV2] - xE[ctr]);
-                        }
-                        if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED && Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < 120) {
-                            cEV = ctr2;
-                            cED = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
-                        }
-                        ctr2++
-                    }
-                    if (Math.sqrt(Math.pow(xE[ctr] - xS[cEV2], 2) + Math.pow(yE[ctr] - yS[cEV2], 2)) > 100) {
-                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) / 1.7;
-                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) / 1.7;
-                    }
-                    if (cED < 120) {
-                        if (tMRE[ctr] == 40) {
-                            summonBullet(xE[ctr] + Math.cos(dE[ctr]) * 8, yE[ctr] + Math.sin(dE[ctr]) * 8, dE[ctr], 50, 1, 5);
-                        }
-                        if (tMRE[ctr] > 80) {
-                            tMRE[ctr] = 0;
-                            summonBullet(xE[ctr] - Math.cos(dE[ctr]) * 8, yE[ctr] - Math.sin(dE[ctr]) * 8, dE[ctr], 50, 1, 5);
-                        }
-                    }
-                    if (FOVStyle == 0) {
-                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
-                    } else if (FOVStyle == 1) {
-                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
-                    }
-                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 8, dE[ctr]);
-                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, -8, dE[ctr]);
-                    diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
-                    healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
-                }
-                if (tE[ctr] == 3) {
-                    ctr2 = 0;
-                    cED = 120;
-                    cED2 = 99999;
-                    cEV3 = -1;
-                    ctr3 = 0;
-                    ctr4 = 0;
-                    ctr5 = 0;
-                    while (ctr3 < xS.length) {
-                        while (ctr4 < xS.length) {
-                            if (Math.sqrt(Math.pow(xS[ctr3] - xS[ctr4], 2) + Math.pow(yS[ctr3] - yS[ctr4], 2)) < 239 && Math.sqrt(Math.pow(xE[ctr] - (xS[ctr3] + xS[ctr4]) / 2, 2) + Math.pow(yE[ctr] - (yS[ctr3] + yS[ctr4]) / 2, 2)) < cED2) {
-                                if (ctr5 == 0 || ctr3 != ctr4) {
-                                    cEV2 = ctr3;
-                                    cEV3 = ctr4;
-                                    cED2 = Math.sqrt(Math.pow(xE[ctr] - (xS[ctr3] + xS[ctr4]) / 2, 2) + Math.pow(yE[ctr] - (yS[ctr3] + yS[ctr4]) / 2, 2));
-                                    if (ctr3 != ctr4) {
-                                        ctr5++;
-                                    }
-                                }
-
-                            }
-                            ctr4++;
-                        }
-                        ctr4 = 0;
-                        ctr3++;
-                    }
-                    dE[ctr] = Math.atan2((yS[cEV2] + yS[cEV3]) / 2 - yE[ctr], (xS[cEV2] + xS[cEV3]) / 2 - xE[ctr]);
-                    if (Math.sqrt(Math.pow(xE[ctr] - (xS[cEV2] + xS[cEV3]) / 2, 2) + Math.pow(yE[ctr] - (yS[cEV2] + yS[cEV3]) / 2, 2)) > 5) {
-                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr]);
-                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr]);
-                    } else {
-                        dE[ctr] = Math.atan2(yS[cEV2] - yE[ctr], xS[cEV2] - xE[ctr]);
-                    }
-                    if (xS.length == 0) {
-                        dE[ctr] = 0;
-                    }
-                    //}
-                    if (cED2 < 120) {
-                        if (tMRE[ctr] > 90) {
-                            tMRE[ctr] = 0;
-                            summonBullet(xE[ctr], yE[ctr], dE[ctr] + Math.PI, 50, 1, 5);
-                            summonBullet(xE[ctr], yE[ctr], dE[ctr], 50, 1, 5);
-                        }
-                    }
-                    if (FOVStyle == 0) {
-                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
-                    } else if (FOVStyle == 1) {
-                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
-                    }
-                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 0, dE[ctr]);
-                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 0, dE[ctr] + Math.PI);
-                    diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
-                    healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
-                }
-                if (tE[ctr] == 4) {
-                    ctr2 = 0;
-                    cED = 120;
-                    cED2 = 99999;
-                    while (ctr2 < xS.length) {
-                        if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED2) {
-                            cEV2 = ctr2;
-                            cED2 = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
-                            dE[ctr] = Math.atan2(yS[cEV2] - yE[ctr], xS[cEV2] - xE[ctr]);
-                        }
-                        if (Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < cED && Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2)) < 120) {
-                            cEV = ctr2;
-                            cED = Math.sqrt(Math.pow(xE[ctr] - xS[ctr2], 2) + Math.pow(yE[ctr] - yS[ctr2], 2));
-                        }
-                        ctr2++
-                    }
-                    if (Math.sqrt(Math.pow(xE[ctr] - xS[cEV2], 2) + Math.pow(yE[ctr] - yS[cEV2], 2)) > 100) {
-                        xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) * 1.5;
-                        yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) * 1.5;
-                    }
-                    if (cED < 120) {
-                        if (tMRE[ctr] > 70) {
-                            tMRE[ctr] = 0;
-                            summonBullet(xE[ctr] - Math.cos(dE[ctr]) * 8, yE[ctr] - Math.sin(dE[ctr]) * 8, dE[ctr], 50, 1, 5);
+                if (pT == 2) {
+                    diepCircle(mP.x, mP.y, 30, "#555555");
+                    renderBarrel(mP.x, mP.y, 39, 18, 0, 0);
+                    diepCircle(mP.x, mP.y, 22, "#999999");
+                    healthBar(mP.x, mP.y, 1, 1, 55);
+                    if (iR == 1) {
+                        if (FOVStyle == 0) {
+                            FOV(mP.x, mP.y, 240, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                        } else if (FOVStyle == 1) {
+                            FOV(mP.x, mP.y, 240, "rgba(110, 110, 110, 0.20)", "rgba(110, 110, 110, 0.45)");
                         }
                     } else {
-                        if (tMRE2[ctr] > 90) {
-                            tMRE2[ctr] = 0;
-                            summonBullet(xE[ctr] - Math.cos(dE[ctr] + Math.PI * (7 / 6)) * 8, yE[ctr] - Math.sin(dE[ctr] + Math.PI * (7 / 6)) * 8, dE[ctr] + Math.PI * (7 / 6), 50, 1, 5);
-                            summonBullet(xE[ctr] - Math.cos(dE[ctr] + Math.PI * (5 / 6)) * 8, yE[ctr] - Math.sin(dE[ctr] + Math.PI * (5 / 6)) * 8, dE[ctr] + Math.PI * (5 / 6), 50, 1, 5);
-                        }
-                        if (tMRE2[ctr] < 30) {
-                            xE[ctr] = xE[ctr] + Math.cos(dE[ctr]) * (6 - tMRE2[ctr] / 5);
-                            yE[ctr] = yE[ctr] + Math.sin(dE[ctr]) * (6 - tMRE2[ctr] / 5);
+                        if (FOVStyle == 0) {
+                            FOV(mP.x, mP.y, 240, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
+                        } else if (FOVStyle == 1) {
+                            FOV(mP.x, mP.y, 240, "rgba(116, 0, 0, 0.20)", "rgba(116, 0, 0, 0.45)");
                         }
                     }
-                    if (FOVStyle == 0) {
-                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.02)", "rgba(116, 0, 0, 0.09)");
-                    } else if (FOVStyle == 1) {
-                        FOV(xE[ctr] - x + 512, yE[ctr] - y + 512, 120, "rgba(116, 0, 0, 0.07)", "rgba(116, 0, 0, 0.09)");
-                    }
-                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 30, 14, 0, dE[ctr]);
-                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 25, 14, 0, dE[ctr] + Math.PI * (7 / 6));
-                    renderBarrel(xE[ctr] - x + 512, yE[ctr] - y + 512, 25, 14, 0, dE[ctr] + Math.PI * (5 / 6));
-                    diepCircle(xE[ctr] - x + 512, yE[ctr] - y + 512, 17, "#F14E54");
-                    healthBar(xE[ctr] - x + 512, yE[ctr] - y + 512, hPE[ctr], mHPE[ctr], 40);
-                }
-                tMRE[ctr]++
-                tMRE2[ctr]++
-                if (hPE[ctr] <= 0) {
-                    xE.splice(ctr, 1);
-                    yE.splice(ctr, 1);
-                    dE.splice(ctr, 1);
-                    hPE.splice(ctr, 1);
-                    mHPE.splice(ctr, 1);
-                    tMRE.splice(ctr, 1);
-                    tMRE2.splice(ctr, 1);
-                    tE.splice(ctr, 1);
-                }
-                ctr++;
-            }
-            //ctr = 0;
-            //while (ctr < xS.length) {
-                //fov stuff was here before
-            //    ctr++
-            //}
-            ctx.fillStyle = "#555555";
-            //ctx.font = "24px Consolas";
-            ctx.font = "24px Ubuntu";
-            ctx.textAlign = "left";
-            ctx.fillText("Drag mouse to move around.", 10, 24);
-            ctx.fillText("Press [SPACE] to spawn a tower.", 10, 48);
-            ctx.fillText("Press [B] to spawn a polygon miner tower [WIP]. (Temporary Change)", 10, 72);
-            ctx.fillText("Press [E] to spawn a penta shot tower.", 10, 96);
-            ctx.fillText("Press [A] to spawn an enemy tank.", 10, 120);
-            ctx.fillText("Press [D] to spawn an enemy sniper.", 10, 144);
-            ctx.fillText("Press [C] to spawn an enemy twin tank.", 10, 168);
-            ctx.fillText("Press [W] to spawn an enemy flank guard.", 10, 192);
-            ctx.fillText("Press [S] to spawn a machine gun tower [WIP].", 10, 216);
-            ctx.fillText("Press [Q] to spawn an enemy tri-angle. [WIP].", 10, 240);
-            ctx.fillText("Click a tower, and press a number key to upgrade (only works with basic tank).", 10, 264);
-            ctx.fillText("Sniper can still be spawned from upgrade menu.", 10, 288);
-            ctx.fillText("Made by adasba.", 10, 312);
-            //ctx.fillRect(xE[0] - x + 512, yE[0] - y + 512, 15, 15)
-            if (sT == 1) {
-                ctx.beginPath();
-                if (tS[sTV] != 4) {
-                    ctx.strokeStyle = "rgba(0, 60, 110, 0.4)";
-                } else {
-                    ctx.strokeStyle = "rgba(110, 110, 110, 0.4)";
-                }
-                ctx.lineWidth = 10;
-                ctx.arc(xS[sTV] - x + 512, yS[sTV] - y + 512, 40, 0, Math.PI * 2);
-                ctx.stroke();
-                ctx.closePath();
-                if (FOVStyle == 0) {
-                    if (tS[sTV] == 0 || tS[sTV] == 2 || tS[sTV] == 3 || tS[sTV] == 6) {
-                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 200, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
-                    }
-                    if (tS[sTV] == 1) {
-                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 350, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
-                    }
-                    if (tS[sTV] == 4) {
-                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 240, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
-                    }
-                    if (tS[sTV] == 7) {
-                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 175, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
-                    }
-                } else if (FOVStyle == 1) {
-                    if (tS[sTV] == 0 || tS[sTV] == 2 || tS[sTV] == 3 || tS[sTV] == 6) {
-                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 200, "rgba(0, 60, 110, 0.20)", "rgba(0, 60, 110, 0.45)");
-                    }
-                    if (tS[sTV] == 1) {
-                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 350, "rgba(0, 60, 110, 0.20)", "rgba(0, 60, 110, 0.45)");
-                    }
-                    if (tS[sTV] == 4) {
-                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 240, "rgba(110, 110, 110, 0.20)", "rgba(110, 110, 110, 0.45)");
-                    }
-                    if (tS[sTV] == 7) {
-                        FOV(xS[sTV] - x + 512, yS[sTV] - y + 512, 175, "rgba(110, 110, 110, 0.20)", "rgba(110, 110, 110, 0.45)");
+                    ctr6 = 0;
+                    ctx.strokeStyle = "rgba(0, 60, 110, 0.5)";
+                    ctx.lineWidth = 5;
+                    while (ctr6 < xS.length) {
+                        if (Math.sqrt(Math.pow(mP.x + x - 512 - xS[ctr6], 2) + Math.pow(mP.y + y - 512 - yS[ctr6], 2)) < 175 && tS[ctr6] == 7) {
+                            ctx.beginPath();
+                            ctx.moveTo(mP.x, mP.y);
+                            ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
+                            ctx.stroke();
+                            ctx.closePath();
+                        }
+                        ctr6++
                     }
                 }
-                if (tS[sTV] == 0) {
-                    if (keys2[49] == 1) {
-                        cash = cash - 60;
-                        mHPS[sTV] = mHPS[sTV] + 125;
-                        hPS[sTV] = hPS[sTV] + 125;
-                        tS[sTV] = 2;
-                        keys2[49] = 2;
+                if (pT == 3) {
+                    polygon(mP.x, mP.y, 5, 20, lctr / 30, "#555555");
+                    diepCircle(mP.x, mP.y, 12, "#999999");
+                    healthBar(mP.x, mP.y, 1, 1, 30);
+                    if (iR == 1) {
+                        if (FOVStyle == 0) {
+                            FOV(mP.x, mP.y, 175, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
+                        } else if (FOVStyle == 1) {
+                            FOV(mP.x, mP.y, 175, "rgba(110, 110, 110, 0.20)", "rgba(110, 110, 110, 0.45)");
+                        }
+                    } else {
+                        if (FOVStyle == 0) {
+                            FOV(mP.x, mP.y, 175, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
+                        } else if (FOVStyle == 1) {
+                            FOV(mP.x, mP.y, 175, "rgba(116, 0, 0, 0.20)", "rgba(116, 0, 0, 0.45)");
+                        }
                     }
-                    if (keys2[50] == 1) {
-                        cash = cash - 50;
-                        mHPS[sTV] = mHPS[sTV] + 100;
-                        hPS[sTV] = hPS[sTV] + 100;
-                        tS[sTV] = 3;
-                        keys2[50] = 2;
-                    }
-                    if (keys2[51] == 1) {
-                        cash = cash - 40;
-                        mHPS[sTV] = mHPS[sTV] + 75;
-                        hPS[sTV] = hPS[sTV] + 75;
-                        tS[sTV] = 1;
-                        keys2[51] = 2;
+                    ctr6 = 0;
+                    ctx.strokeStyle = "rgba(0, 60, 110, 0.5)";
+                    ctx.lineWidth = 5;
+                    while (ctr6 < xS.length) {
+                        if (Math.sqrt(Math.pow(mP.x + x - 512 - xS[ctr6], 2) + Math.pow(mP.y + y - 512 - yS[ctr6], 2)) < 175) {
+                            ctx.beginPath();
+                            ctx.moveTo(mP.x, mP.y);
+                            ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
+                            ctx.stroke();
+                            ctx.closePath();
+                        }
+                        ctr6++
                     }
                 }
-                if (tS[sTV] == 2) {
-                    if (keys2[49] == 1) {
-                        cash = cash - 50;
-                        mHPS[sTV] = mHPS[sTV] + 75;
-                        hPS[sTV] = hPS[sTV] + 75;
-                        tS[sTV] = 2;
-                        keys2[49] = 2;
+                if (pT == 4) {
+                    diepCircle(mP.x, mP.y, 40, "#555555");
+                    renderBarrel(mP.x, mP.y, 50, 25, 0, dS[ctr]);
+                    diepCircle(mP.x, mP.y, 32, "#00E16E");
+                    healthBar(mP.x, mP.y, 1, 1, 55);
+                    if (iR == 1) {
+                        if (FOVStyle == 0) {
+                            FOV(mP.x, mP.y, 240, "rgba(0, 110, 30, 0.10)", "rgba(0, 110, 30, 0.45)");
+                            FOV(mP.x, mP.y, 175, "rgba(110, 110, 110, 0.15)", "rgba(110, 110, 110, 0.68)");
+                        } else if (FOVStyle == 1) {
+                            FOV(mP.x, mP.y, 240, "rgba(0, 110, 30, 0.20)", "rgba(0, 110, 30, 0.45)");
+                            FOV(mP.x, mP.y, 175, "rgba(110, 110, 110, 0.30)", "rgba(110, 110, 110, 0.45)");
+                        }
+                    } else {
+                        if (FOVStyle == 0) {
+                            FOV(mP.x, mP.y, 240, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
+                            FOV(mP.x, mP.y, 175, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
+                        } else if (FOVStyle == 1) {
+                            FOV(mP.x, mP.y, 240, "rgba(116, 0, 0, 0.20)", "rgba(116, 0, 0, 0.45)");
+                            FOV(mP.x, mP.y, 175, "rgba(116, 0, 0, 0.20)", "rgba(116, 0, 0, 0.45)");
+                        }
+                    }
+                    ctr6 = 0;
+                    ctx.strokeStyle = "rgba(0, 60, 110, 0.5)";
+                    ctx.lineWidth = 5;
+                    while (ctr6 < xS.length) {
+                        if (Math.sqrt(Math.pow(mP.x + x - 512 - xS[ctr6], 2) + Math.pow(mP.y + y - 512 - yS[ctr6], 2)) < 175) {
+                            ctx.beginPath();
+                            ctx.moveTo(mP.x, mP.y);
+                            ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
+                            ctx.stroke();
+                            ctx.closePath();
+                        }
+                        ctr6++
                     }
                 }
-            }
-            if (ctrS[0] > 0) {
-                aN = 300 / (ctrS[0] + 1);
-                ctx.textAlign = "center";
-                tankIcon(50, 824 + aN, "#75C6C3", "#60A2A0");
-                polygon(125, 899 + aN, 6, 40, 0, "#555555");
-                renderBarrel(125, 899 + aN, 56.25, 26.25, 15, lctr / 100);
-                renderBarrel(125, 899 + aN, 56.25, 26.25, -15, lctr / 100);
-                diepCircle(125, 899 + aN, 31.25, "#00B2E1");
-                tankIcon(250, 824 + aN, "#8BCA7A", "#72A466");
-                polygon(325, 899 + aN, 6, 40, 0, "#555555");
-                renderTrapezoidBarrel(325, 899 + aN, 56.25, 26.25, 0, lctr / 100, 47.5);
-                diepCircle(325, 899 + aN, 31.25, "#00B2E1");
-                tankIcon(450, 824 + aN, "#CA7676", "#A56262");
-                polygon(525, 899 + aN, 6, 40, 0, "#555555");
-                renderBarrel(525, 899 + aN, 62.5, 26.25, 0, lctr / 100);
-                diepCircle(525, 899 + aN, 31.25, "#00B2E1");
+                tankIcon2(824, 954, "#75C6C3", "#60A2A0");
+                tankIcon2(824, 914, "#A5A5A5", "#808080");
+                tankIcon2(824, 874, "#777777", "#444444");
+                tankIcon2(824, 834, "#8BCA7A", "#72A466");
                 ctx.fillStyle = "White";
                 ctx.lineWidth = 6;
                 ctx.strokeStyle = "rgb(40, 40, 40)";
-                ctx.font = "Bold 18px Ubuntu";
-                ctx.strokeText("Twin - 60", 125, 960 + aN);
-                ctx.fillText("Twin - 60", 125, 960 + aN);
-                ctx.strokeText("Machine Gun - 50", 325, 960 + aN);
-                ctx.fillText("Machine Gun - 50", 325, 960 + aN);
-                ctx.strokeText("Sniper - 40", 525, 960 + aN);
-                ctx.fillText("Sniper - 40", 525, 960 + aN);
-                ctx.strokeText("[1]", 125, 853 + aN);
-                ctx.fillText("[1]", 125, 853 + aN);
-                ctx.strokeText("[2]", 325, 853 + aN);
-                ctx.fillText("[2]", 325, 853 + aN);
-                ctx.strokeText("[3]", 525, 853 + aN);
-                ctx.fillText("[3]", 525, 853 + aN);
-            }
-            if (ctrS[1] > 0) {
-                aN = 300 / (ctrS[1] + 1);
+                ctx.font = "Bold 14px Ubuntu";
                 ctx.textAlign = "center";
-                tankIcon(50, 824 + aN, "#75C6C3", "#60A2A0");
-                polygon(125, 899 + aN, 6, 43.75, 0, "#555555");
-                renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100);
-                renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100 + Math.PI / 4);
-                renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100 - Math.PI / 4);
-                diepCircle(125, 899 + aN, 33.75, "#00B2E1");
-                ctx.fillStyle = "White";
-                ctx.lineWidth = 6;
-                ctx.strokeStyle = "rgb(40, 40, 40)";
-                ctx.font = "Bold 18px Ubuntu";
-                ctx.strokeText("Triple Shot - 50", 125, 960 + aN);
-                ctx.fillText("Triple Shot - 50", 125, 960 + aN);
-                ctx.strokeText("[1]", 125, 853 + aN);
-                ctx.fillText("[1]", 125, 853 + aN);
+                ctx.strokeText("Tank - 30 [SPACE]", 899, 975);
+                ctx.fillText("Tank - 30 [SPACE]", 899, 975);
+                ctx.strokeText("Miner - 20 [M]", 899, 935);
+                ctx.fillText("Miner - 20 [M]", 899, 935);
+                ctx.strokeText("Connector - 10 [C]", 899, 895);
+                ctx.fillText("Connector - 10 [C]", 899, 895);
+                ctx.strokeText("Extractor - 50 [E]", 899, 855);
+                ctx.fillText("Extractor - 50 [E]", 899, 855);
+                //ctx.strokeText(pW.toString(), 512, 800);
+                //ctx.fillText(pW.toString(), 512, 800);
+                pWL = [];
             }
-            if (ctrS[2] > 0) {
-                aN = 300 / (ctrS[2] + 1);
-                ctx.textAlign = "center";
-                tankIcon(50, 824 + aN, "#75C6C3", "#60A2A0");
-                //polygon(125, 899 + aN, 6, 43.75, 0, "#555555");
-                //renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100);
-                //renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100 + Math.PI / 4);
-                //renderBarrel(125, 899 + aN, 62.5, 30, 0, lctr / 100 - Math.PI / 4);
-                //diepCircle(125, 899 + aN, 33.75, "#00B2E1");
-                polygon(125, 899 + aN, 6, 39, 0, "#555555");
-                renderBarrel(125, 899 + aN, 50, 26, 0, Math.PI / 4 + lctr / 100);
-                renderBarrel(125, 899 + aN, 50, 26, 0, Math.PI / -4 + lctr / 100);
-                renderBarrel(125, 899 + aN, 60, 26, 0, Math.PI / 8 + lctr / 100);
-                renderBarrel(125, 899 + aN, 60, 26, 0, Math.PI / -8 + lctr / 100);
-                renderBarrel(125, 899 + aN, 70, 26, 0, lctr / 100);
-                diepCircle(125, 899 + aN, 30, "#00B2E1");
-                ctx.fillStyle = "White";
-                ctx.lineWidth = 6;
-                ctx.strokeStyle = "rgb(40, 40, 40)";
-                ctx.font = "Bold 18px Ubuntu";
-                ctx.strokeText("Penta Shot - 250", 125, 960 + aN);
-                ctx.fillText("Penta Shot - 250", 125, 960 + aN);
-                ctx.strokeText("[1]", 125, 853 + aN);
-                ctx.fillText("[1]", 125, 853 + aN);
-            }
-            ctr7 = 0;
-            totalPower = 0;
-            while (ctr7 < pWL.length) {
-                totalPower = totalPower + pW[pWL[ctr7]];
-                ctr7++
-            }
-            ctx.lineWidth = 6;
-            ctx.fillStyle = "White";
-            ctx.strokeStyle = "rgb(40, 40, 40)";
-            ctx.textAlign = "right";
-            ctx.font = "Bold 36px Ubuntu";
-            ctx.strokeText("Resources: " + cash, 1020, 36);
-            ctx.fillText("Resources: " + cash, 1020, 36);
-            ctx.strokeText("Power: " + Math.round(100 * totalPower) / 100 + " / " + pWL.length * 10, 1020, 72);
-            ctx.fillText("Power: " + Math.round(100 * totalPower) / 100 + " / " + pWL.length * 10, 1020, 72);
-            if (ctrS[0] < 40 && sT == 1 && tS[sTV] == 0) {
-                ctrS[0]++;
-            }
-            if (tS[sTV] != 0 && ctrS[0] > 0) {
-                ctrS[0]--;
-            }
-            if (ctrS[0] > 0 && sT == 0 && tS[sTV] == 0) {
-                ctrS[0]--;
-            }
-            if (ctrS[1] < 40 && sT == 1 && tS[sTV] == 2) {
-                ctrS[1]++;
-            }
-            if (tS[sTV] != 2 && ctrS[1] > 0) {
-                ctrS[1]--;
-            }
-            if (ctrS[1] > 0 && sT == 0 && tS[sTV] == 2) {
-                ctrS[1]--;
-            }
-            if (ctrS[2] < 40 && sT == 1 && tS[sTV] == 5) {
-                ctrS[2]++;
-            }
-            if (tS[sTV] != 5 && ctrS[2] > 0) {
-                ctrS[2]--;
-            }
-            if (ctrS[2] > 0 && sT == 0 && tS[sTV] == 5) {
-                ctrS[2]--;
-            }
-            if (pT == 1) {
-                polygon(mP.x, mP.y, 6, 27, 0, "#555555");
-                renderBarrel(mP.x, mP.y, 43, 21, 0, 0);
-                diepCircle(mP.x, mP.y, 22, "#00B2E1");
-                healthBar(mP.x, mP.y, 1, 1, 55);
-                if (iR == 1) {
-                    if (FOVStyle == 0) {
-                        FOV(mP.x, mP.y, 200, "rgba(0, 60, 110, 0.10)", "rgba(0, 60, 110, 0.45)");
-                    } else if (FOVStyle == 1) {
-                        FOV(mP.x, mP.y, 200, "rgba(0, 60, 110, 0.20)", "rgba(0, 60, 110, 0.45)");
-                    } 
-                } else {
-                    if (FOVStyle == 0) {
-                        FOV(mP.x, mP.y, 200, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
-                    } else if (FOVStyle == 1) {
-                        FOV(mP.x, mP.y, 200, "rgba(116, 0, 0, 0.20)", "rgba(116, 0, 0, 0.45)");
-                    } 
-                }
-                ctr6 = 0;
-                ctx.strokeStyle = "rgba(0, 60, 110, 0.5)";
-                ctx.lineWidth = 5;
-                while (ctr6 < xS.length) {
-                    if (Math.sqrt(Math.pow(mP.x + x - 512 - xS[ctr6], 2) + Math.pow(mP.y + y - 512 - yS[ctr6], 2)) < 175 && tS[ctr6] == 7) {
-                        ctx.beginPath();
-                        ctx.moveTo(mP.x, mP.y);
-                        ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
-                        ctx.stroke();
-                        ctx.closePath();
-                    }
-                    ctr6++
-                }
-            }
-            if (pT == 2) {
-                diepCircle(mP.x, mP.y, 30, "#555555");
-                renderBarrel(mP.x, mP.y, 39, 18, 0, 0);
-                diepCircle(mP.x, mP.y, 22, "#999999");
-                healthBar(mP.x, mP.y, 1, 1, 55);
-                if (iR == 1) {
-                    if (FOVStyle == 0) {
-                        FOV(mP.x, mP.y, 240, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
-                    } else if (FOVStyle == 1) {
-                        FOV(mP.x, mP.y, 240, "rgba(110, 110, 110, 0.20)", "rgba(110, 110, 110, 0.45)");
-                    } 
-                } else {
-                    if (FOVStyle == 0) {
-                        FOV(mP.x, mP.y, 240, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
-                    } else if (FOVStyle == 1) {
-                        FOV(mP.x, mP.y, 240, "rgba(116, 0, 0, 0.20)", "rgba(116, 0, 0, 0.45)");
-                    }
-                }
-                ctr6 = 0;
-                ctx.strokeStyle = "rgba(0, 60, 110, 0.5)";
-                ctx.lineWidth = 5;
-                while (ctr6 < xS.length) {
-                    if (Math.sqrt(Math.pow(mP.x + x - 512 - xS[ctr6], 2) + Math.pow(mP.y + y - 512 - yS[ctr6], 2)) < 175 && tS[ctr6] == 7) {
-                        ctx.beginPath();
-                        ctx.moveTo(mP.x, mP.y);
-                        ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
-                        ctx.stroke();
-                        ctx.closePath();
-                    }
-                    ctr6++
-                }
-            }
-            if (pT == 3) {
-                polygon(mP.x, mP.y, 5, 20, lctr / 30, "#555555");
-                diepCircle(mP.x, mP.y, 12, "#999999");
-                healthBar(mP.x, mP.y, 1, 1, 30);
-                if (iR == 1) {
-                    if (FOVStyle == 0) {
-                        FOV(mP.x, mP.y, 175, "rgba(110, 110, 110, 0.10)", "rgba(110, 110, 110, 0.45)");
-                    } else if (FOVStyle == 1) {
-                        FOV(mP.x, mP.y, 175, "rgba(110, 110, 110, 0.20)", "rgba(110, 110, 110, 0.45)");
-                    } 
-                } else {
-                    if (FOVStyle == 0) {
-                        FOV(mP.x, mP.y, 175, "rgba(116, 0, 0, 0.10)", "rgba(116, 0, 0, 0.45)");
-                    } else if (FOVStyle == 1) {
-                        FOV(mP.x, mP.y, 175, "rgba(116, 0, 0, 0.20)", "rgba(116, 0, 0, 0.45)");
-                    } 
-                }
-                ctr6 = 0;
-                ctx.strokeStyle = "rgba(0, 60, 110, 0.5)";
-                ctx.lineWidth = 5;
-                while (ctr6 < xS.length) {
-                    if (Math.sqrt(Math.pow(mP.x + x - 512 - xS[ctr6], 2) + Math.pow(mP.y + y - 512 - yS[ctr6], 2)) < 175) {
-                        ctx.beginPath();
-                        ctx.moveTo(mP.x, mP.y);
-                        ctx.lineTo(xS[ctr6] - x + 512, yS[ctr6] - y + 512);
-                        ctx.stroke();
-                        ctx.closePath();
-                    }
-                    ctr6++
-                }
-            }
-            tankIcon2(824, 954, "#75C6C3", "#60A2A0");
-            tankIcon2(824, 914, "#A5A5A5", "#808080");
-            tankIcon2(824, 874, "#777777", "#444444");
-            tankIcon2(824, 834, "#8BCA7A", "#72A466");
-            ctx.fillStyle = "White";
-            ctx.lineWidth = 6;
-            ctx.strokeStyle = "rgb(40, 40, 40)";
-            ctx.font = "Bold 14px Ubuntu";
-            ctx.textAlign = "center";
-            ctx.strokeText("Tank - 30 [SPACE]", 899, 975);
-            ctx.fillText("Tank - 30 [SPACE]", 899, 975);
-            ctx.strokeText("Miner - 20 [M]", 899, 935);
-            ctx.fillText("Miner - 20 [M]", 899, 935);
-            ctx.strokeText("Connector - 10 [C]", 899, 895);
-            ctx.fillText("Connector - 10 [C]", 899, 895);
-            ctx.strokeText("Extractor - 50 [E]", 899, 855);
-            ctx.fillText("Extractor - 50 [E]", 899, 855);
-            //ctx.strokeText(pW.toString(), 512, 800);
-            //ctx.fillText(pW.toString(), 512, 800);
-            pWL = [];
             setTimeout(loop, 10);
             lctr++;
         }
         loop();
         //Changelog:
+        //Update 0.1.5.2: Some changes to power system, more graphical changes, bug fixes, that kind of stuff.
+        //Working on documentation and showing what stuff does and all that.
         //Update 0.1.5.1: Changed the graphics of tank FOV. You can change the FOV to the original if you want.
         //Update 0.1.5: HUGE UPDATE! New Extractor tank, it extracts power from polygons to generate electricty and power the other tanks.
         //Extractor tank still work in progress, selection stuff isn't done.
