@@ -1705,7 +1705,7 @@
                             cash = cash - 50;
                             mHPS[sTV] = mHPS[sTV] + 75;
                             hPS[sTV] = hPS[sTV] + 75;
-                            tS[sTV] = 2;
+                            tS[sTV] = 5;
                             keys2[49] = 2;
                         }
                     }
@@ -1714,7 +1714,7 @@
                             cash = cash - 250;
                             mHPS[sTV] = mHPS[sTV] + 150;
                             hPS[sTV] = hPS[sTV] + 150;
-                            tS[sTV] = 2;
+                            tS[sTV] = 6;
                             keys2[49] = 2;
                         }
                     }
@@ -2044,6 +2044,8 @@
         }
         loop();
         //Changelog:
+        //Update 0.1.6.1: Fixed pentashot bug. Now, pressing the [1] key upgrades a triple shot to a pentashot, not a triple shot to a twin.
+        //Similar bug fixed with twin upgrading to triple shot with the [1] shortcut. It used to not upgrade at all, but now it upgrades to triple shot.
         //Update 0.1.6: LEVELS HAVE BEEN ADDED! So far, the level system is in place and will probably work semi-effectively.
         //Tanks can now be recycled.
         //Negative money no longer works.
