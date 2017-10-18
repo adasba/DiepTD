@@ -21,16 +21,16 @@
         var x = 0;
         var y = 0;
         //tank variables
-        var xS = [123, 100];
-        var yS = [351, 0];
-        var tS = [7, 8];
-        var hPS = [50, 750];
-        var mHPS = [50, 750];
-        var tMRS = [0, 0];
-        var tMRS2 = [0, 0];
-        var dS = [1, 1];
-        var pW = [1, 0];
-        var pW2 = [0, 0];
+        var xS = [];
+        var yS = [];
+        var tS = [];
+        var hPS = [];
+        var mHPS = [];
+        var tMRS = [];
+        var tMRS2 = [];
+        var dS = [];
+        var pW = [];
+        var pW2 = [];
         //some mouse crap
         var pMX = 0;
         var pMY = 0;
@@ -45,25 +45,28 @@
         var ctr5 = 0;
         var ctr6 = 0;
         var ctr7 = 0;
+        var ctr8 = 0;
+        var ctr9 = 0;
+        var ctr10 = 0;
         var ctrS = [0, 0, 0, 0, 0];
         //idk what these are, they're basically just for random tanks. aN is anti-nuisance.
         var aN = 0;
         var aN2 = [];
         //polygon variables
-        var xP = [0, 240, -320];
-        var yP = [0, -564, 123];
-        var tP = [0, 1, 2];
-        var hPP = [1000, 2000, 10000];
-        var mHPP = [1000, 2000, 10000]
+        var xP = [];
+        var yP = [];
+        var tP = [];
+        var hPP = [];
+        var mHPP = [];
         //enemy variables
-        var xE = [157];
-        var yE = [110];
-        var tE = [0];
-        var dE = [1];
-        var hPE = [30];
-        var mHPE = [30];
-        var tMRE = [0];
-        var tMRE2 = [0];
+        var xE = [];
+        var yE = [];
+        var tE = [];
+        var dE = [];
+        var hPE = [];
+        var mHPE = [];
+        var tMRE = [];
+        var tMRE2 = [];
         //bullet variables
         var xB = [];
         var yB = [];
@@ -101,8 +104,15 @@
         var totalPower = 0;
         //fov style, changes a graphical setting
         var FOVStyle = 1;
-        //stands for level active, and it is on when a level is being played.
-        var lVA = 1;
+        //stands for level active, and it is on when a level is being played. "level" is self-explanatory
+        var lVA = 0;
+        var level = 0;
+        //death message generation
+        var deathM
+        var deathMS = ["Rest in spaghetti, never forghetti...", "Ripperoni.", "Killed to death!", "Git gud m8!", "OMG HACKERS!1!1!!", "Wubba Lubba Dub Dub!", "Adasba, fix your game...", "[Insert witty death message here]"]
+        //variables for level data. "sConfig" is "starting configuration". "eData" is "enemyData"
+        var sConfig = [[{ type: "triangle", x: 150, y: 0 }, { type: "pentagon", x: -300, y: -100 }, { type: "tank", x: 0, y: 0, tankType: 8 }]];
+        var eData = [[{ type: 0, x: 1200, y: 0, time: 1500, pattern: 0, }, { type: 0, x: 1200, y: 0, time: 3000, count: 10, pattern: 1, ySpacing: 250, xSpacing: 0 }]];
         //fills keys arrays with empty spaces
         while (ctr < 256) {
             keys.push(0);
@@ -124,22 +134,22 @@
             mID = 1;
             if (iR == 1) {
                 //how towers are placed. It summons them if the mouse is down and you are in the correct area.
-                if (pT == 1) {
+                if (pT == 1 && cash >= 30) {
                     summonTower(x + mP.x - 512, y + mP.y - 512, 0);
                     cash = cash - 30;
                     pT = 0;
                 }
-                if (pT == 2) {
+                if (pT == 2 && cash >= 20) {
                     summonTower(x + mP.x - 512, y + mP.y - 512, 4);
                     cash = cash - 20;
                     pT = 0;
                 }
-                if (pT == 3) {
+                if (pT == 3 && cash >= 10) {
                     summonTower(x + mP.x - 512, y + mP.y - 512, 7);
                     cash = cash - 10;
                     pT = 0;
                 }
-                if (pT == 4) {
+                if (pT == 4 && cash >= 50) {
                     summonTower(x + mP.x - 512, y + mP.y - 512, 8);
                     cash = cash - 50;
                     pT = 0;
@@ -174,22 +184,35 @@
             }
             //detects if you are pressing a button for upgrading a tower
             if (sT == 1) {
+                if (mP.x > 50 && mP.y > 784 && mP.x < 200 && mP.y < 814) {
+                    xS.splice(sTV, 1);
+                    yS.splice(sTV, 1);
+                    dS.splice(sTV, 1);
+                    hPS.splice(sTV, 1);
+                    mHPS.splice(sTV, 1);
+                    tMRS.splice(sTV, 1);
+                    tMRS2.splice(sTV, 1);
+                    tS.splice(sTV, 1);
+                    pW.splice(sTV, 1);
+                    pW2.splice(sTV, 1);
+                    sT = 0;
+                }
                 if (mP.x > 50 && mP.y > 824 && mP.x < 200 && mP.y < 974) {
-                    if (tS[sTV] == 0) {
+                    if (tS[sTV] == 0 && cash >= 60) {
                         cash = cash - 60;
                         mHPS[sTV] = mHPS[sTV] + 125;
                         hPS[sTV] = hPS[sTV] + 125;
                         tS[sTV] = 2;
                         aRCV = 1;
                     }
-                    if (tS[sTV] == 2 && aRCV == 0) {
+                    if (tS[sTV] == 2 && aRCV == 0 && cash >= 50) {
                         cash = cash - 50;
                         mHPS[sTV] = mHPS[sTV] + 75;
                         hPS[sTV] = hPS[sTV] + 75;
                         tS[sTV] = 5;
                         aRCV = 1;
                     }
-                    if (tS[sTV] == 5 && aRCV == 0) {
+                    if (tS[sTV] == 5 && aRCV == 0 && cash >= 250) {
                         cash = cash - 250;
                         mHPS[sTV] = mHPS[sTV] + 150;
                         hPS[sTV] = hPS[sTV] + 150;
@@ -198,7 +221,7 @@
                     }
                 }
                 if (mP.x > 250 && mP.y > 824 && mP.x < 400 && mP.y < 974) {
-                    if (tS[sTV] == 0) {
+                    if (tS[sTV] == 0 && cash >= 50) {
                         cash = cash - 50;
                         mHPS[sTV] = mHPS[sTV] + 100;
                         hPS[sTV] = hPS[sTV] + 100;
@@ -206,12 +229,20 @@
                     }
                 }
                 if (mP.x > 450 && mP.y > 824 && mP.x < 600 && mP.y < 974) {
-                    if (tS[sTV] == 0) {
+                    if (tS[sTV] == 0 && cash >= 40) {
                         cash = cash - 40;
                         mHPS[sTV] = mHPS[sTV] + 75;
                         hPS[sTV] = hPS[sTV] + 75;
                         tS[sTV] = 1;
                     }
+                }
+            }
+            if (lVA == 0) {
+                if (mP.x > 0 - x + 512 && mP.y > 0 - y + 512 && mP.x < 100 - x + 512 && mP.y < 100 - y + 512) {
+                    lVA = 1;
+                    level = 0;
+                    lctr = 0;
+                    startLevel(0);
                 }
             }
         }
@@ -398,6 +429,21 @@
                 mHPE.push(55);
             }
         }
+        function summonPolygon(x, y, type) {
+            xP.push(x);
+            yP.push(y);
+            tP.push(type);
+            if (type == 0) {
+                hPP.push(1000);
+                mHPP.push(1000);
+            } else if (type == 1) {
+                hPP.push(2000);
+                mHPP.push(2000);
+            } else if (type == 2) {
+                hPP.push(10000);
+                mHPP.push(10000);
+            }
+        }
         //renders a polygon
         function polygon(x, y, sides, size, dir, color) {
             ctr6 = 0;
@@ -485,6 +531,26 @@
             ctx.stroke();
             ctx.closePath();
         }
+        function tankIcon3(x, y, color1, color2) {
+            ctx.beginPath();
+            ctx.fillStyle = color1;
+            ctx.lineWidth = 7;
+            ctx.fillRect(x, y, 100, (100 / 30) * 17);
+            ctx.fill();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.fillStyle = color2;
+            ctx.lineWidth = 7;
+            ctx.fillRect(x, y + (100 / 30) * 17, 100, (100 / 30) * 13);
+            ctx.fill();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.strokeStyle = "#555555";
+            ctx.lineWidth = 5;
+            ctx.strokeRect(x, y, 100, 100);
+            ctx.stroke();
+            ctx.closePath();
+        }
         //smaller tank icon that is usually used to display text
         function tankIcon2(x, y, color1, color2) {
             ctx.beginPath();
@@ -535,9 +601,79 @@
             }
             return aN;
         }
+        //makes recycle buttons with less lines of code.
+        function recycle(variable1) {
+            ctx.textAlign = "center";
+            tankIcon2(50, 784 + variable1, "#CA7676", "#A56262");
+            ctx.font = "Bold 14px Ubuntu";
+            ctx.fillStyle = "White";
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = "rgb(40, 40, 40)";
+            ctx.strokeText("Recycle [R]", 125, 805 + variable1);
+            ctx.fillText("Recycle [R]", 125, 805 + variable1);
+        }
+        //ends a level once there are no tanks
+        function endLevel() {
+            lVA = 0;
+            lctr = 0;
+            xE = [];
+            yE = [];
+            tE = [];
+            dE = [];
+            hPE = [];
+            mHPE = [];
+            tMRE = [];
+            tMRE2 = [];
+            xB = [];
+            yB = [];
+            dB = [];
+            lTB = [];
+            teams = [];
+            vB = [];
+            tB = [];
+            xP = [];
+            yP = [];
+            tP = [];
+            hPP = [];
+            mHPP = [];
+            xE = [];
+            yE = [];
+            tE = [];
+            dE = [];
+            hPE = [];
+            mHPE = [];
+            tMRE = [];
+            tMRE2 = [];
+            level = -1;
+            ctr9 = 0;
+        }
+        function deathMsg() {
+            ctr8 = 1;
+            deathM = deathMS[Math.floor(Math.random() * deathMS.length)];
+        }
+        function startLevel(whichLevel) {
+            ctr10 = 0;
+            while (ctr10 < sConfig[whichLevel].length) {
+                if (sConfig[whichLevel][ctr10].type == "square") {
+                    summonPolygon(sConfig[whichLevel][ctr10].x, sConfig[whichLevel][ctr10].y, 0);
+                } else if (sConfig[whichLevel][ctr10].type == "triangle") {
+                    summonPolygon(sConfig[whichLevel][ctr10].x, sConfig[whichLevel][ctr10].y, 1);
+                } else if (sConfig[whichLevel][ctr10].type == "pentagon") {
+                    summonPolygon(sConfig[whichLevel][ctr10].x, sConfig[whichLevel][ctr10].y, 2);
+                } else if (sConfig[whichLevel][ctr10].type == "tank") {
+                    summonTower(sConfig[whichLevel][ctr10].x, sConfig[whichLevel][ctr10].y, sConfig[whichLevel][ctr10].tankType);
+                }
+                ctr10++
+            }
+            ctr10 = 0;
+        }
         //TREMBLE BEFORE THE ALMIGHTY LOOP FUNCTION! IT LOOPS OVER AND OVER AND OVER AND OVER AGAIN IN AN INFINITE LOOP, CALLING ITSELF OVER AND OVER AGAIN!
         //Basically this is just a game loop, it keeps on repeating and stuff, every time it repeats, everything is re-rendered and all that. You get the point.
         function loop() {
+            if (xS.length == 0 && lVA == 1) {
+                endLevel();
+                deathMsg();
+            }
             //creates the grid of lines that you see in the background.
             ctx.fillStyle = "#CBCBCB";
             ctx.fillRect(0, 0, 1024, 1024);
@@ -566,6 +702,23 @@
             ctx.stroke();
             ctx.closePath();
             if (lVA == 1) {
+                console.log(lctr);
+                if (level != -1) {
+                    ctr10 = 0;
+                    if (lctr == eData[level][ctr9].time) {
+                        if (eData[level][ctr9].pattern == 0) {
+                            summonEnemy(eData[level][ctr9].x, eData[level][ctr9].y, eData[level][ctr9].type);
+                        } else if (eData[level][ctr9].pattern == 1) {
+                            while (ctr10 < eData[level][ctr9].count) {
+                                summonEnemy(eData[level][ctr9].x + eData[level][ctr9].xSpacing * ctr10, eData[level][ctr9].y + eData[level][ctr9].ySpacing * ctr10, eData[level][ctr9].type);
+                                ctr10++;
+                            }
+                        }
+                        if (ctr9 < eData[level].length - 1) {
+                            ctr9++;
+                        }
+                    }
+                }
                 //calculations for whether a tank can be placed in that location or not
                 mPower = 0;
                 iR = 0;
@@ -591,18 +744,20 @@
                     pT = 1;
                     keys2[32] == 2;
                 }
-                if (keys2[65] == 1) {
-                    summonEnemy(x + mP.x - 512, y + mP.y - 512, 0);
-                    keys2[65] = 2;
-                }
-                if (keys2[68] == 1) {
-                    summonEnemy(x + mP.x - 512, y + mP.y - 512, 1);
-                    keys2[68] = 2;
-                }
+                //DEBUG STUFF:
+                //if (keys2[65] == 1) {
+                //    summonEnemy(x + mP.x - 512, y + mP.y - 512, 0);
+                //    keys2[65] = 2;
+                //}
+                //if (keys2[68] == 1) {
+                //    summonEnemy(x + mP.x - 512, y + mP.y - 512, 1);
+                //    keys2[68] = 2;
+                //}
                 //if (keys2[67] == 1) {
                 //    summonEnemy(x + mP.x - 512, y + mP.y - 512, 2);
                 //    keys2[67] = 2;
                 //}
+                //END DEBUG STUFF
                 if (keys2[77] == 1) {
                     pT = 2;
                     keys2[77] = 2;
@@ -611,18 +766,20 @@
                     pT = 4;
                     keys2[69] = 2;
                 }
-                if (keys2[87] == 1) {
-                    summonEnemy(x + mP.x - 512, y + mP.y - 512, 3);
-                    keys2[87] = 2;
-                }
-                if (keys2[83] == 1) {
-                    summonEnemy(x + mP.x - 512, y + mP.y - 512, 2);
-                    keys2[83] = 2;
-                }
-                if (keys2[81] == 1) {
-                    summonEnemy(x + mP.x - 512, y + mP.y - 512, 4);
-                    keys2[81] = 2;
-                }
+                //DEBUG STUFF:
+                //if (keys2[87] == 1) {
+                //    summonEnemy(x + mP.x - 512, y + mP.y - 512, 3);
+                //    keys2[87] = 2;
+                //}
+                //if (keys2[83] == 1) {
+                //    summonEnemy(x + mP.x - 512, y + mP.y - 512, 2);
+                //    keys2[83] = 2;
+                //}
+                //if (keys2[81] == 1) {
+                //    summonEnemy(x + mP.x - 512, y + mP.y - 512, 4);
+                //    keys2[81] = 2;
+                //}
+                //END DEBUG STUFF
                 if (keys2[67] == 1) {
                     pT = 3;
                     keys2[67] = 2
@@ -1445,21 +1602,34 @@
                 //}
                 ctx.fillStyle = "#555555";
                 //ctx.font = "24px Consolas";
-                ctx.font = "24px Ubuntu";
+                ctx.font = "15px Ubuntu";
                 ctx.textAlign = "left";
-                ctx.fillText("Drag mouse to move around.", 10, 24);
-                ctx.fillText("Press [SPACE] to spawn a tower.", 10, 48);
-                ctx.fillText("Press [B] to spawn a polygon miner tower [WIP]. (Temporary Change)", 10, 72);
-                ctx.fillText("Press [E] to spawn a penta shot tower.", 10, 96);
-                ctx.fillText("Press [A] to spawn an enemy tank.", 10, 120);
-                ctx.fillText("Press [D] to spawn an enemy sniper.", 10, 144);
-                ctx.fillText("Press [C] to spawn an enemy twin tank.", 10, 168);
-                ctx.fillText("Press [W] to spawn an enemy flank guard.", 10, 192);
-                ctx.fillText("Press [S] to spawn a machine gun tower [WIP].", 10, 216);
-                ctx.fillText("Press [Q] to spawn an enemy tri-angle. [WIP].", 10, 240);
-                ctx.fillText("Click a tower, and press a number key to upgrade (only works with basic tank).", 10, 264);
-                ctx.fillText("Sniper can still be spawned from upgrade menu.", 10, 288);
-                ctx.fillText("Made by adasba.", 10, 312);
+                ctx.fillText("Drag mouse to move around.", 10, 15);
+                ctx.fillText("Use the key names in square brackets to summon towers or upgrade.", 10, 30);
+                ctx.fillText("Click a tower to select it.", 10, 45);
+                ctx.fillText("Press [ESC] or [X] to deselect a tower or to stop tower placement.", 10, 60);
+                ctx.fillText("Tanks defend you from enemies.", 10, 75);
+                ctx.fillText("Extractors collect power from polygons to fuel your towers.", 10, 90);
+                ctx.fillText("Miners mine polygons so you can build towers.", 10, 105);
+                ctx.fillText("Connectors allow things to be placed far away from power sources.", 10, 120);
+                ctx.fillText("Game made by adasba, though it is heavily inspired by the following:", 10, 135);
+                ctx.fillText("Diep.io", 10, 150);
+                ctx.fillText("The Space Game (Casual Collective)", 10, 165);
+                ctx.fillText("I did a bit of digging on google, and I found out that The Space Game", 10, 180);
+                ctx.fillText("was based off of this other game called Harvest: Massive Encounter, so I'll give credit to that too.", 10, 195);
+                //ctx.fillText("Drag mouse to move around.", 10, 24);
+                //ctx.fillText("Press [SPACE] to spawn a tower.", 10, 48);
+                //ctx.fillText("Press [B] to spawn a polygon miner tower [WIP]. (Temporary Change)", 10, 72);
+                //ctx.fillText("Press [E] to spawn a penta shot tower.", 10, 96);
+                //ctx.fillText("Press [A] to spawn an enemy tank.", 10, 120);
+                //ctx.fillText("Press [D] to spawn an enemy sniper.", 10, 144);
+                //ctx.fillText("Press [C] to spawn an enemy twin tank.", 10, 168);
+                //ctx.fillText("Press [W] to spawn an enemy flank guard.", 10, 192);
+                //ctx.fillText("Press [S] to spawn a machine gun tower [WIP].", 10, 216);
+                //ctx.fillText("Press [Q] to spawn an enemy tri-angle. [WIP].", 10, 240);
+                //ctx.fillText("Click a tower, and press a number key to upgrade (only works with basic tank).", 10, 264);
+                //ctx.fillText("Sniper can still be spawned from upgrade menu.", 10, 288);
+                //ctx.fillText("Made by adasba.", 10, 312);
                 //ctx.fillRect(xE[0] - x + 512, yE[0] - y + 512, 15, 15)
                 if (sT == 1) {
                     ctx.beginPath();
@@ -1508,21 +1678,21 @@
                         }
                     }
                     if (tS[sTV] == 0) {
-                        if (keys2[49] == 1) {
+                        if (keys2[49] == 1 && cash >= 60) {
                             cash = cash - 60;
                             mHPS[sTV] = mHPS[sTV] + 125;
                             hPS[sTV] = hPS[sTV] + 125;
                             tS[sTV] = 2;
                             keys2[49] = 2;
                         }
-                        if (keys2[50] == 1) {
+                        if (keys2[50] == 1 && cash >= 50) {
                             cash = cash - 50;
                             mHPS[sTV] = mHPS[sTV] + 100;
                             hPS[sTV] = hPS[sTV] + 100;
                             tS[sTV] = 3;
                             keys2[50] = 2;
                         }
-                        if (keys2[51] == 1) {
+                        if (keys2[51] == 1 && cash >= 40) {
                             cash = cash - 40;
                             mHPS[sTV] = mHPS[sTV] + 75;
                             hPS[sTV] = hPS[sTV] + 75;
@@ -1531,7 +1701,7 @@
                         }
                     }
                     if (tS[sTV] == 2) {
-                        if (keys2[49] == 1) {
+                        if (keys2[49] == 1 && cash >= 50) {
                             cash = cash - 50;
                             mHPS[sTV] = mHPS[sTV] + 75;
                             hPS[sTV] = hPS[sTV] + 75;
@@ -1539,9 +1709,32 @@
                             keys2[49] = 2;
                         }
                     }
+                    if (tS[sTV] == 5) {
+                        if (keys2[49] == 1 && cash >= 250) {
+                            cash = cash - 250;
+                            mHPS[sTV] = mHPS[sTV] + 150;
+                            hPS[sTV] = hPS[sTV] + 150;
+                            tS[sTV] = 2;
+                            keys2[49] = 2;
+                        }
+                    }
+                    if (keys2[82] == 1) { 
+                        xS.splice(sTV, 1)
+                        yS.splice(sTV, 1);
+                        dS.splice(sTV, 1);
+                        hPS.splice(sTV, 1);
+                        mHPS.splice(sTV, 1);
+                        tMRS.splice(sTV, 1);
+                        tMRS2.splice(sTV, 1);
+                        tS.splice(sTV, 1);
+                        pW.splice(sTV, 1);
+                        pW2.splice(sTV, 1);
+                        sT = 0;
+                        keys2[82] == 2;
+                    }
                 }
                 if (ctrS[0] > 0) {
-                    aN = 300 / (ctrS[0] + 1);
+                    aN = 400 / (ctrS[0] + 1);
                     ctx.textAlign = "center";
                     tankIcon(50, 824 + aN, "#75C6C3", "#60A2A0");
                     polygon(125, 899 + aN, 6, 40, 0, "#555555");
@@ -1574,7 +1767,7 @@
                     ctx.fillText("[3]", 525, 853 + aN);
                 }
                 if (ctrS[1] > 0) {
-                    aN = 300 / (ctrS[1] + 1);
+                    aN = 400 / (ctrS[1] + 1);
                     ctx.textAlign = "center";
                     tankIcon(50, 824 + aN, "#75C6C3", "#60A2A0");
                     polygon(125, 899 + aN, 6, 43.75, 0, "#555555");
@@ -1592,7 +1785,7 @@
                     ctx.fillText("[1]", 125, 853 + aN);
                 }
                 if (ctrS[2] > 0) {
-                    aN = 300 / (ctrS[2] + 1);
+                    aN = 400 / (ctrS[2] + 1);
                     ctx.textAlign = "center";
                     tankIcon(50, 824 + aN, "#75C6C3", "#60A2A0");
                     //polygon(125, 899 + aN, 6, 43.75, 0, "#555555");
@@ -1615,6 +1808,9 @@
                     ctx.fillText("Penta Shot - 250", 125, 960 + aN);
                     ctx.strokeText("[1]", 125, 853 + aN);
                     ctx.fillText("[1]", 125, 853 + aN);
+                }
+                if (ctrS[3] > 0) {
+                    recycle(400 / (ctrS[3] + 1));
                 }
                 ctr7 = 0;
                 totalPower = 0;
@@ -1657,6 +1853,12 @@
                 }
                 if (ctrS[2] > 0 && sT == 0 && tS[sTV] == 5) {
                     ctrS[2]--;
+                }
+                if (ctrS[3] < 40 && sT == 1) {
+                    ctrS[3]++
+                }
+                if (ctrS[3] > 0 && sT == 0) {
+                    ctrS[3]--;
                 }
                 if (pT == 1) {
                     polygon(mP.x, mP.y, 6, 27, 0, "#555555");
@@ -1806,15 +2008,48 @@
                 ctx.fillText("Connector - 10 [C]", 899, 895);
                 ctx.strokeText("Extractor - 50 [E]", 899, 855);
                 ctx.fillText("Extractor - 50 [E]", 899, 855);
-                //ctx.strokeText(pW.toString(), 512, 800);
-                //ctx.fillText(pW.toString(), 512, 800);
                 pWL = [];
+            }
+            if (lVA == 0) {
+                tankIcon3(0 - x + 512, 0 - y + 512, "#75C6C3", "#60A2A0");
+                ctx.fillStyle = "White";
+                ctx.lineWidth = 6;
+                ctx.strokeStyle = "rgb(40, 40, 40)";
+                ctx.font = "Bold 14px Ubuntu";
+                ctx.textAlign = "center";
+                ctx.strokeText("Level 1", 50 - x + 512, 20 - y + 512);
+                ctx.fillText("Level 1", 50 - x + 512, 20 - y + 512);
+                ctx.strokeText("The First Level", 50 - x + 512, 55 - y + 512);
+                ctx.fillText("The First Level", 50 - x + 512, 55 - y + 512);
+                ctx.strokeText("Very Easy", 50 - x + 512, 90 - y + 512);
+                ctx.fillText("Very Easy", 50 - x + 512, 90 - y + 512);
+            }
+            if (ctr8 > 0) {
+                ctx.fillStyle = "rgba(255, 255, 255, " + (1 - Math.abs((ctr8 / 200) - 1)) + ")";
+                ctx.lineWidth = 6;
+                ctx.font = "Bold 72px Ubuntu";
+                ctx.strokeStyle = "rgba(40, 40, 40, " + (1 - Math.abs((ctr8 / 200) - 1)) + ")";
+                ctx.strokeText("You died!", 512, 472);
+                ctx.fillText("You died!", 512, 472);
+                ctx.font = "Bold 36px Ubuntu";
+                ctx.strokeText(deathM, 512, 512);
+                ctx.fillText(deathM, 512, 512);
+                ctr8++
+            }
+            if (ctr8 > 399) {
+                ctr8 = 0;
             }
             setTimeout(loop, 10);
             lctr++;
         }
         loop();
         //Changelog:
+        //Update 0.1.6: LEVELS HAVE BEEN ADDED! So far, the level system is in place and will probably work semi-effectively.
+        //Tanks can now be recycled.
+        //Negative money no longer works.
+        //Tanks/Enemies cannot be spawned with random keys now.
+        //Text info changed significantly.
+        //Note that many of these changes are temporary. I'll be adding a debug option soon if you want to mess around with the game.
         //Update 0.1.5.2: Some changes to power system, more graphical changes, bug fixes, that kind of stuff.
         //Working on documentation and showing what stuff does and all that.
         //Update 0.1.5.1: Changed the graphics of tank FOV. You can change the FOV to the original if you want.
