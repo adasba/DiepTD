@@ -31,6 +31,7 @@
         var dS = [];
         var pW = [];
         var pW2 = [];
+        var costS = [];
         //some mouse crap
         var pMX = 0;
         var pMY = 0;
@@ -48,6 +49,8 @@
         var ctr8 = 0;
         var ctr9 = 0;
         var ctr10 = 0;
+        var ctr11 = 0;
+        var ctr12 = 0;
         var ctrS = [0, 0, 0, 0, 0];
         //idk what these are, they're basically just for random tanks. aN is anti-nuisance.
         var aN = 0;
@@ -104,15 +107,44 @@
         var totalPower = 0;
         //fov style, changes a graphical setting
         var FOVStyle = 1;
-        //stands for level active, and it is on when a level is being played. "level" is self-explanatory
+        //stands for level active, and it is on when a level is being played. "level" is self-explanatory. levelC is "level complete"
         var lVA = 0;
         var level = 0;
+        var levelC = [0];
         //death message generation
         var deathM
         var deathMS = ["Rest in spaghetti, never forghetti...", "Ripperoni.", "Killed to death!", "Git gud m8!", "OMG HACKERS!1!1!!", "Wubba Lubba Dub Dub!", "Adasba, fix your game...", "[Insert witty death message here]"]
+        //ordinary message stuff
+        var msg;
+        var msg2;
+        var msgS = [[{ message: "Welcome to Diep TD!", time: 0, duration: 300 },
+            { message: "Diep TD is a real time strategy game where you place tanks to fend off enemies.", time: 300, duration: 500 },
+            { message: "Find the button for the miner, and click it.", time: 800, duration: 600 },
+            { message: "Click again to place the miner. You can only place it in the green area.", message2: "Make sure the pentagon is within the miner's grey circle.", time: 1400, duration: 1200 },
+            { message: "Look at the resources bar in the top right corner.", message2: "The miner is converting the pentagon into resources you can use to build tanks.", time: 2600, duration: 1000 },
+            { message: "A single miner may not be enough. Place down a few more. The [M] key is an alternative to the button.", time: 3600, duration: 600 },
+            { message: "Enemy tanks will be approaching soon.", message2: "Find the button for the tank, and place it to the right of the big green object, which is called an extractor.", time: 5000, duration: 1200 },
+            { message: "Even more enemies are attacking. A single tank will not do the job. The [SPACE] key may speed up tank placement.", message2: "You can place more tanks, or click on the already-placed tank to see the possible upgrades.", time: 7200, duration: 1200 },
+            { message: "Enemy tanks will soon attack from all directions. You will need to place tanks all around your miners and extractor.", message2: "If you cannot place tanks where you want, use a connector (hotkey is [C]) to add extra tank placement area.", time: 8400, duration: 1200 },
+            { message: "Just one extractor may not be enough to handle the power drain from your tanks.", message2: "Use the extractor button or the [E] key to add one near the red triangle.", time: 9600, duration: 1200 },
+            { message: "30 enemy tanks are now approaching from all directions. Don't panic if you lose some tanks, they can be replaced.", message2: "If you run out of money while under attack, you can use the [R] key or the recycle button to sell something you don't need.", time: 10800, duration: 1400 },
+            { message: "There are two waves of enemies left. You're on your own now.", message2: "Good luck!", time: 12500, duration: 600 },
+            { message: "It looks like I was wrong. There is a third wave coming. This one is far too powerful to fight off.", message2: "By holding off the enemy, you've given us enough time to send you rescue tanks. Until then, try to defend!", time: 18000, duration: 1200 },
+            { message: "In a few seconds we will be there.", message2: "Survive until then.", time: 19000, duration: 500 },
+            { message: "Level 1 Complete!", message2: "Levels 2 and 3 unlocked!", time: 19500, duration: 500 }]];
+        var msgD;
         //variables for level data. "sConfig" is "starting configuration". "eData" is "enemyData"
         var sConfig = [[{ type: "triangle", x: 150, y: 0 }, { type: "pentagon", x: -300, y: -100 }, { type: "tank", x: 0, y: 0, tankType: 8 }]];
-        var eData = [[{ type: 0, x: 1200, y: 0, time: 1500, pattern: 0, }, { type: 0, x: 1200, y: 0, time: 3000, count: 10, pattern: 1, ySpacing: 250, xSpacing: 0 }]];
+        var eData = [[{ type: 0, x: 2500, y: 0, time: 5000, pattern: 0, },
+            { type: 0, x: 2500, y: -1250, time: 6400, count: 10, pattern: 1, ySpacing: 250, xSpacing: 0 },
+            { type: 0, x: 0, y: 0, time: 10800, count: 30, pattern: 2, dirSpacing: Math.PI / 15, radius: 2500, startDir: 0 },
+            { type: 2, x: 0, y: 0, time: 13000, count: 30, pattern: 2, dirSpacing: Math.PI / 15, radius: 2500, startDir: 0 },
+            { type: 3, x: -2500, y: -500, time: 15500, count: 20, pattern: 1, ySpacing: 50, xSpacing: 0 },
+            { type: 4, x: 0, y: 0, time: 18000, count: 40, pattern: 2, dirSpacing: Math.PI / 20, radius: 1500, startDir: 0 },
+            { type: 4, x: 0, y: 0, time: 18200, count: 40, pattern: 2, dirSpacing: Math.PI / 20, radius: 1500, startDir: Math.PI / 100 },
+            { type: 4, x: 0, y: 0, time: 18400, count: 40, pattern: 2, dirSpacing: Math.PI / 20, radius: 1500, startDir: 2 * Math.PI / 100 },
+            { type: 4, x: 0, y: 0, time: 18600, count: 40, pattern: 2, dirSpacing: Math.PI / 20, radius: 1500, startDir: 3 * Math.PI / 100 },
+            { type: 4, x: 0, y: 0, time: 18800, count: 40, pattern: 2, dirSpacing: Math.PI / 20, radius: 1500, startDir: 4 * Math.PI / 100 }]];
         //fills keys arrays with empty spaces
         while (ctr < 256) {
             keys.push(0);
@@ -195,10 +227,13 @@
                     tS.splice(sTV, 1);
                     pW.splice(sTV, 1);
                     pW2.splice(sTV, 1);
+                    cash = cash + costS[sTV];
+                    costS.splice(sTV, 1);
                     sT = 0;
                 }
                 if (mP.x > 50 && mP.y > 824 && mP.x < 200 && mP.y < 974) {
                     if (tS[sTV] == 0 && cash >= 60) {
+                        costS[sTV] = costS[sTV] + 60
                         cash = cash - 60;
                         mHPS[sTV] = mHPS[sTV] + 125;
                         hPS[sTV] = hPS[sTV] + 125;
@@ -206,6 +241,7 @@
                         aRCV = 1;
                     }
                     if (tS[sTV] == 2 && aRCV == 0 && cash >= 50) {
+                        costS[sTV] = costS[sTV] + 50
                         cash = cash - 50;
                         mHPS[sTV] = mHPS[sTV] + 75;
                         hPS[sTV] = hPS[sTV] + 75;
@@ -213,6 +249,7 @@
                         aRCV = 1;
                     }
                     if (tS[sTV] == 5 && aRCV == 0 && cash >= 250) {
+                        costS[sTV] = costS[sTV] + 250
                         cash = cash - 250;
                         mHPS[sTV] = mHPS[sTV] + 150;
                         hPS[sTV] = hPS[sTV] + 150;
@@ -222,6 +259,7 @@
                 }
                 if (mP.x > 250 && mP.y > 824 && mP.x < 400 && mP.y < 974) {
                     if (tS[sTV] == 0 && cash >= 50) {
+                        costS[sTV] = costS[sTV] + 50
                         cash = cash - 50;
                         mHPS[sTV] = mHPS[sTV] + 100;
                         hPS[sTV] = hPS[sTV] + 100;
@@ -230,6 +268,7 @@
                 }
                 if (mP.x > 450 && mP.y > 824 && mP.x < 600 && mP.y < 974) {
                     if (tS[sTV] == 0 && cash >= 40) {
+                        costS[sTV] = costS[sTV] + 40
                         cash = cash - 40;
                         mHPS[sTV] = mHPS[sTV] + 75;
                         hPS[sTV] = hPS[sTV] + 75;
@@ -370,6 +409,7 @@
             if (type == 0) {
                 hPS.push(150);
                 mHPS.push(150);
+                costS.push(30);
             }
             if (type == 1) {
                 hPS.push(225);
@@ -386,6 +426,7 @@
             if (type == 4) {
                 hPS.push(80);
                 mHPS.push(80);
+                costS.push(20);
             }
             if (type == 5) {
                 hPS.push(350);
@@ -398,10 +439,12 @@
             if (type == 7) {
                 hPS.push(50);
                 mHPS.push(50);
+                costS.push(10);
             }
             if (type == 8) {
                 hPS.push(750);
                 mHPS.push(750);
+                costS.push(50);
             }
         }
         //adds an enemy
@@ -646,10 +689,18 @@
             tMRE2 = [];
             level = -1;
             ctr9 = 0;
+            ctr12 = 0;
         }
         function deathMsg() {
             ctr8 = 1;
             deathM = deathMS[Math.floor(Math.random() * deathMS.length)];
+        }
+        function message(message, message2) {
+            ctr11 = 1;
+            msg = message;
+            if (message2 != undefined || message2 != "") {
+                msg2 = message2;
+            }
         }
         function startLevel(whichLevel) {
             ctr10 = 0;
@@ -702,7 +753,9 @@
             ctx.stroke();
             ctx.closePath();
             if (lVA == 1) {
-                console.log(lctr);
+                if (lctr > 19500 && level == 0) {
+                    endLevel();
+                }
                 if (level != -1) {
                     ctr10 = 0;
                     if (lctr == eData[level][ctr9].time) {
@@ -713,9 +766,21 @@
                                 summonEnemy(eData[level][ctr9].x + eData[level][ctr9].xSpacing * ctr10, eData[level][ctr9].y + eData[level][ctr9].ySpacing * ctr10, eData[level][ctr9].type);
                                 ctr10++;
                             }
+                        } else if (eData[level][ctr9].pattern == 2) {
+                            while (ctr10 < eData[level][ctr9].count) {
+                                summonEnemy(eData[level][ctr9].x + Math.cos(eData[level][ctr9].startDir + ctr10 * eData[level][ctr9].dirSpacing) * eData[level][ctr9].radius, eData[level][ctr9].y + Math.sin(eData[level][ctr9].startDir + ctr10 * eData[level][ctr9].dirSpacing) * eData[level][ctr9].radius, eData[level][ctr9].type);
+                                ctr10++;
+                            }
                         }
                         if (ctr9 < eData[level].length - 1) {
                             ctr9++;
+                        }
+                    }
+                    if (lctr == msgS[level][ctr12].time) {
+                        message(msgS[level][ctr12].message, msgS[level][ctr12].message2);
+                        msgD = msgS[level][ctr12].duration;
+                        if (ctr12 < msgS[level].length - 1) {
+                            ctr12++;
                         }
                     }
                 }
@@ -796,6 +861,8 @@
                     tS.splice(sTV, 1);
                     pW.splice(sTV, 1);
                     pW2.splice(sTV, 1);
+                    cash = cash + costS[sTV];
+                    costS.splice(sTV, 1);
                     sT = 0;
                     keys2[82] = 2;
                 }
@@ -1168,7 +1235,7 @@
                             }
                             ctr2++
                         }
-                        if (tMRS[ctr] > 40 && cED < 240 && usableTankPower(ctr) > 0.02) {
+                        if (tMRS[ctr] > 120 && cED < 240 && usableTankPower(ctr) > 0.02) {
                             tMRS[ctr] = 0;
                             summonBullet(xS[ctr], yS[ctr], dS[ctr], 30, 2, 25);
                             powerTank(ctr, 0.02);
@@ -1366,6 +1433,7 @@
                         tS.splice(ctr, 1);
                         pW.splice(ctr, 1);
                         pW2.splice(ctr, 1);
+                        costS.splice(sTV, 1);
                     }
                     ctr++;
                 }
@@ -1679,6 +1747,7 @@
                     }
                     if (tS[sTV] == 0) {
                         if (keys2[49] == 1 && cash >= 60) {
+                            costS[sTV] = costS[sTV] + 60
                             cash = cash - 60;
                             mHPS[sTV] = mHPS[sTV] + 125;
                             hPS[sTV] = hPS[sTV] + 125;
@@ -1686,6 +1755,7 @@
                             keys2[49] = 2;
                         }
                         if (keys2[50] == 1 && cash >= 50) {
+                            costS[sTV] = costS[sTV] + 50
                             cash = cash - 50;
                             mHPS[sTV] = mHPS[sTV] + 100;
                             hPS[sTV] = hPS[sTV] + 100;
@@ -1693,6 +1763,7 @@
                             keys2[50] = 2;
                         }
                         if (keys2[51] == 1 && cash >= 40) {
+                            costS[sTV] = costS[sTV] + 40
                             cash = cash - 40;
                             mHPS[sTV] = mHPS[sTV] + 75;
                             hPS[sTV] = hPS[sTV] + 75;
@@ -1702,6 +1773,7 @@
                     }
                     if (tS[sTV] == 2) {
                         if (keys2[49] == 1 && cash >= 50) {
+                            costS[sTV] = costS[sTV] + 50
                             cash = cash - 50;
                             mHPS[sTV] = mHPS[sTV] + 75;
                             hPS[sTV] = hPS[sTV] + 75;
@@ -1711,6 +1783,7 @@
                     }
                     if (tS[sTV] == 5) {
                         if (keys2[49] == 1 && cash >= 250) {
+                            costS[sTV] = costS[sTV] + 250
                             cash = cash - 250;
                             mHPS[sTV] = mHPS[sTV] + 150;
                             hPS[sTV] = hPS[sTV] + 150;
@@ -1729,6 +1802,8 @@
                         tS.splice(sTV, 1);
                         pW.splice(sTV, 1);
                         pW2.splice(sTV, 1);
+                        cash = cash + costS[sTV];
+                        costS.splice(sTV, 1);
                         sT = 0;
                         keys2[82] == 2;
                     }
@@ -2036,6 +2111,22 @@
                 ctx.fillText(deathM, 512, 512);
                 ctr8++
             }
+            if (ctr11 > 0) {
+                ctx.fillStyle = "rgba(255, 255, 255, " + (1 - Math.abs((ctr11 / (msgD / 2)) - 1)) * 2 + ")";
+                ctx.lineWidth = 6;
+                ctx.strokeStyle = "rgba(40, 40, 40, " + (1 - Math.abs((ctr11 / (msgD / 2)) - 1)) * 2 + ")";
+                ctx.font = "Bold 18px Ubuntu";
+                ctx.strokeText(msg, 512, 512);
+                ctx.fillText(msg, 512, 512);
+                if (msg2 != undefined) {
+                    ctx.strokeText(msg2, 512, 536);
+                    ctx.fillText(msg2, 512, 536);
+                }
+                ctr11++
+            }
+            if (ctr11 > msgD - 1) {
+                ctr11 = 0;
+            }
             if (ctr8 > 399) {
                 ctr8 = 0;
             }
@@ -2044,6 +2135,10 @@
         }
         loop();
         //Changelog:
+        //Update 0.1.7: TUTORIAL LEVEL COMPLETE!
+        //Lots of bug fixes.
+        //Level selection works now.
+        //Stay tuned for more levels!
         //Update 0.1.6.1: Fixed pentashot bug. Now, pressing the [1] key upgrades a triple shot to a pentashot, not a triple shot to a twin.
         //Similar bug fixed with twin upgrading to triple shot with the [1] shortcut. It used to not upgrade at all, but now it upgrades to triple shot.
         //Update 0.1.6: LEVELS HAVE BEEN ADDED! So far, the level system is in place and will probably work semi-effectively.
