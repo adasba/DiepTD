@@ -839,17 +839,17 @@
             ctx.closePath();
             if (lVA == 1) {
                 if (lctr > 19500 && level == 0) {
-                    levelC[0] == 1;
+                    levelC[0] = 1;
                     endLevel();
                 }
                 if (lctr > 23001 && level == 1 && xE.length == 0) {
                     message("Level 2 Complete!", "We haven't added the next level yet :(")
-                    levelC[1] == 1;
+                    levelC[1] = 1;
                     endLevel();
                 }
                 if (lctr > 1 && level == 2 && tP.indexOf(0) == -1) {
                     message("Level 3 Complete!", "We haven't added the next level yet :(")
-                    levelC[2] == 1;
+                    levelC[2] = 1;
                     endLevel();
                 }
                 if (level == 2) {
@@ -2305,6 +2305,7 @@
         }
         loop();
         //Changelog:
+        //Update 0.1.8.1: Fixed a bug where completing levels doesn't make them show as complete.
         //Update 0.1.8: Levels 2 and 3 are now released!
         //A crapton of bug fixes.
         //Some other stuff that I forgot.
