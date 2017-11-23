@@ -15,22 +15,22 @@ function mouseDown(e) {
         //how towers are placed. It summons them if the mouse is down and you are in the correct area.
         if (pT == 1 && cash >= 30) {
             summonTower(x + mP.x - 512, y + mP.y - 512, 0);
-            cash = cash - 30;
+            cash -= 30;
             pT = 0;
         }
         if (pT == 2 && cash >= 20) {
             summonTower(x + mP.x - 512, y + mP.y - 512, 4);
-            cash = cash - 20;
+            cash -= 20;
             pT = 0;
         }
         if (pT == 3 && cash >= 10) {
             summonTower(x + mP.x - 512, y + mP.y - 512, 7);
-            cash = cash - 10;
+            cash -= 10;
             pT = 0;
         }
         if (pT == 4 && cash >= 50) {
             summonTower(x + mP.x - 512, y + mP.y - 512, 8);
-            cash = cash - 50;
+            cash -= 50;
             pT = 0;
         }
     }
@@ -175,7 +175,7 @@ c.addEventListener('mousemove', function (evt) {
     getMousePos(c, evt);
 }, false);
 c.addEventListener("mousedown", mouseDown, false);
-c.addEventListener("mouseup", mouseUp, false);
+window.addEventListener("mouseup", mouseUp, false);
 //changes the style of fov, determined by an html button element
 function changeFOVStyle() {
     if (FOVStyle == 0) {
