@@ -1,0 +1,49 @@
+Update 0.1.8.1: Fixed a bug where completing levels doesn't make them show as complete.
+Update 0.1.8: Levels 2 and 3 are now released!
+A crapton of bug fixes.
+Some other stuff that I forgot.
+Update 0.1.7: TUTORIAL LEVEL COMPLETE!
+Lots of bug fixes.
+Level selection works now.
+Stay tuned for more levels!
+Update 0.1.6.1: Fixed pentashot bug. Now, pressing the [1] key upgrades a triple shot to a pentashot, not a triple shot to a twin.
+Similar bug fixed with twin upgrading to triple shot with the [1] shortcut. It used to not upgrade at all, but now it upgrades to triple shot.
+Update 0.1.6: LEVELS HAVE BEEN ADDED! So far, the level system is in place and will probably work semi-effectively.
+Tanks can now be recycled.
+Negative money no longer works.
+Tanks/Enemies cannot be spawned with random keys now.
+Text info changed significantly.
+Note that many of these changes are temporary. I'll be adding a debug option soon if you want to mess around with the game.
+Update 0.1.5.2: Some changes to power system, more graphical changes, bug fixes, that kind of stuff.
+Working on documentation and showing what stuff does and all that.
+Update 0.1.5.1: Changed the graphics of tank FOV. You can change the FOV to the original if you want.
+Update 0.1.5: HUGE UPDATE! New Extractor tank, it extracts power from polygons to generate electricty and power the other tanks.
+Extractor tank still work in progress, selection stuff isn't done.
+Tank connectors completed.
+Power system completed (Comment from developer (adasba): Huge pain in the ass, took me HOURS!)
+Graphical changes
+When placing a tank, all connectors turn green so you know where you can place it.
+Bug fixes.
+Tank placement is now restricted to areas close to connectors.
+Update 0.1.4.2: Tank connectors, they connect stuff.
+Update 0.1.4.1: Instructions changed, "E" now spawns a penta shot.
+Update 0.1.4: Pentashot tank added, by far the most powerful one.
+New icons for spawning tanks and miners.
+Some other stuff I forgot to write down earlier.
+Update 0.1.3.2: Accidentally changed enemy tank texture. This has been fixed.
+Update 0.1.3.1: Graphical changes to polygon miner.
+Update 0.1.3: Currency added to the game, called "Resources".
+Some changes to upgrade icons and tank spawning.
+New polygon miner tank to mine resources from shapes.
+Shapes have health and can be damaged.
+Tanks regenerate.
+Update 0.1.2.1: Upgrade icons can now be clicked on, and their animations were slightly modified.
+Tank selection settings changed, now they don't de-select when you click somewhere else.
+Press X or Escape to exit from the tank upgrade screen.
+Update 0.1.2: Tri-Angle added, upgrade icons are complete for now.
+Update 0.1.1.2: Much more code condensing, the game is down to 828 lines, it was at around 1200 before.
+Update 0.1.1.1: Working on upgrade graphics, several graphical changes, and condensing code.
+Update 0.1.1: Added the ability to upgrade tanks by clicking on them and pressing a number key.
+Added blue machine gun.
+Update 0.1: Started recording updates in a changelog.
+Update idk: why are you reading this, go away
