@@ -2,17 +2,19 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' />
+    <link href="icon.png" rel="icon" />
     <style>
         body {
             font-family: 'Ubuntu';
             font-size: 22px;
         }
     </style>
-    <title></title>
+    <title>Diep Tower Defense</title>
 </head>
 <body>
     <canvas id="myCanvas" width="1024" height="1024"></canvas>
+    
     <script>
         //context and canvas
         var c = document.getElementById("myCanvas");
@@ -113,8 +115,8 @@
         var level = 0;
         var levelC = [0, 0, 0];
         //death message generation
-        var deathM
-        var deathMS = ["Rest in spaghetti, never forghetti...", "Ripperoni.", "Killed to death!", "Git gud m8!", "OMG HACKERS!1!1!!", "Wubba Lubba Dub Dub!", "Adasba, fix your game...", "[Insert witty death message here]"]
+        var deathM;
+        var deathMS = ["Rest in spaghetti, never forghetti...", "Ripperoni.", "Killed to death!", "Git gud m8!", "OMG HACKERS!1!1!!", "Wubba Lubba Dub Dub!", "Adasba, fix your game...", "[Insert witty death message here]"];
         //ordinary message stuff
         var msg;
         var msg2;
